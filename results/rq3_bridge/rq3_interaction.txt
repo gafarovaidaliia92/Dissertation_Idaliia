@@ -1,0 +1,259 @@
+==============================================================================
+RQ3 (2/3) — DOES THE COMMUNICATION TYPE CHANGE HOW VULNERABLE BANKS REACT?
+==============================================================================
+
+  This test used to sit in RQ2, labelled as the H2 test. That was a
+  mis-filing: H2 is about the AVERAGE effect of the communication
+  (rq2_avg_effect.py), while this is about whether VULNERABLE banks
+  react differently, which is H3. It has been moved here.
+
+  The artefact diagnostics for anything significant below — calendar
+  placebo, custody-bank drop, leave-one-event-out — are in
+  rq3_measures.py. Do not quote a coefficient from this file without
+  them.
+
+==============================================================================
+RQ3 (2/3) — TWO-WAY FE INTERACTION
+           vulnerability = uninsured_share
+==============================================================================
+
+  CAR = EventFE + BankFE + b * (S x vulnerability) + e
+
+  Event dummies difference out the between-event confound (each speech date
+  carries its own macro news); bank dummies difference out the permanent
+  differences between banks. What is left is the WITHIN-EVENT comparison of
+  vulnerable against less-vulnerable banks. H3-flavoured prediction: b > 0.
+
+-- orientation and scale --
+
+  uninsured deposits / total deposits, read from the last Call Report
+  quarter ending strictly before t0. Raw fraction on [0, 1]; already
+  oriented higher = more vulnerable. NOT rescaled. Bank-EVENT level: the 11
+  events draw on 8 distinct characteristic quarters, so it is NOT absorbed
+  by bank fixed effects.
+
+    variable                               mean             SD            min            max
+    ------------------------------------------------------------------------------------------
+    uninsured_share                  0.38003046     0.14618597     0.01790904     0.89523892
+    S                                0.12089614     0.49443805    -0.66670000     1.00000000
+    S x vulnerability                0.05497406     0.20802272    -0.54145606     0.89523892
+    CAR                             -0.01135078     0.04805071    -0.40873260     0.30533438
+
+    N bank-events 2956     banks 276     events 11
+
+-- structural checks (numerical, not asserted) --
+
+    regressor on fixed effects                                R^2   max |resid|     resid SD
+    ----------------------------------------------------------------------------------------
+    S on event dummies                             1.000000000000     7.061e-14    3.572e-14  ABSORBED
+    uninsured_share on bank dummies                0.913207865577     3.683e-01    4.306e-02  survives
+    uninsured_share on bank + event dummies        0.945083931093     3.542e-01    3.425e-02  survives
+    S x vulnerability on bank + event dummies      0.879932121843     4.249e-01    7.207e-02  survives
+
+    Reading:
+    * S is absorbed by the event dummies to machine precision. Its main
+      effect is NOT estimated under any FE spec. That is exact
+      COLLINEARITY, not an effect of zero — S is constant within an event.
+    * This measure is NOT absorbed by the bank dummies (R^2 = 0.91320787,
+      residual SD 4.305984e-02). It is bank-EVENT level: it is
+      re-read from the last Call Report before each event, and the 11
+      events draw on 8 distinct characteristic quarters. Its main effect
+      therefore REMAINS IDENTIFIED under bank FE, and it is estimated and
+      reported rather than suppressed. The premise that a vulnerability
+      main effect always drops out under bank FE holds only for a static
+      measure.
+    * The interaction survives both sets of dummies (residual SD 7.206937e-02),
+      because it varies across banks AND across events. That is what makes
+      the two-way FE model estimable at all.
+
+-- b on (S x vulnerability), three specifications --
+
+    [event] = clustered on the event, 11 clusters, t(10). HEADLINE.
+    [2way]  = clustered on bank AND event (Cameron-Gelbach-Miller).
+              Requested, but not PSD at this sample size — see the NaN
+              counts below. Reported for completeness, not for inference.
+    [bank]  = clustered on the bank, shown only as a reference point.
+
+  [pooled (no FE)]
+    formula : CAR ~ S + VULN + SxV
+    k parameters 4     model df_resid 2952     inference df 10
+    identification of SxV given the rest: R^2 0.875370520584, residual SD 7.34256302e-02
+
+    SE cluster                          b            SE        t          p  95% CI                         sig
+    ----------------------------------------------------------------------------------------------------------
+    event  <-- headline        0.02181572    0.01965480    1.110   0.293000  [-0.02197789, +0.06560934]  (n.s.)
+    two-way                    0.02181572    0.01847001    1.181   0.264875  [-0.01933802, +0.06296947]  (n.s.)
+    bank (reference)           0.02181572    0.00839336    2.599   0.009850  [+0.00529232, +0.03833913]  ***
+
+    MDE for b at 80% power (event SE): 0.05503343 raw   = 1.144820 pp of CAR per 1 SD of the interaction   = 23.8253% of a CAR SD
+    main effect of the measure (identified here — see the checks above):
+      event-clustered         -0.01958893    0.01393587   -1.406   0.190129  (n.s.)
+
+  [event FE]
+    formula : CAR ~ VULN + SxV + C(doc_id)
+    k parameters 13     model df_resid 2943     inference df 10
+    identification of SxV given the rest: R^2 0.878869648625, residual SD 7.23875338e-02
+
+    SE cluster                          b            SE        t          p  95% CI                         sig
+    ----------------------------------------------------------------------------------------------------------
+    event  <-- headline       -0.00116188    0.02048306   -0.057   0.955883  [-0.04680098, +0.04447722]  (n.s.)
+    two-way                   -0.00116188    0.02025019   -0.057   0.955376  [-0.04628211, +0.04395836]  (n.s.)
+    bank (reference)          -0.00116188    0.00793143   -0.146   0.883642  [-0.01677591, +0.01445215]  (n.s.)
+
+    MDE for b at 80% power (event SE): 0.05735257 raw   = 1.193064 pp of CAR per 1 SD of the interaction   = 24.8293% of a CAR SD
+    two-way covariance NOT PSD: 3 of 13 parameters have a negative
+      variance and hence a NaN SE (all of them fixed-effect dummies). b's own
+      variance is positive, so the two-way SE printed for b is usable — but this
+      is why the event-clustered SE is the headline.
+    main effect of the measure (identified here — see the checks above):
+      event-clustered         -0.02340368    0.01279228   -1.830   0.097253  *
+
+  [event FE + bank FE  <-- supervisor]
+    formula : CAR ~ VULN + SxV + C(doc_id) + C(permno)
+    k parameters 288     model df_resid 2668     inference df 10
+    identification of SxV given the rest: R^2 0.880963955173, residual SD 7.17590261e-02
+
+    SE cluster                          b            SE        t          p  95% CI                         sig
+    ----------------------------------------------------------------------------------------------------------
+    event  <-- headline       -0.00049680    0.02134018   -0.023   0.981885  [-0.04804568, +0.04705208]  (n.s.)
+    two-way                   -0.00049680    0.02093823   -0.024   0.981537  [-0.04715009, +0.04615649]  (n.s.)
+    bank (reference)          -0.00049680    0.00844078   -0.059   0.953108  [-0.01711355, +0.01611994]  (n.s.)
+
+    MDE for b at 80% power (event SE): 0.05975250 raw   = 1.242988 pp of CAR per 1 SD of the interaction   = 25.8683% of a CAR SD
+    two-way covariance NOT PSD: 119 of 288 parameters have a negative
+      variance and hence a NaN SE (all of them fixed-effect dummies). b's own
+      variance is positive, so the two-way SE printed for b is usable — but this
+      is why the event-clustered SE is the headline.
+    main effect of the measure (identified here — see the checks above):
+      event-clustered         -0.01001151    0.02355418   -0.425   0.679807  (n.s.)
+
+-- supplementary: the supervisor's spec with bank controls added --
+
+    Controls are read at the same characteristic quarter as the
+    measure, so they vary within bank and are not absorbed.
+
+    event-clustered            0.00072584    0.02042020    0.036   0.972345  (n.s.)
+
+-- verdict for this measure --
+
+    b = -0.00049680   p = 0.98188477 (event, headline), 0.98153708 (two-way)
+    H3-flavoured prediction is b > 0. Observed sign: NEGATIVE.
+    b is null under event / two-way FE: YES
+
+==============================================================================
+RQ3 (2/3) — TWO-WAY FE INTERACTION
+           vulnerability = RF score (leakage-free)
+==============================================================================
+
+  CAR = EventFE + BankFE + b * (S x vulnerability) + e
+
+  Event dummies difference out the between-event confound (each speech date
+  carries its own macro news); bank dummies difference out the permanent
+  differences between banks. What is left is the WITHIN-EVENT comparison of
+  vulnerable against less-vulnerable banks. H3-flavoured prediction: b > 0.
+
+-- orientation and scale --
+
+  = -1 x predicted 2023Q1 deposit growth from the RandomForest fitted on the
+  688 non-listed wide-population banks and applied to the listed banks.
+  Higher = more vulnerable, because a predicted OUTFLOW maps to a positive
+  score. NOT rescaled. STATIC 2022Q4 profile: one value per bank, so it IS
+  absorbed by bank fixed effects.
+
+    variable                               mean             SD            min            max
+    ------------------------------------------------------------------------------------------
+    score_rf                        -0.01229394     0.01397274    -0.04884973     0.05713860
+    S                                0.12091083     0.49435535    -0.66670000     1.00000000
+    S x vulnerability               -0.00145244     0.00934927    -0.04884973     0.05713860
+    CAR                             -0.01134646     0.04804597    -0.40873260     0.30533438
+
+    N bank-events 2946     banks 275     events 11
+
+-- structural checks (numerical, not asserted) --
+
+    regressor on fixed effects                                R^2   max |resid|     resid SD
+    ----------------------------------------------------------------------------------------
+    S on event dummies                             1.000000000000     6.994e-14    2.735e-14  ABSORBED
+    score_rf on bank dummies                       1.000000000000     1.776e-15    2.849e-16  ABSORBED
+    score_rf on bank + event dummies               1.000000000000     1.922e-15    2.799e-16  ABSORBED
+    S x vulnerability on bank + event dummies      0.455516798919     6.143e-02    6.898e-03  survives
+
+    Reading:
+    * S is absorbed by the event dummies to machine precision. Its main
+      effect is NOT estimated under any FE spec. That is exact
+      COLLINEARITY, not an effect of zero — S is constant within an event.
+    * This measure is STATIC (one value per bank), so the bank dummies
+      absorb it to machine precision too. In the two-way FE model ONLY
+      the interaction b is identified, and only b is reported there.
+    * The interaction survives both sets of dummies (residual SD 6.897573e-03),
+      because it varies across banks AND across events. That is what makes
+      the two-way FE model estimable at all.
+
+-- b on (S x vulnerability), three specifications --
+
+    [event] = clustered on the event, 11 clusters, t(10). HEADLINE.
+    [2way]  = clustered on bank AND event (Cameron-Gelbach-Miller).
+              Requested, but not PSD at this sample size — see the NaN
+              counts below. Reported for completeness, not for inference.
+    [bank]  = clustered on the bank, shown only as a reference point.
+
+  [pooled (no FE)]
+    formula : CAR ~ S + VULN + SxV
+    k parameters 4     model df_resid 2942     inference df 10
+    identification of SxV given the rest: R^2 0.452468412960, residual SD 6.91685424e-03
+
+    SE cluster                          b            SE        t          p  95% CI                         sig
+    ----------------------------------------------------------------------------------------------------------
+    event  <-- headline       -0.37504313    0.10917675   -3.435   0.006383  [-0.61830409, -0.13178216]  ***
+    two-way                   -0.37504313    0.10871374   -3.450   0.006228  [-0.61727243, -0.13281382]  ***
+    bank (reference)          -0.37504313    0.13198027   -2.842   0.004825  [-0.63486736, -0.11521889]  ***
+
+    MDE for b at 80% power (event SE): 0.30569491 raw   = 0.285802 pp of CAR per 1 SD of the interaction   = 5.9485% of a CAR SD
+
+  [event FE]
+    formula : CAR ~ VULN + SxV + C(doc_id)
+    k parameters 13     model df_resid 2933     inference df 10
+    identification of SxV given the rest: R^2 0.452501643867, residual SD 6.91664434e-03
+
+    SE cluster                          b            SE        t          p  95% CI                         sig
+    ----------------------------------------------------------------------------------------------------------
+    event  <-- headline       -0.38848401    0.11622934   -3.342   0.007460  [-0.64745912, -0.12950890]  ***
+    two-way                   -0.38848401    0.13632961   -2.850   0.017262  [-0.69224531, -0.08472271]  **
+    bank (reference)          -0.38848401    0.12876964   -3.017   0.002794  [-0.64198759, -0.13498043]  ***
+
+    MDE for b at 80% power (event SE): 0.32544216 raw   = 0.304265 pp of CAR per 1 SD of the interaction   = 6.3328% of a CAR SD
+    two-way covariance NOT PSD: 4 of 13 parameters have a negative
+      variance and hence a NaN SE (all of them fixed-effect dummies). b's own
+      variance is positive, so the two-way SE printed for b is usable — but this
+      is why the event-clustered SE is the headline.
+
+  [event FE + bank FE  <-- supervisor]
+    formula : CAR ~ SxV + C(doc_id) + C(permno)
+    k parameters 286     model df_resid 2660     inference df 10
+    identification of SxV given the rest: R^2 0.455516798919, residual SD 6.89757255e-03
+
+    SE cluster                          b            SE        t          p  95% CI                         sig
+    ----------------------------------------------------------------------------------------------------------
+    event  <-- headline       -0.38507629    0.12471181   -3.088   0.011488  [-0.66295153, -0.10720105]  **
+    two-way                   -0.38507629    0.14229917   -2.706   0.022081  [-0.70213860, -0.06801397]  **
+    bank (reference)          -0.38507629    0.13692917   -2.812   0.005276  [-0.65464322, -0.11550935]  ***
+
+    MDE for b at 80% power (event SE): 0.34919308 raw   = 0.326470 pp of CAR per 1 SD of the interaction   = 6.7950% of a CAR SD
+    two-way covariance NOT PSD: 121 of 286 parameters have a negative
+      variance and hence a NaN SE (all of them fixed-effect dummies). b's own
+      variance is positive, so the two-way SE printed for b is usable — but this
+      is why the event-clustered SE is the headline.
+
+-- supplementary: the supervisor's spec with bank controls added --
+
+    Controls are read at the same characteristic quarter as the
+    measure, so they vary within bank and are not absorbed.
+
+    event-clustered           -0.37905508    0.12728953   -2.978   0.013857  **
+
+-- verdict for this measure --
+
+    b = -0.38507629   p = 0.01148834 (event, headline), 0.02208081 (two-way)
+    H3-flavoured prediction is b > 0. Observed sign: NEGATIVE.
+    b is null under event / two-way FE: NO — see rq3_measures.py, it is an artefact
+

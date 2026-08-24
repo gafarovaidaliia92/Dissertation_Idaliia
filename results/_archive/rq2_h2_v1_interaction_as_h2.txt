@@ -1,0 +1,92 @@
+==============================================================================
+RQ2 [C] — CBDC safeguard signal x uninsured-deposit exposure and bank CARs
+==============================================================================
+
+  bank-events on file      : 2956
+  used in estimation       : 2956   (dropped 0 for missing RHS)
+  banks (SE clusters)      : 276
+  events                   : 11
+  dependent variable       : CAR over [t0-1, t0+5], market-model abnormal returns
+  primary interaction      : S (safeguard score) x uninsured_share
+
+  READING NOTE. With only 11 events, S has 11 distinct values, so beta1
+  (S alone) is estimated off 11 points and is imprecise by construction —
+  it should not be read as an event-level effect. beta3 = S:uninsured_share
+  is the identified coefficient of interest: it uses within-event
+  cross-sectional variation in uninsured exposure, which is exactly what
+  the event-FE spec isolates.
+
+  H2 direction: a weaker safeguard signal (low/negative S) should hurt
+  uninsured-heavy banks more, i.e. beta3 > 0 (as S rises, the penalty on
+  uninsured_share shrinks).
+
+==============================================================================
+SPEC 1a — POOLED OLS, NO CONTROLS
+==============================================================================
+  formula : CAR ~ S + uninsured_share + S:uninsured_share
+  N bank-events : 2956     clusters (banks) : 276     events : 11
+  R^2 : 0.0071     adj R^2 : 0.0061     SE : cluster-robust on permno
+
+    term                                 coef          SE         t         p
+    ------------------------------------------------------------------------
+    Intercept                       -0.005428    0.001825    -2.974    0.0029
+    S                               -0.000446    0.003170    -0.141    0.8880
+    uninsured_share                 -0.018093    0.004643    -3.897    0.0001
+    S:uninsured_share                0.018518    0.008155     2.271    0.0232  <<< beta3
+
+  beta3 (S:uninsured_share) = +0.018518   SE 0.008155   t +2.271   p 0.0232  **
+    95% CI [+0.002536, +0.034501]
+
+==============================================================================
+SPEC 1b — POOLED OLS WITH CONTROLS
+==============================================================================
+  formula : CAR ~ S + uninsured_share + S:uninsured_share + size + ROA + NPL_ratio + equity_ratio
+  N bank-events : 2956     clusters (banks) : 276     events : 11
+  R^2 : 0.0234     adj R^2 : 0.0211     SE : cluster-robust on permno
+
+    term                                 coef          SE         t         p
+    ------------------------------------------------------------------------
+    Intercept                        0.012523    0.009306     1.346    0.1784
+    S                               -0.001118    0.003209    -0.348    0.7276
+    uninsured_share                 -0.009904    0.005235    -1.892    0.0585
+    S:uninsured_share                0.019920    0.008186     2.433    0.0150  <<< beta3
+    size                            -0.001863    0.000655    -2.846    0.0044
+    ROA                              0.719798    0.114530     6.285    0.0000
+    NPL_ratio                       -0.153757    0.162400    -0.947    0.3438
+    equity_ratio                     0.006147    0.033014     0.186    0.8523
+
+  beta3 (S:uninsured_share) = +0.019920   SE 0.008186   t +2.433   p 0.0150  **
+    95% CI [+0.003876, +0.035964]
+
+==============================================================================
+SPEC 2 — EVENT FIXED EFFECTS (S main effect absorbed)
+==============================================================================
+  formula : CAR ~ uninsured_share + S:uninsured_share + size + ROA + NPL_ratio + equity_ratio + C(doc_id)
+  N bank-events : 2956     clusters (banks) : 276     events : 11
+  R^2 : 0.3488     adj R^2 : 0.3453     SE : cluster-robust on permno
+
+    term                                 coef          SE         t         p
+    ------------------------------------------------------------------------
+    Intercept                        0.033615    0.008735     3.848    0.0001
+    uninsured_share                 -0.017859    0.005084    -3.513    0.0004
+    S:uninsured_share               -0.002117    0.007830    -0.270    0.7869  <<< beta3
+    size                            -0.001301    0.000587    -2.217    0.0266
+    ROA                              0.279380    0.076205     3.666    0.0002
+    NPL_ratio                       -0.051796    0.161044    -0.322    0.7477
+    equity_ratio                    -0.063568    0.032066    -1.982    0.0474
+
+  beta3 (S:uninsured_share) = -0.002117   SE 0.007830   t -0.270   p 0.7869  (n.s.)
+    95% CI [-0.017463, +0.013230]
+
+    (11 event dummies estimated, not printed; C(doc_id) absorbs S.)
+
+==============================================================================
+BETA3 ACROSS SPECIFICATIONS
+==============================================================================
+
+    spec                                      beta3          SE         t         p
+    ------------------------------------------------------------------------------
+    1a pooled, no controls                 0.018518    0.008155     2.271    0.0232
+    1b pooled, with controls               0.019920    0.008186     2.433    0.0150
+    2  event FE, with controls            -0.002117    0.007830    -0.270    0.7869
+

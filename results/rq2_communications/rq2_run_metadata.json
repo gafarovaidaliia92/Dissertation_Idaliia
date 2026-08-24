@@ -1,0 +1,11 @@
+{
+  "model": "claude-sonnet-4-5",
+  "run_utc_date": "2026-08-04",
+  "temperature": 0.0,
+  "codebook_sha256": "ba9a7c091518d6bf66adec610e51682c6afe4ebf7c2a793c760fd5ce28bc26a0",
+  "codebook_file": "rq2_codebook.md",
+  "n_sentences": 1338,
+  "n_flagged": 0,
+  "sdk": "anthropic",
+  "retries": 1
+}

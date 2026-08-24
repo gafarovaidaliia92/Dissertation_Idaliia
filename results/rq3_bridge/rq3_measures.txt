@@ -1,0 +1,224 @@
+==============================================================================
+RQ3 (3/3) — WHICH MEASURE CARRIES SIGNAL, AND IS IT REAL?
+==============================================================================
+
+-- A1. do the three measures agree? (bank level, N = 275) --
+
+    measure A                    measure B                         Pearson r   Spearman rho
+    ----------------------------------------------------------------------------------------
+    uninsured_share              RF score (leakage-free)          0.16540990     0.05754306
+    uninsured_share              OLS score (same split)           0.35930995     0.33571161
+    RF score (leakage-free)      OLS score (same split)           0.81160677     0.68145928
+
+    measure                                mean             SD            min            max
+    ----------------------------------------------------------------------------------------
+    uninsured_share                  0.40998458     0.14987531     0.02695142     0.89226539
+    RF score (leakage-free)         -0.01223296     0.01398559    -0.04884973     0.05713860
+    OLS score (same split)          -0.01027555     0.01685755    -0.10025276     0.05209288
+
+    The RF score and uninsured_share rank banks almost independently
+    (Spearman +0.05754306). They are two different orderings, not two
+    measurements of one thing. The RF and OLS scores, built from the same
+    features and the same split, agree far more (+0.68145928).
+
+-- A2. level effect vs reaction effect, all three measures --
+
+    delta1 = CAR ~ measure + controls + event FE   (level; bank-clustered)
+    b      = CAR = EventFE + BankFE + b*(S x measure)  (reaction;
+             event-clustered, the headline inference)
+
+    measure                            delta1          p               b          p
+    ----------------------------------------------------------------------------------
+    uninsured_share               -0.01877493   0.000321     -0.00049680   0.981885
+    RF score (leakage-free)        0.06011100   0.332233     -0.38507629   0.011488
+    OLS score (same split)         0.01232232   0.782140     -0.26387427   0.002859
+
+    Read across the rows, not down the columns. uninsured_share is the
+    only measure with a level effect, and it is the only one with NO
+    interaction. The RF and OLS scores are the mirror image: no level
+    effect, but an interaction. Section B says what that pattern means.
+
+-- A3. head to head in ONE model (event-clustered) --
+
+    term                                         coef            SE          p  sig
+    --------------------------------------------------------------------------------------
+    S x RF score                          -0.40265811    0.12300708   0.008381  ***
+    S x uninsured_share                    0.00684839    0.02077037   0.748415  (n.s.)
+    uninsured_share (main)                -0.01613064    0.02418516   0.519887  (n.s.)
+
+    S x OLS score                         -0.30564173    0.04712714   0.000070  ***
+    S x uninsured_share                    0.01264301    0.02156730   0.570727  (n.s.)
+    uninsured_share (main)                -0.01399205    0.02349197   0.564672  (n.s.)
+
+    The fitted composite survives beside uninsured_share; uninsured_share's own
+    interaction does not. But the OLS score does the same job as the RF
+    score, so what is doing the work is USING A FITTED COMBINATION of the
+    balance sheet, not machine learning as such. On the level link the
+    ranking reverses and the raw ratio wins. Neither ordering is evidence
+    for H3 on its own — see section B.
+
+==============================================================================
+B. LEVEL VS REACTION — IS THE H3 MECHANISM SUPPORTED?
+==============================================================================
+
+  Two facts about uninsured_share, both from the tables above:
+
+    LEVEL     delta1 = -0.01877493   p = 0.00032066  ***
+    REACTION  b      = -0.00049680   p = 0.98188477  (n.s.)
+
+  Banks with more uninsured deposits DID sit at a lower abnormal return
+  across these windows. But the gap does not move with the safeguard
+  content of the communication: interacted with S it is indistinguishable
+  from zero.
+
+  That combination has one honest reading. The level result is a property
+  of WHICH BANKS these are — funding-fragile banks priced differently over
+  2019-2023, a period containing COVID and the 2022 rate cycle — and not a
+  response to what the Federal Reserve said about CBDC design. A reaction
+  to content would have to show up in the interaction, and it does not.
+
+  THE H3 MECHANISM IS NOT SUPPORTED. The bridge between the RQ1
+  vulnerability profile and the RQ2 market reaction does not hold:
+    * the ML score has no level effect (delta1 null, wrong sign);
+    * uninsured_share has a level effect but no reaction (b p = 0.9819);
+    * the one significant interaction (RF score, b = -0.38507629, p = 0.011488)
+      has the WRONG SIGN for the hypothesis and does not survive the
+      diagnostics in section C.
+
+  This is consistent with RQ2: the unconditional test finds no event with a
+  mean CAR distinguishable from zero, so there is no reaction for a
+  cross-section to modulate in the first place.
+
+------------------------------------------------------------------------------
+C. ARTEFACT DIAGNOSTICS — uninsured_share
+------------------------------------------------------------------------------
+
+-- C1. calendar placebo: is this about the SIGNAL or about TIME? --
+
+    The 11 events are not randomly ordered in S: later communications are
+    more protective.
+      corr(S, calendar rank) = Pearson +0.60333196 (p 0.049394), Spearman +0.65148233 (p 0.029884)
+
+    So 'S x vulnerability' and 'time x vulnerability' are close to the same
+    regressor. Both are built from z-scored S and z-scored calendar rank so
+    the coefficients are directly comparable.
+
+    spec (two-way FE, event SE)                coef            SE          p  sig
+    --------------------------------------------------------------------------------------
+    S_z x vuln (alone)                  -0.00024564    0.01055140   0.981885  (n.s.)
+    time_z x vuln (alone)               -0.00454413    0.01292690   0.732489  (n.s.)
+    S_z x vuln (joint)                   0.00382243    0.01173507   0.751344  (n.s.)
+    time_z x vuln (joint)               -0.00701521    0.01585235   0.667521  (n.s.)
+
+    Joint model: S interaction NOT significant at 5% (p 0.751344); time
+    interaction not significant (p 0.667521). With 11 events the two cannot be
+    separated — read this as a warning flag, not a clean decomposition.
+
+-- C2. leave-one-event-out (supervisor's spec, event SE) --
+
+    dropped           t0         S              b            SE          p  sig
+    ----------------------------------------------------------------------------------
+          1   2022-01-20    0.1231    -0.00115891    0.02139519   0.957986  (n.s.)
+          2   2021-08-05   -0.2143     0.00565333    0.02440631   0.822003  (n.s.)
+          3   2022-02-18    1.0000    -0.00817679    0.02967116   0.789093  (n.s.)
+          4   2022-05-26    1.0000    -0.00983378    0.02889265   0.741398  (n.s.)
+          5   2022-10-14    0.2500     0.00154246    0.01966656   0.939202  (n.s.)
+          6   2023-04-18    0.0952    -0.00059943    0.02179465   0.978658  (n.s.)
+          8   2019-10-16   -0.6667     0.02075013    0.01560352   0.216289  (n.s.)
+          9   2020-02-05   -0.1111    -0.00051622    0.02264311   0.982309  (n.s.)
+         10   2020-08-13    0.0000    -0.00374068    0.01948464   0.852019  (n.s.)
+         11   2021-05-24    0.2222    -0.00094191    0.02213988   0.966994  (n.s.)
+         12   2021-06-28   -0.4375    -0.01089255    0.02141152   0.623182  (n.s.)
+
+    b ranges [-0.01089255, +0.02075013]; sign flips: YES
+
+-- C3. excluding trust / custody-flagged banks --
+
+    9 flagged banks removed; 267 banks, 2857 bank-events remain.
+    The RF score puts three custodians at the top, and custodians carry
+    their own rate exposure.
+
+    b, trust/custody dropped             0.00404051    0.02172684   0.856187  (n.s.)
+    b changes SIGN when they are dropped, so a '% of the magnitude' figure would be meaningless and is not reported.
+    (two-way clustered p for the same spec: 0.851835)
+
+------------------------------------------------------------------------------
+C. ARTEFACT DIAGNOSTICS — RF score (leakage-free)
+------------------------------------------------------------------------------
+
+-- C1. calendar placebo: is this about the SIGNAL or about TIME? --
+
+    The 11 events are not randomly ordered in S: later communications are
+    more protective.
+      corr(S, calendar rank) = Pearson +0.60333196 (p 0.049394), Spearman +0.65148233 (p 0.029884)
+
+    So 'S x vulnerability' and 'time x vulnerability' are close to the same
+    regressor. Both are built from z-scored S and z-scored calendar rank so
+    the coefficients are directly comparable.
+
+    spec (two-way FE, event SE)                coef            SE          p  sig
+    --------------------------------------------------------------------------------------
+    S_z x vuln (alone)                  -0.19036452    0.06165195   0.011488  **
+    time_z x vuln (alone)               -0.17749331    0.08408718   0.060958  *
+    S_z x vuln (joint)                  -0.13288137    0.09377962   0.186889  (n.s.)
+    time_z x vuln (joint)               -0.09708084    0.12111476   0.441438  (n.s.)
+
+    Joint model: S interaction NOT significant at 5% (p 0.186889); time
+    interaction not significant (p 0.441438). With 11 events the two cannot be
+    separated — read this as a warning flag, not a clean decomposition.
+
+-- C2. leave-one-event-out (supervisor's spec, event SE) --
+
+    dropped           t0         S              b            SE          p  sig
+    ----------------------------------------------------------------------------------
+          1   2022-01-20    0.1231    -0.38218160    0.12457479   0.013400  **
+          2   2021-08-05   -0.2143    -0.39461520    0.12775742   0.012955  **
+          3   2022-02-18    1.0000    -0.30813012    0.14500375   0.062530  *
+          4   2022-05-26    1.0000    -0.52063335    0.07322870   0.000056  ***
+          5   2022-10-14    0.2500    -0.39789232    0.13431599   0.015898  **
+          6   2023-04-18    0.0952    -0.39226676    0.11420683   0.007453  ***
+          8   2019-10-16   -0.6667    -0.30804490    0.14067589   0.056273  *
+          9   2020-02-05   -0.1111    -0.38779810    0.12578272   0.013075  **
+         10   2020-08-13    0.0000    -0.38955092    0.12287117   0.011359  **
+         11   2021-05-24    0.2222    -0.39252596    0.13166390   0.015418  **
+         12   2021-06-28   -0.4375    -0.36035571    0.14618827   0.035863  **
+
+    b ranges [-0.52063335, -0.30804490]; sign flips: no
+
+-- C3. excluding trust / custody-flagged banks --
+
+    9 flagged banks removed; 266 banks, 2847 bank-events remain.
+    The RF score puts three custodians at the top, and custodians carry
+    their own rate exposure.
+
+    b, trust/custody dropped            -0.13939961    0.07685660   0.099788  *
+    63.7995% of the magnitude comes from those banks.
+    (two-way clustered p for the same spec: 0.063319)
+
+==============================================================================
+VERDICT — RQ3
+==============================================================================
+
+  1. The H3 mechanism is NOT supported. No measure shows a reaction to the
+     safeguard content of the communication.
+
+  2. uninsured_share has a real LEVEL effect (delta1 = -0.01877493,
+     p = 0.00032066) but a null REACTION (b p = 0.981885).
+     That is a statement about which banks these are, not about CBDC.
+
+  3. The RF score's interaction (b = -0.38507629, p = 0.011488) is
+     treated as an ARTEFACT, on three grounds, and it also has the wrong
+     sign for the hypothesis:
+       * calendar placebo: corr(S, time) = +0.603332; time x vuln gives -0.17749331
+         (p 0.060958), and jointly neither survives (S p 0.186889,
+         time p 0.441438);
+       * custody banks: dropping 9 of them moves b to -0.13939961 (p 0.099788),
+         i.e. 63.80% of the magnitude is custodians;
+       * leave-one-event-out keeps the sign ([-0.52063335, -0.30804490]), so it is
+         not one event — but that does not rescue it from the first two.
+
+  4. Machine learning is not what matters. The OLS-predicted score behaves
+     like the RF score in both the level link and the interaction, and the
+     two agree at Spearman +0.681459. Any credit belongs to
+     using a fitted balance-sheet composite, not to the algorithm.
+

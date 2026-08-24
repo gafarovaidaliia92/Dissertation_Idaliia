@@ -1,0 +1,700 @@
+==============================================================================
+RQ2 [C] — H2: does the TYPE of CBDC communication move bank equity?
+==============================================================================
+
+  bank-events on file      : 2956
+  used in estimation       : 2956   (dropped 0 for missing RHS)
+  banks                    : 276
+  events                   : 11    distinct values of S : 10  (two events tie at S = 1.00)
+  dependent variable       : CAR over [t0-1, t0+5], market-model abnormal returns
+  banks with an ML score   : 2946 bank-events (275 banks)
+
+  HOW TO READ THIS REPORT.
+  Sections 0-2 are CONTEXT: did the market react on average, and does the
+  average reaction line up with the communication type (gamma1 on S)?
+  Sections 3-4 are the HEADLINE H2 TEST requested by the supervisor: the
+  two-way fixed-effects interaction
+      CAR = EventFE + BankFE + b * (S x vulnerability) + e
+  run once per vulnerability measure (uninsured_share; leakage-free ML
+  score). The interaction isolates the WITHIN-EVENT comparison of vulnerable
+  against less-vulnerable banks, which removes the between-event confound
+  that Sections 1-2 are exposed to.
+
+  H2 (as written). Communications that emphasise PROTECTIVE design (higher S)
+  produce LESS NEGATIVE abnormal returns than expansive ones. In the
+  between-event form the prediction is gamma1 > 0 in CAR = gamma0 + gamma1*S;
+  in the interaction form it is b > 0 (as S rises, the penalty carried by
+  vulnerable banks shrinks).
+
+  STRUCTURAL POINT — READ BEFORE THE TABLES.
+  S varies ONLY at the event level: constant within each event, so it
+  carries 11 event-level values (10 of them distinct). Therefore:
+    (a) NO event-fixed-effects specification is estimated for S. Event
+        dummies absorb S perfectly (exact collinearity), so gamma1 would not
+        be identified at all — that is a design fact, not a null result.
+    (b) SEs are clustered on the EVENT, not on the bank, because the event
+        is the level at which the regressor varies. Bank-clustered SEs
+        would treat 276 banks as independent information about a
+        regressor that takes only 11 values. Event-clustered inference is
+        read off t with G-1 = 10 degrees of freedom.
+    (c) gamma1 is identified off 11 events and is IMPRECISE BY
+        CONSTRUCTION. With 11 clusters the cluster-robust SE is itself a
+        small-sample object. Section 1 makes the same comparison honestly,
+        with n = 11 in plain sight.
+
+  These three points apply to the S MAIN EFFECT only. They do not block the
+  interaction in Sections 3-4: S x vulnerability varies across banks as well
+  as across events, so it survives both sets of dummies. Each section
+  verifies that numerically before estimating anything.
+
+==============================================================================
+SECTION 0 — DID THE MARKET REACT AT ALL?  (PRIMARY H2 EVIDENCE)
+==============================================================================
+
+  H2 asks whether the type of CBDC communication moves bank equity. The
+  first question is therefore unconditional: was there any measurable
+  reaction to these 11 dates? If not, there is no average communication
+  effect for S to explain, and the S regressions below are testing a
+  gradient across events that did not move prices in the first place.
+
+  Source: scripts/rq2_enrich.py, PART B — reproduced verbatim from
+  data/processed/rq2_enrichment_results.txt (market model, one factor).
+  The relevant test is the Brown-Warner CROSS-CORRELATION-ROBUST portfolio
+  test: per-event cross-sectional t-stats treat banks as independent
+  within a date, which they are not, and are inflated.
+
+-- B1c. Cross-correlation-robust portfolio test --
+
+    The per-event t-stats in B1 assume banks are independent within a
+    date. They are not: a common factor moves them together, so those
+    t-stats are inflated, often by an order of magnitude. This test uses
+    the equal-weighted portfolio AR and its own estimation-window
+    time-series SD, which is robust to that dependence.
+
+     doc_id           t0  n_days     port_CAR    sigma_day         t         p  sig
+    ------------------------------------------------------------------------------------
+          1   2022-01-20       7      0.00191     0.010630      0.07    0.9459  (n.s.)
+          2   2021-08-05       7      0.02241     0.016175      0.52    0.6006  (n.s.)
+          3   2022-02-18       7     -0.00124     0.009198     -0.05    0.9595  (n.s.)
+          4   2022-05-26       7     -0.00086     0.009236     -0.04    0.9719  (n.s.)
+          5   2022-10-14       7      0.00211     0.008112      0.10    0.9216  (n.s.)
+          6   2023-04-18       7     -0.03070     0.006035     -1.92    0.0545  *
+          8   2019-10-16       7      0.02717     0.006958      1.48    0.1400  (n.s.)
+          9   2020-02-05       7     -0.02046     0.006671     -1.16    0.2464  (n.s.)
+         10   2020-08-13       7     -0.06227     0.016530     -1.42    0.1545  (n.s.)
+         11   2021-05-24       7     -0.00235     0.018174     -0.05    0.9611  (n.s.)
+         12   2021-06-28       7     -0.06005     0.016705     -1.36    0.1742  (n.s.)
+    ------------------------------------------------------------------------------------
+    events significant at 5% under the robust test : 0 of 11
+
+-- B4. TAKEAWAY: first moment vs second moment vs volume --
+
+     doc_id           t0 mean CAR (rob)   var ratio     dir  turn ratio     dir
+    ----------------------------------------------------------------------------
+          1   2022-01-20           null       1.031    flat       1.065      UP
+          2   2021-08-05           null       0.355    DOWN       0.704    DOWN
+          3   2022-02-18           null       1.197      UP       0.949    DOWN
+          4   2022-05-26           null       0.360    DOWN       0.890    DOWN
+          5   2022-10-14           null       1.495      UP       0.934    flat
+          6   2023-04-18           null       2.235      UP       1.152      UP
+          8   2019-10-16           null       0.519    DOWN       0.939    DOWN
+          9   2020-02-05           null       0.636    DOWN       0.826    DOWN
+         10   2020-08-13           null       0.612    DOWN       0.592    DOWN
+         11   2021-05-24           null       0.395    DOWN       0.819    DOWN
+         12   2021-06-28           null       0.544    DOWN       1.378      UP
+
+    events with a robust mean-CAR reaction : 0 of 11
+    events with elevated volatility (median ratio > 1, Wilcoxon p<.05) : 3 of 11
+    events with SUPPRESSED volatility                                 : 7 of 11
+    events with elevated turnover                                     : 3 of 11
+    events with SUPPRESSED turnover                                   : 7 of 11
+
+  VERDICT: events with a robust mean-CAR reaction : 0 of 11.
+           events with elevated volatility (median ratio > 1, Wilcoxon p<.05) : 3 of 11
+           events with SUPPRESSED volatility : 7 of 11
+
+  Read: no event produces a mean CAR distinguishable from zero once
+  cross-bank dependence is handled, and volatility/turnover on these
+  dates are suppressed at least as often as they are elevated. On the
+  unconditional evidence, H2 has nothing to work with.
+
+  For completeness, under the augmented (market+sector+rate) return
+  model the same robust test gives: events significant at 5% under the robust test : 2 of 11
+  (doc_id 3 and 6, with OPPOSITE signs: +0.028 and -0.027, so they do
+  not line up into a directional story; see rq2_enrichment_results.txt,
+  AUGMENTED MODEL B1c).
+  The published CAR is the market-model one, so 0 of 11 is the headline;
+  the augmented count is reported here rather than left out.
+
+==============================================================================
+SECTION 1 — H2 AT THE EVENT LEVEL  (the honest form of the test, n = 11)
+==============================================================================
+
+  S is a property of the COMMUNICATION, not of the bank: it is constant
+  within an event, so it carries 11 event-level values. H2 is therefore a
+  between-event question, and the natural test has 11 observations: does a
+  more protective communication (higher S) come with a less negative
+  average abnormal return? H2 predicts gamma1 > 0.
+
+-- 1.1 the 11 events --
+
+    doc_id           t0         S  n_banks    mean_CAR  median_CAR   SE(mean)  flag
+    ----------------------------------------------------------------------------------------
+         8   2019-10-16   -0.6667      258     0.02717     0.02627    0.00188  
+         9   2020-02-05   -0.1111      263    -0.02046    -0.02135    0.00161  
+        10   2020-08-13    0.0000      267    -0.06227    -0.07179    0.00261  
+        11   2021-05-24    0.2222      269    -0.00235    -0.00514    0.00161  
+        12   2021-06-28   -0.4375      269    -0.06005    -0.06629    0.00241  
+         2   2021-08-05   -0.2143      269     0.02241     0.02385    0.00192  
+         1   2022-01-20    0.1231      271     0.00191     0.00743    0.00245  
+         3   2022-02-18    1.0000      273    -0.00124     0.00030    0.00208  
+         4   2022-05-26    1.0000      274    -0.00085    -0.00278    0.00172  
+         5   2022-10-14    0.2500      272     0.00211     0.01062    0.00361  
+         6   2023-04-18    0.0952      271    -0.03070    -0.02761    0.00330  
+
+    S range [-0.6667, +1.0000]   SD(S) = 0.5182   expansive (S<0): 4   protective (S>=0): 7
+
+-- 1.2 OLS of the 11 event-mean CARs on the 11 S values --
+
+    mean_CAR = gamma0 + gamma1 * S        (n = 11, ordinary SEs)
+
+    term                             coef          SE         t         p
+    --------------------------------------------------------------------
+    Intercept                   -0.011947    0.009574    -1.248    0.2436
+    S                            0.005629    0.018874     0.298    0.7723  <<< gamma1
+
+    gamma1 = +0.005629   SE 0.018874   t +0.298   p 0.7723  (n.s.)
+      95% CI [-0.037067, +0.048325]     R^2 0.0098
+      MDE at 80% power (2.80 x SE) : 0.052847 of CAR per unit of S
+      i.e. across the full observed S range (1.667) we can
+      rule out an average CAR difference larger than 8.81 pp.
+
+    weighted by n_banks (secondary): gamma1 = +0.006177   SE 0.018776   p 0.7497  (n.s.)
+
+-- 1.3 correlation between event-mean CAR and S --
+
+    Pearson  corr(mean_CAR, S) = +0.0989   p 0.7723  (n.s.)   (n = 11)
+    Spearman corr(mean_CAR, S) = +0.0137   p 0.9682  (n.s.)   (n = 11)
+    (a POSITIVE correlation is the H2-consistent direction: protective
+     communications -> less negative abnormal returns)
+
+-- 1.4 protective vs expansive events, difference in means --
+
+    mean CAR, expansive  (S <  0, n=4) : -0.00773
+    mean CAR, protective (S >= 0, n=7) : -0.01334
+    difference (protective - expansive)     : -0.00561
+    Welch t = -0.250  p 0.8145  (n.s.)     Mann-Whitney p 0.6485  (n.s.)
+
+    With 11 events this test has very little power; the point of reporting
+    it is that the sign and the magnitude are on the record, not that the
+    p-value settles anything.
+
+==============================================================================
+SECTION 2 — H2 POOLED AT THE BANK-EVENT LEVEL (SEs clustered on the EVENT)
+==============================================================================
+
+  The same between-event comparison as Section 1, run on all bank-events so
+  that bank controls can be included. The extra rows add no independent
+  information about S — it still takes only 11 event-level values — which
+  is exactly why the SEs are clustered on the event, with t(G-1) inference.
+
+==============================================================================
+SPEC 1 — CAR ~ S, NO CONTROLS
+==============================================================================
+  formula : CAR ~ S
+  N bank-events : 2956     banks : 276     events : 11
+  R^2 : 0.0040     adj R^2 : 0.0037
+  SE  : cluster-robust on event (doc_id), 11 clusters
+
+    term                                 coef          SE         t         p
+    ------------------------------------------------------------------------
+    Intercept                       -0.012098    0.010484    -1.154    0.2754
+    S                                0.006177    0.017194     0.359    0.7269  <<< gamma1
+
+  gamma1 (S) = +0.006177   SE 0.017194   t +0.359   p 0.7269  (n.s.)
+    95% CI [-0.032133, +0.044487]
+    MDE at 80% power (2.80 x SE) : 0.048142 of CAR per unit of S
+
+==============================================================================
+SPEC 2 — CAR ~ S + CONTROLS
+==============================================================================
+  formula : CAR ~ S + size + ROA + NPL_ratio + equity_ratio
+  N bank-events : 2956     banks : 276     events : 11
+  R^2 : 0.0221     adj R^2 : 0.0204
+  SE  : cluster-robust on event (doc_id), 11 clusters
+
+    term                                 coef          SE         t         p
+    ------------------------------------------------------------------------
+    Intercept                        0.012131    0.017584     0.690    0.5060
+    S                                0.006441    0.017113     0.376    0.7145  <<< gamma1
+    size                            -0.002116    0.001428    -1.482    0.1692
+    ROA                              0.724822    0.463344     1.564    0.1488
+    NPL_ratio                       -0.126044    0.363778    -0.346    0.7362
+    equity_ratio                     0.011421    0.088536     0.129    0.8999
+
+  gamma1 (S) = +0.006441   SE 0.017113   t +0.376   p 0.7145  (n.s.)
+    95% CI [-0.031688, +0.044571]
+    MDE at 80% power (2.80 x SE) : 0.047916 of CAR per unit of S
+
+==============================================================================
+SPEC 3 — EVENT FIXED EFFECTS: NOT ESTIMABLE FOR S
+==============================================================================
+  CAR ~ S + controls + C(doc_id) is not reported because C(doc_id) absorbs S
+  exactly: S is constant within each of the 11 events, so the S column is a
+  linear combination of the event dummies. Any software that returns a
+  number here is reporting an artefact of its pseudo-inverse, not an
+  estimate. The between-event variation that identifies H2 is precisely what
+  event FE removes.
+
+-- clustering comparison (event-clustered is the reported spec) --
+
+    spec / cluster level                     gamma1          SE         t         p
+    ------------------------------------------------------------------------------
+    no controls, cluster = EVENT           0.006177    0.017194     0.359    0.7269
+    with controls, cluster = EVENT         0.006441    0.017113     0.376    0.7145
+    no controls, cluster = bank            0.006177    0.001189     5.194    0.0000
+    with controls, cluster = bank          0.006441    0.001223     5.265    0.0000
+
+    The bank-clustered rows are shown only to make the inflation
+    explicit; they are not the reported inference for gamma1.
+
+==============================================================================
+SECTION 3 — H2 AS A TWO-WAY FIXED-EFFECTS INTERACTION
+              vulnerability = uninsured_share
+==============================================================================
+
+  Model requested by the supervisor:
+      CAR = EventFE + BankFE + b * (S x vulnerability) + e
+  It isolates the WITHIN-EVENT comparison of vulnerable against
+  less-vulnerable banks, so the between-event confound (different macro
+  news on different speech dates) is differenced out by the event dummies.
+
+-- orientation and scale of the vulnerability measure --
+
+  uninsured deposits / total deposits, taken from the last Call Report
+  quarter ending strictly before t0. Raw fraction on [0, 1]; already
+  oriented higher = more vulnerable (more run-prone funding). NOT rescaled.
+  Varies across BOTH banks and events: the 11 events draw on 8 distinct
+  characteristic quarters.
+
+    variable                             mean           SD          min          max
+    --------------------------------------------------------------------------------
+    uninsured_share                0.38038666   0.14622046   0.01790904   0.89523892
+    S                              0.12089614   0.49443805  -0.66670000   1.00000000
+    S x vulnerability              0.05473658   0.20838530  -0.53232098   0.89523892
+    CAR                           -0.01135078   0.04805071  -0.40873260   0.30533438
+
+    N bank-events 2956     banks 276     events 11
+
+-- structural checks (numerical, not asserted) --
+
+    regressor on fixed effects                                R^2   max |resid|     resid SD
+    ----------------------------------------------------------------------------------------
+    S on event dummies                             1.000000000000     1.910e-14    7.153e-15  ABSORBED
+    uninsured_share on bank dummies                0.915577267246     3.701e-01    4.248e-02  survives
+    uninsured_share on bank + event dummies        0.946024239041     3.556e-01    3.397e-02  survives
+    S x vulnerability on bank + event dummies      0.879790143209     4.252e-01    7.224e-02  survives
+
+    Reading:
+    * S is absorbed by the event dummies to machine precision. Its main
+      effect is therefore NOT estimated under any FE spec. This is exact
+      COLLINEARITY, not an effect of zero: S is constant within an event,
+      so the S column is a linear combination of the event dummies.
+    * The vulnerability measure is NOT absorbed by the bank dummies
+      (R^2 = 0.915577, residual SD 4.248e-02). This
+      measure is bank-event level, not static: it is re-read from the last
+      Call Report quarter before each event, and the 11 events draw on 8
+      distinct characteristic quarters. Its main effect therefore REMAINS
+      IDENTIFIED under bank FE and is estimated and reported. The
+      supervisor's premise that the vulnerability main effect drops out
+      holds only for a static measure; it does not hold here, and we
+      report the main effect rather than suppress it.
+    * The interaction survives both sets of dummies (residual SD 7.224e-02),
+      because it varies across banks AND across events. That is what makes
+      the two-way FE model estimable at all.
+
+-- b = coefficient on (S x vulnerability), three specifications --
+
+    SE variants per spec: [2way] clustered on bank AND event
+    (Cameron-Gelbach-Miller); [event] clustered on event only, the
+    conservative alternative because the event is the level at which S
+    varies and there are only 11 of them.
+
+  [pooled (no FE)]
+    formula : CAR ~ S + VULN + SxV
+    k estimated parameters : 4     model df_resid : 2952
+    identification of SxV given the rest: R^2 0.875618453905, residual SD 7.348041e-02
+
+    SE cluster                             b            SE        t        p  95% CI                     sig
+    ------------------------------------------------------------------------------------------------------------
+    two-way (bank & event)        0.01851847    0.01722097    1.075   0.3075  [-0.01985224, +0.05688918]  (n.s.)
+    event only                    0.01851847    0.01855813    0.998   0.3419  [-0.02283163, +0.05986857]  (n.s.)
+    bank only (reference)         0.01851847    0.00815456    2.271   0.0239  [+0.00246517, +0.03457177]  **
+
+    inference df (two-way) : 10     (= min(n_bank, n_event) - 1 = min(276, 11) - 1)
+    inference df (event)   : 10
+    MDE for b at 80% power : 0.04821871 (two-way SE)   = 20.9114% of a CAR SD per 1 SD of the interaction
+    main effect of vulnerability (identified here, see above):
+      two-way                    -0.01809277    0.01265713   -1.429   0.1834  [-0.04629462, +0.01010908]  (n.s.)
+
+  [event FE]
+    formula : CAR ~ VULN + SxV + C(doc_id)
+    k estimated parameters : 13     model df_resid : 2943
+    identification of SxV given the rest: R^2 0.878701219010, residual SD 7.256410e-02
+
+    SE cluster                             b            SE        t        p  95% CI                     sig
+    ------------------------------------------------------------------------------------------------------------
+    two-way (bank & event)       -0.00227120    0.02091605   -0.109   0.9157  [-0.04887506, +0.04433266]  (n.s.)
+    event only                   -0.00227120    0.02115230   -0.107   0.9166  [-0.04940147, +0.04485907]  (n.s.)
+    bank only (reference)        -0.00227120    0.00784021   -0.290   0.7723  [-0.01770566, +0.01316326]  (n.s.)
+
+    inference df (two-way) : 10     (= min(n_bank, n_event) - 1 = min(276, 11) - 1)
+    inference df (event)   : 10
+    MDE for b at 80% power : 0.05856494 (two-way SE)   = 25.3983% of a CAR SD per 1 SD of the interaction
+    NOTE: the two-way clustered covariance matrix is not PSD; 3 of 13 parameters
+          have a negative variance and hence NaN SE (all of them fixed-effect dummies).
+          The SE for b itself is finite and is the one reported.
+    main effect of vulnerability (identified here, see above):
+      two-way                    -0.02290523    0.01247703   -1.836   0.0963  [-0.05070579, +0.00489534]  *
+
+  [event FE + bank FE  <-- supervisor]
+    formula : CAR ~ VULN + SxV + C(doc_id) + C(permno)
+    k estimated parameters : 288     model df_resid : 2668
+    identification of SxV given the rest: R^2 0.880731630256, residual SD 7.195422e-02
+
+    SE cluster                             b            SE        t        p  95% CI                     sig
+    ------------------------------------------------------------------------------------------------------------
+    two-way (bank & event)       -0.00168463    0.02158217   -0.078   0.9393  [-0.04977271, +0.04640345]  (n.s.)
+    event only                   -0.00168463    0.02198491   -0.077   0.9404  [-0.05067006, +0.04730081]  (n.s.)
+    bank only (reference)        -0.00168463    0.00831878   -0.203   0.8397  [-0.01806121, +0.01469195]  (n.s.)
+
+    inference df (two-way) : 10     (= min(n_bank, n_event) - 1 = min(276, 11) - 1)
+    inference df (event)   : 10
+    MDE for b at 80% power : 0.06043009 (two-way SE)   = 26.2072% of a CAR SD per 1 SD of the interaction
+    NOTE: the two-way clustered covariance matrix is not PSD; 111 of 288 parameters
+          have a negative variance and hence NaN SE (all of them fixed-effect dummies).
+          The SE for b itself is finite and is the one reported.
+    main effect of vulnerability (identified here, see above):
+      two-way                    -0.00379515    0.02498706   -0.152   0.8823  [-0.05946979, +0.05187948]  (n.s.)
+
+-- supplementary: the supervisor's spec with bank controls added --
+
+    The controls (size, ROA, NPL_ratio, equity_ratio) are read at the same
+    characteristic quarter as the vulnerability measure, so they vary
+    within bank and are not absorbed by the bank dummies.
+
+    SE cluster                             b            SE        t        p  95% CI                     sig
+    ------------------------------------------------------------------------------------------------------------
+    two-way, + controls          -0.00031579    0.02050411   -0.015   0.9880  [-0.04600179, +0.04537021]  (n.s.)
+
+-- D1. CALENDAR PLACEBO: is the interaction about the SIGNAL or about TIME? --
+
+    The 11 events are not randomly ordered in S: later communications are
+    more protective. Across the 11 events,
+      corr(S, calendar rank) = Pearson +0.60333196 (p 0.049394), Spearman +0.65148233 (p 0.029884)
+
+    So 'S x vulnerability' and 'time x vulnerability' are close to the same
+    regressor. If the coefficient survives only on S and not on time, the
+    signal interpretation is supported; if time does the same work, the
+    interaction is a trend in how vulnerable banks priced over 2019-2023,
+    not a response to the safeguard content.
+
+    Both interactions are built from z-scored S and z-scored calendar rank,
+    so the two coefficients are directly comparable.
+
+    spec (two-way FE, two-way SE)                coef            SE        t         p  sig
+    ----------------------------------------------------------------------------------------
+    S_z x vuln (alone)                    -0.00083294    0.01067105   -0.078  0.939323  (n.s.)
+    time_z x vuln (alone)                 -0.00515424    0.01338797   -0.385  0.708306  (n.s.)
+    S_z x vuln (joint)                     0.00347994    0.01149174    0.303  0.768232  (n.s.)
+    time_z x vuln (joint)                 -0.00741162    0.01624446   -0.456  0.657955  (n.s.)
+
+    Reading: in the JOINT model the S interaction is NOT significant at 5% and the time
+    interaction is not significant at 5%. The two regressors are nearly collinear across only 11
+    events, so the joint model has little power to separate them; read it
+    as a warning flag, not as a clean decomposition.
+
+-- D2. LEAVE-ONE-EVENT-OUT (supervisor's spec, two-way SE) --
+
+    dropped           t0         S              b            SE         p  sig
+    --------------------------------------------------------------------------------
+          1   2022-01-20    0.1231    -0.00233799    0.02165413  0.916389  (n.s.)
+          2   2021-08-05   -0.2143     0.00421972    0.02489149  0.869133  (n.s.)
+          3   2022-02-18    1.0000    -0.00967890    0.02991790  0.753696  (n.s.)
+          4   2022-05-26    1.0000    -0.01141731    0.03007744  0.713046  (n.s.)
+          5   2022-10-14    0.2500     0.00026657    0.02015602  0.989737  (n.s.)
+          6   2023-04-18    0.0952    -0.00182658    0.02206429  0.935835  (n.s.)
+          8   2019-10-16   -0.6667     0.02075013    0.01451809  0.186707  (n.s.)
+          9   2020-02-05   -0.1111    -0.00161858    0.02260604  0.944486  (n.s.)
+         10   2020-08-13    0.0000    -0.00482239    0.01949648  0.810190  (n.s.)
+         11   2021-05-24    0.2222    -0.00218180    0.02239436  0.924523  (n.s.)
+         12   2021-06-28   -0.4375    -0.01209564    0.02147137  0.586963  (n.s.)
+
+    range of b across the 11 refits: [-0.01209564, +0.02075013]
+    sign flips when an event is dropped: YES
+
+-- D3. EXCLUDING TRUST / CUSTODY-FLAGGED BANKS --
+
+    9 flagged banks removed; 267 banks, 2857 bank-events remain.
+    The ML score ranks three custodians (BNY Mellon, State Street,
+    Northern Trust) at the top, and custodians carry their own rate
+    exposure, so this checks whether they drive the interaction.
+
+    spec                                            b            SE        t         p  sig
+    ----------------------------------------------------------------------------------------
+    supervisor spec, trust dropped         0.00272115    0.02177838    0.125  0.903041  (n.s.)
+
+-- verdict for this measure --
+
+    b (two-way FE) = -0.00168463   p = 0.939323 (two-way SE), 0.940432 (event SE)
+    H2 predicts b > 0. Observed sign: NEGATIVE (AGAINST H2).
+    'b is null under event / two-way FE': HOLDS  (event-FE p = 0.915678 two-way SE)
+
+==============================================================================
+SECTION 4 — H2 AS A TWO-WAY FIXED-EFFECTS INTERACTION
+              vulnerability = vulnerability_score (RF, leakage-free)
+==============================================================================
+
+  Model requested by the supervisor:
+      CAR = EventFE + BankFE + b * (S x vulnerability) + e
+  It isolates the WITHIN-EVENT comparison of vulnerable against
+  less-vulnerable banks, so the between-event confound (different macro
+  news on different speech dates) is differenced out by the event dummies.
+
+-- orientation and scale of the vulnerability measure --
+
+  = -1 x predicted 2023Q1 deposit growth from the RandomForest fitted on the
+  688 non-listed wide-population banks and applied to the listed banks
+  (vulnerability_scores_wide.csv). Already oriented higher = more
+  vulnerable, because a predicted OUTFLOW (negative growth) maps to a
+  positive score. NOT rescaled. STATIC 2022Q4 profile: one value per bank,
+  constant across all 11 events.
+
+    variable                             mean           SD          min          max
+    --------------------------------------------------------------------------------
+    vulnerability_score           -0.01229394   0.01397274  -0.04884973   0.05713860
+    S                              0.12091083   0.49435535  -0.66670000   1.00000000
+    S x vulnerability             -0.00145244   0.00934927  -0.04884973   0.05713860
+    CAR                           -0.01134646   0.04804597  -0.40873260   0.30533438
+
+    N bank-events 2946     banks 275     events 11
+
+-- structural checks (numerical, not asserted) --
+
+    regressor on fixed effects                                R^2   max |resid|     resid SD
+    ----------------------------------------------------------------------------------------
+    S on event dummies                             1.000000000000     8.216e-15    3.652e-15  ABSORBED
+    vulnerability_score on bank dummies            1.000000000000     5.998e-16    1.411e-16  ABSORBED
+    vulnerability_score on bank + event dummies    1.000000000000     8.357e-16    1.798e-16  ABSORBED
+    S x vulnerability on bank + event dummies      0.455516798919     6.143e-02    6.898e-03  survives
+
+    Reading:
+    * S is absorbed by the event dummies to machine precision. Its main
+      effect is therefore NOT estimated under any FE spec. This is exact
+      COLLINEARITY, not an effect of zero: S is constant within an event,
+      so the S column is a linear combination of the event dummies.
+    * The vulnerability measure is STATIC (one value per bank), so it is
+      absorbed by the bank dummies to machine precision as well. In the
+      two-way FE model ONLY the interaction b is identified, and only b
+      is reported there.
+    * The interaction survives both sets of dummies (residual SD 6.898e-03),
+      because it varies across banks AND across events. That is what makes
+      the two-way FE model estimable at all.
+
+-- b = coefficient on (S x vulnerability), three specifications --
+
+    SE variants per spec: [2way] clustered on bank AND event
+    (Cameron-Gelbach-Miller); [event] clustered on event only, the
+    conservative alternative because the event is the level at which S
+    varies and there are only 11 of them.
+
+  [pooled (no FE)]
+    formula : CAR ~ S + VULN + SxV
+    k estimated parameters : 4     model df_resid : 2942
+    identification of SxV given the rest: R^2 0.452468412960, residual SD 6.916854e-03
+
+    SE cluster                             b            SE        t        p  95% CI                     sig
+    ------------------------------------------------------------------------------------------------------------
+    two-way (bank & event)       -0.37504313    0.10871374   -3.450   0.0062  [-0.61727243, -0.13281382]  ***
+    event only                   -0.37504313    0.10917675   -3.435   0.0064  [-0.61830409, -0.13178216]  ***
+    bank only (reference)        -0.37504313    0.13198027   -2.842   0.0048  [-0.63486736, -0.11521889]  ***
+
+    inference df (two-way) : 10     (= min(n_bank, n_event) - 1 = min(275, 11) - 1)
+    inference df (event)   : 10
+    MDE for b at 80% power : 0.30439847 (two-way SE)   = 5.9233% of a CAR SD per 1 SD of the interaction
+
+  [event FE]
+    formula : CAR ~ VULN + SxV + C(doc_id)
+    k estimated parameters : 13     model df_resid : 2933
+    identification of SxV given the rest: R^2 0.452501643867, residual SD 6.916644e-03
+
+    SE cluster                             b            SE        t        p  95% CI                     sig
+    ------------------------------------------------------------------------------------------------------------
+    two-way (bank & event)       -0.38848401    0.13632961   -2.850   0.0173  [-0.69224531, -0.08472271]  **
+    event only                   -0.38848401    0.11622934   -3.342   0.0075  [-0.64745912, -0.12950890]  ***
+    bank only (reference)        -0.38848401    0.12876964   -3.017   0.0028  [-0.64198759, -0.13498043]  ***
+
+    inference df (two-way) : 10     (= min(n_bank, n_event) - 1 = min(275, 11) - 1)
+    inference df (event)   : 10
+    MDE for b at 80% power : 0.38172291 (two-way SE)   = 7.4280% of a CAR SD per 1 SD of the interaction
+    NOTE: the two-way clustered covariance matrix is not PSD; 4 of 13 parameters
+          have a negative variance and hence NaN SE (all of them fixed-effect dummies).
+          The SE for b itself is finite and is the one reported.
+
+  [event FE + bank FE  <-- supervisor]
+    formula : CAR ~ SxV + C(doc_id) + C(permno)
+    k estimated parameters : 286     model df_resid : 2660
+    identification of SxV given the rest: R^2 0.455516798919, residual SD 6.897573e-03
+
+    SE cluster                             b            SE        t        p  95% CI                     sig
+    ------------------------------------------------------------------------------------------------------------
+    two-way (bank & event)       -0.38507629    0.14229917   -2.706   0.0221  [-0.70213860, -0.06801397]  **
+    event only                   -0.38507629    0.12471181   -3.088   0.0115  [-0.66295153, -0.10720105]  **
+    bank only (reference)        -0.38507629    0.13692917   -2.812   0.0053  [-0.65464322, -0.11550935]  ***
+
+    inference df (two-way) : 10     (= min(n_bank, n_event) - 1 = min(275, 11) - 1)
+    inference df (event)   : 10
+    MDE for b at 80% power : 0.39843769 (two-way SE)   = 7.7532% of a CAR SD per 1 SD of the interaction
+    NOTE: the two-way clustered covariance matrix is not PSD; 121 of 286 parameters
+          have a negative variance and hence NaN SE (all of them fixed-effect dummies).
+          The SE for b itself is finite and is the one reported.
+
+-- supplementary: the supervisor's spec with bank controls added --
+
+    The controls (size, ROA, NPL_ratio, equity_ratio) are read at the same
+    characteristic quarter as the vulnerability measure, so they vary
+    within bank and are not absorbed by the bank dummies.
+
+    SE cluster                             b            SE        t        p  95% CI                     sig
+    ------------------------------------------------------------------------------------------------------------
+    two-way, + controls          -0.37268520    0.14498571   -2.570   0.0279  [-0.69573350, -0.04963689]  **
+
+-- D1. CALENDAR PLACEBO: is the interaction about the SIGNAL or about TIME? --
+
+    The 11 events are not randomly ordered in S: later communications are
+    more protective. Across the 11 events,
+      corr(S, calendar rank) = Pearson +0.60333196 (p 0.049394), Spearman +0.65148233 (p 0.029884)
+
+    So 'S x vulnerability' and 'time x vulnerability' are close to the same
+    regressor. If the coefficient survives only on S and not on time, the
+    signal interpretation is supported; if time does the same work, the
+    interaction is a trend in how vulnerable banks priced over 2019-2023,
+    not a response to the safeguard content.
+
+    Both interactions are built from z-scored S and z-scored calendar rank,
+    so the two coefficients are directly comparable.
+
+    spec (two-way FE, two-way SE)                coef            SE        t         p  sig
+    ----------------------------------------------------------------------------------------
+    S_z x vuln (alone)                    -0.19036452    0.07034636   -2.706  0.022081  **
+    time_z x vuln (alone)                 -0.17749331    0.09410572   -1.886  0.088629  *
+    S_z x vuln (joint)                    -0.13288137    0.09909280   -1.341  0.209590  (n.s.)
+    time_z x vuln (joint)                 -0.09708084    0.12889651   -0.753  0.468709  (n.s.)
+
+    Reading: in the JOINT model the S interaction is NOT significant at 5% and the time
+    interaction is not significant at 5%. The two regressors are nearly collinear across only 11
+    events, so the joint model has little power to separate them; read it
+    as a warning flag, not as a clean decomposition.
+
+-- D2. LEAVE-ONE-EVENT-OUT (supervisor's spec, two-way SE) --
+
+    dropped           t0         S              b            SE         p  sig
+    --------------------------------------------------------------------------------
+          1   2022-01-20    0.1231    -0.38218160    0.14338955  0.025819  **
+          2   2021-08-05   -0.2143    -0.39461520    0.14526119  0.023740  **
+          3   2022-02-18    1.0000    -0.30813012    0.13679829  0.050800  *
+          4   2022-05-26    1.0000    -0.52063335    0.12070999  0.001953  ***
+          5   2022-10-14    0.2500    -0.39789232    0.16104832  0.035533  **
+          6   2023-04-18    0.0952    -0.39226676    0.13292196  0.016192  **
+          8   2019-10-16   -0.6667    -0.30804490    0.15197800  0.073300  *
+          9   2020-02-05   -0.1111    -0.38779810    0.13979651  0.021611  **
+         10   2020-08-13    0.0000    -0.38955092    0.14132820  0.022244  **
+         11   2021-05-24    0.2222    -0.39252596    0.14998393  0.027943  **
+         12   2021-06-28   -0.4375    -0.36035571    0.15655433  0.046862  **
+
+    range of b across the 11 refits: [-0.52063335, -0.30804490]
+    sign flips when an event is dropped: no
+
+-- D3. EXCLUDING TRUST / CUSTODY-FLAGGED BANKS --
+
+    9 flagged banks removed; 266 banks, 2847 bank-events remain.
+    The ML score ranks three custodians (BNY Mellon, State Street,
+    Northern Trust) at the top, and custodians carry their own rate
+    exposure, so this checks whether they drive the interaction.
+
+    spec                                            b            SE        t         p  sig
+    ----------------------------------------------------------------------------------------
+    supervisor spec, trust dropped        -0.13939961    0.06675558   -2.088  0.063319  *
+
+-- verdict for this measure --
+
+    b (two-way FE) = -0.38507629   p = 0.022081 (two-way SE), 0.011488 (event SE)
+    H2 predicts b > 0. Observed sign: NEGATIVE (AGAINST H2).
+    'b is null under event / two-way FE': DOES NOT HOLD  (event-FE p = 0.017262 two-way SE)
+
+    b IS DISTINGUISHABLE FROM ZERO, AND ITS SIGN IS THE OPPOSITE OF
+    WHAT H2 PREDICTS. Before this is read as evidence against H2, three
+    things from the diagnostics above have to travel with it:
+      D1 calendar placebo. corr(S, calendar rank) = +0.603332
+         (p 0.049394). Interacted with time instead of S the
+         coefficient is -0.17749331 (p 0.088629) — same sign,
+         similar size. Entered jointly, NEITHER survives (S p 0.209590,
+         time p 0.468709). With 11 events the design cannot
+         separate 'more protective communication' from 'later in the
+         sample', and the 2022 rate cycle sits inside that window.
+      D2 leave-one-event-out: b ranges [-0.52063335, -0.30804490]
+         and never flips sign, so it is not one event driving it.
+      D3 dropping the 9 trust/custody banks moves b to -0.13939961
+         (p 0.063319) — 63.8% of the magnitude comes from
+         custodians, whose rate exposure is a competing explanation.
+
+    Honest reading: a within-event pattern IS present, but it cannot be
+    attributed to the safeguard content rather than to the calendar or
+    to custodian bank type. It is not support for H2 either way — the
+    sign is wrong for H2.
+
+==============================================================================
+SUMMARY — H2
+==============================================================================
+
+-- HEADLINE: b on (S x vulnerability), supervisor's two-way FE model --
+
+    vulnerability measure / spec                          b      SE(2way)         p  p(event)
+    ------------------------------------------------------------------------------------------
+    uninsured_share / pooled (no FE)             0.01851847    0.01722097    0.3075    0.3419
+    uninsured_share / event FE                  -0.00227120    0.02091605    0.9157    0.9166
+    uninsured_share / event FE + bank           -0.00168463    0.02158217    0.9393    0.9404
+
+    vulnerability_score / pooled (no FE)        -0.37504313    0.10871374    0.0062    0.0064
+    vulnerability_score / event FE              -0.38848401    0.13632961    0.0173    0.0075
+    vulnerability_score / event FE + bank       -0.38507629    0.14229917    0.0221    0.0115
+
+    H2 in interaction form predicts b > 0.
+
+-- CONTEXT: the between-event form (Sections 1-2) --
+
+    test                                             estimate          SE         p
+    --------------------------------------------------------------------------------
+    event level: gamma1, mean_CAR ~ S (n=11)         0.005629    0.018874    0.7723
+    pooled: gamma1, no controls (cl=event)           0.006177    0.017194    0.7269
+    pooled: gamma1, with controls (cl=event)         0.006441    0.017113    0.7145
+    Pearson corr(event-mean CAR, S)                    0.0989                0.7723
+    Spearman corr(event-mean CAR, S)                   0.0137                0.9682
+    mean CAR: protective - expansive                 -0.00561
+
+    HOW TIGHT IS THIS NULL. MDE at 80% power for gamma1 (pooled, with
+    controls, event-clustered) = 0.0479 per unit of S, i.e. 2.37 pp of
+    CAR per one-SD move in S — about 49% of a CAR standard deviation (4.81 pp).
+    That is a WIDE bound, and it should be stated as one: with 11 events the
+    design can rule out a large average communication effect but not a modest
+    one. Contrast the H3 coefficient, whose MDE is ~5% of a CAR SD
+    (rq2_enrichment_results.txt, PART C). H2's null is directionally clear but
+    not tightly bounded.
+
+    H2 predicts gamma1 > 0. Observed sign: POSITIVE (H2 direction) at the event level, POSITIVE pooled with controls.  Significant at 5%: NO.
+
+    Read together with Section 0: the unconditional test finds no event with
+    a mean CAR distinguishable from zero. A null gamma1 is therefore not a
+    surprise — there is no average price reaction for the communication type
+    to modulate.
+

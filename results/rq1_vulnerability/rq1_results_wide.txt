@@ -1,0 +1,60 @@
+==========================================================================
+RQ1 — MODEL 1 RESULTS
+==========================================================================
+N = 953  |  features = 10  |  seed = 42  |  5-fold CV
+censored failures kept in training: SVB / Signature / First Republic
+
+--- Out-of-sample comparison (H1b, Section 3.4) ---
+                  oos_RMSE   oos_R2  in_RMSE    in_R2
+model                                                
+OLS                0.09195  0.02498  0.08941  0.07821
+RandomForest       0.09129  0.03886  0.08042  0.25425
+GradientBoosting   0.09317 -0.00112  0.07005  0.43420
+
+better tree model: RandomForest (oos_RMSE=0.09129)
+H1b SUPPORTED: RandomForest oos_RMSE 0.09129 < OLS oos_RMSE 0.09195
+
+--- OLS coefficients (H1a) ---
+R^2 (in-sample) = 0.0782
+                      coef        t  p_value  beta_std sign
+uninsured_share   -0.07713 -4.00308  0.00007  -0.12998    -
+unrealised_losses  0.00119  0.43593  0.66299   0.01420    +
+deposit_reliance   0.01709  0.33118  0.74058   0.01146    +
+liquidity         -0.11037 -4.14413  0.00004  -0.14707    -
+capital            0.00281  1.25441  0.21000   0.07305    +
+size              -0.00413 -1.60047  0.10983  -0.05657    -
+ROA                1.37071  2.67679  0.00756   0.09271    +
+NPL_ratio         -0.04165 -0.19608  0.84459  -0.00646    -
+equity_ratio      -0.06251 -0.35444  0.72309  -0.02109    -
+int_inc_ratio      0.45149  1.34403  0.17926   0.04847    +
+
+--- SHAP mean|importance| ranking (chosen tree) ---
+          feature  mean_abs_shap
+        liquidity       0.007711
+  uninsured_share       0.004132
+    int_inc_ratio       0.004046
+             size       0.002731
+ deposit_reliance       0.001437
+unrealised_losses       0.001113
+          capital       0.000784
+              ROA       0.000507
+     equity_ratio       0.000437
+        NPL_ratio       0.000437
+
+--- Top 10 banks by vulnerability_score (face validity) ---
+ bank_IDRSSD                                              name  pred_dep_growth  vulnerability_score
+      541101                      BANK OF NEW YORK MELLON, THE          -0.2107               0.2107
+      802866                               SILICON VALLEY BANK          -0.1737               0.1737
+      934271                                        CENLAR FSB          -0.1521               0.1521
+      214807              DEUTSCHE BANK TRUST COMPANY AMERICAS          -0.1459               0.1459
+     3076248                             STIFEL BANK AND TRUST          -0.1443               0.1443
+     2489805 MORGAN STANLEY PRIVATE BANK, NATIONAL ASSOCIATION          -0.1413               0.1413
+      529958                         TIB, NATIONAL ASSOCIATION          -0.1379               0.1379
+     3150447                          CHARLES SCHWAB BANK, SSB          -0.1364               0.1364
+     3317932                                   CONNECTONE BANK          -0.1254               0.1254
+      925411       SUMITOMO MITSUI TRUST BANK (U.S.A.) LIMITED          -0.1180               0.1180
+
+--- Overfitting check (in-sample vs OOS RMSE gap) ---
+  OLS                in=0.08941  oos=0.09195  ratio=1.03
+  RandomForest       in=0.08042  oos=0.09129  ratio=1.14
+  GradientBoosting   in=0.07005  oos=0.09317  ratio=1.33

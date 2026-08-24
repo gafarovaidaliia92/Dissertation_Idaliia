@@ -1,0 +1,141 @@
+==============================================================================
+RUN 2 — DOES THE ML SCORE ADD ANYTHING OVER uninsured_share ALONE?
+==============================================================================
+
+  Three vulnerability measures, all oriented HIGHER = MORE VULNERABLE:
+
+    (i)   RF score   — leakage-free RandomForest score used by RQ3.
+                       = -1 x predicted 2023Q1 deposit growth. STATIC.
+    (ii)  OLS score  — identical leakage-free protocol (fit on the 688
+                       non-listed wide banks, applied to the listed ones),
+                       LinearRegression instead of RandomForest. STATIC.
+    (iii) uninsured_share — no model at all; the single strongest RQ1
+                       predictor, read at the characteristic quarter of
+                       each event, so it is bank-EVENT level.
+
+  OLS score construction: trained on N = 688 non-listed banks,
+  applied to N = 277 listed banks. Transfer fit on the listed
+  banks: RMSE = 0.12783362, R2 = 0.04066391.
+  (The RF score's transfer fit, from comparison_narrow_vs_wide.txt, is
+   RMSE = 0.12853, R2 = 0.0302 — reported there, not recomputed here.)
+
+  Estimation sample: 2956 bank-events, 276 banks,
+  11 events.
+
+-- 1. how much do the three measures agree? (bank level, N = 275) --
+
+    measure A                    measure B                         Pearson r   Spearman rho
+    ----------------------------------------------------------------------------------------
+    RF score (leakage-free)      OLS score (same split)           0.81160677     0.68145928
+    RF score (leakage-free)      uninsured_share alone            0.16540990     0.05754306
+    OLS score (same split)       uninsured_share alone            0.35930995     0.33571161
+
+    measure                                mean             SD            min            max
+    ----------------------------------------------------------------------------------------
+    RF score (leakage-free)         -0.01223296     0.01398559    -0.04884973     0.05713860
+    OLS score (same split)          -0.01027555     0.01685755    -0.10025276     0.05209288
+    uninsured_share alone            0.40998458     0.14987531     0.02695142     0.89226539
+
+-- 2. the plain H3 link: CAR ~ measure + controls --
+
+    delta1 = coefficient on the vulnerability measure. H3 predicts
+    delta1 < 0 (more vulnerable -> more negative CAR). Because the three
+    measures live on very different scales, the comparable column is
+    'per 1 SD', i.e. delta1 x SD(measure), expressed in CAR percentage
+    points, and the MDE in the same units.
+
+    measure                    spec                 delta1            SE         p  per 1 SD pp       MDE pp
+    --------------------------------------------------------------------------------------------------------
+    RF score (leakage-free)    pooled           0.13421663    0.06345410  0.035317     0.187537     0.248256  **
+    RF score (leakage-free)    event FE         0.06453567    0.06170058  0.296506     0.090174     0.241395  (n.s.)
+    OLS score (same split)     pooled           0.11007219    0.04851752  0.024064     0.186173     0.229771  **
+    OLS score (same split)     event FE         0.01576136    0.04450646  0.723509     0.026658     0.210775  (n.s.)
+    uninsured_share alone      pooled          -0.00512669    0.00536434  0.340064    -0.074963     0.219625  (n.s.)
+    uninsured_share alone      event FE        -0.01813953    0.00511861  0.000463    -0.265237     0.209565  ***
+
+    CAR SD for scale: 4.805071 pp
+
+-- 3. the two-way FE interaction from RUN 1: CAR = EventFE + BankFE + b*(S x measure) --
+
+    b is reported with two-way clustered SE (bank and event), inference df = 10.
+    'per 1 SD' rescales b by the SD of the interaction regressor and
+    expresses it in CAR percentage points, so the three measures are
+    comparable despite their different scales.
+
+    measure                                 b      SE(2way)         p  per 1 SD pp       MDE pp  sig
+    --------------------------------------------------------------------------------------------------------
+    RF score (leakage-free)       -0.38507629    0.14229917  0.022081    -0.360018     0.372510  **
+    OLS score (same split)        -0.26387427    0.08842169  0.013707    -0.263393     0.247129  **
+    uninsured_share alone         -0.00168463    0.02158217  0.939323    -0.035105     1.259274  (n.s.)
+
+    (the main effect of the measure is included wherever it is not
+     absorbed by the bank dummies; see RUN 1 sections 3-4)
+
+-- 4. head to head in ONE model: does the score survive next to uninsured_share? --
+
+    Both interactions entered jointly in the two-way FE model:
+      CAR = EventFE + BankFE + b1*(S x RF score) + b2*(S x uninsured) + b3*uninsured + e
+
+    term                                         coef      SE(2way)         p  sig
+    ----------------------------------------------------------------------------------------
+    S x RF score                          -0.39876053    0.14181060  0.018414  **
+    S x uninsured_share                    0.00556742    0.02078376  0.794241  (n.s.)
+    uninsured_share (main)                -0.01003821    0.02565983  0.703853  (n.s.)
+
+    Same model with the OLS score in place of the RF score:
+
+    term                                         coef      SE(2way)         p  sig
+    ----------------------------------------------------------------------------------------
+    S x OLS score                         -0.30082952    0.07519368  0.002515  ***
+    S x uninsured_share                    0.01119427    0.02154058  0.614592  (n.s.)
+    uninsured_share (main)                -0.00778503    0.02518166  0.763549  (n.s.)
+
+==============================================================================
+VERDICT — RUN 2
+==============================================================================
+
+  1. The RF score and uninsured_share correlate at Pearson +0.16540990
+     across the 275 banks. The RF and OLS scores agree at Spearman +0.68145928.
+
+  2. In the plain H3 link (event FE, bank-clustered), the three measures
+     do NOT behave alike:
+
+       RF score (leakage-free)    delta1 = +0.06453567   p = 0.296506  (n.s.)
+       OLS score (same split)     delta1 = +0.01576136   p = 0.723509  (n.s.)
+       uninsured_share alone      delta1 = -0.01813953   p = 0.000463  ***
+
+     uninsured_share is significant here (p = 0.000463) with the H3-predicted
+     NEGATIVE sign, while the RF score is not (p = 0.296506). The published RQ3
+     null is stated for the ML score; it does not extend to uninsured_share,
+     whose level effect on CAR is real and was already visible in the
+     earlier interaction report.
+
+  3. In the two-way FE interaction the RF score gives b = -0.38507629
+     (p 0.022081), the OLS score b = -0.26387427 (p 0.013707),
+     and uninsured_share b = -0.00168463 (p 0.939323).
+
+  4. Entered together, S x RF score keeps p = 0.018414 and S x uninsured_share
+     p = 0.794241.
+
+  READ: in the INTERACTION, the fitted score carries something that
+  uninsured_share alone does not. It survives with uninsured_share in the
+  same model, while S x uninsured_share stays at p = 0.7942.
+
+  But this is NOT a win for machine learning specifically. The OLS score,
+  built from the same features and the same split, gives b = -0.26387427
+  (p 0.013707) — the same result. The two scores agree at
+  Spearman +0.6815. What matters is using a FITTED composite of the
+  balance sheet rather than one ratio; whether that composite comes from a
+  random forest or from OLS makes little difference here.
+
+  Two further cautions, both mandatory when quoting this:
+    * the sign is NEGATIVE, i.e. the OPPOSITE of what H2 predicts;
+    * RUN 1's diagnostics apply in full — the calendar placebo cannot
+      separate S from time, and dropping the 9 custodian banks cuts the
+      RF coefficient by roughly two thirds and takes it below 5%.
+
+  Caveat that applies to every line above: the ML score's own transfer fit
+  to the listed banks is R2 = 0.0302 with SD 0.014 (scores compressed ~3.7x
+  against the in-population CV version). A measure that weak cannot be
+  expected to dominate a raw balance-sheet ratio, and does not.
+

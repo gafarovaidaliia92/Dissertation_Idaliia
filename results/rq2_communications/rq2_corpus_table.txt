@@ -1,0 +1,31 @@
+======================================================================================================================
+APPENDIX B — THE ELEVEN FEDERAL RESERVE COMMUNICATIONS
+======================================================================================================================
+
+  Every column below is computed from the pipeline. n_design is the
+  number of sentences the classifier marks as describing a concrete CBDC
+  design feature; n_protective and n_expansive are their stances; and
+  S = (n_protective - n_expansive) / n_design is the Safeguard score.
+  All eleven communications carry design sentences, so all eleven
+  contribute to S.
+
+  date         speaker                     n_sent  n_design  n_prot   n_exp         S  title
+  --------------------------------------------------------------------------------------------------------------------
+  2019-10-16   Lael Brainard                  137        12       0       8   -0.6667  Digital Currencies, Stablecoins, and the Evolving Payments L
+  2020-02-05   Lael Brainard                  132        18       0       2   -0.1111  The Digitalization of Payments and Currency: Some Issues for
+  2020-08-13   Lael Brainard                   46         2       0       0   +0.0000  An Update on Digital Currencies
+  2021-05-24   Lael Brainard                   94         9       2       0   +0.2222  Private Money and Central Bank Money as Payments Go Digital:
+  2021-06-28   Randal K. Quarles              133        16       0       7   -0.4375  Parachute Pants and Central Bank Money
+  2021-08-05   Christopher J. Waller          125        14       3       6   -0.2143  CBDC: A Solution in Search of a Problem?
+  2022-01-20   Board of Governors of the      329        65      18      10   +0.1231  Money and Payments: The U.S. Dollar in the Age of Digital Tr
+  2022-02-18   Lael Brainard                   74         3       3       0   +1.0000  Preparing for the Financial System of the Future
+  2022-05-26   Lael Brainard                   45         4       4       0   +1.0000  Digital Assets and the Future of Finance: Examining the Bene
+  2022-10-14   Christopher J. Waller           97         4       2       1   +0.2500  The U.S. Dollar and Central Bank Digital Currencies
+  2023-04-18   Michelle W. Bowman             126        21       7       5   +0.0952  Considerations for a Central Bank Digital Currency
+  --------------------------------------------------------------------------------------------------------------------
+  TOTAL                                      1338       168      39      39
+
+  S ranges -0.6667 to +1.0000; 6 score above zero, 4 below, 1 exactly zero.
+  Design sentences per document range 2 to 65.
+
+======================================================================================================================

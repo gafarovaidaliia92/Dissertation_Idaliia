@@ -1,0 +1,373 @@
+==============================================================================
+RQ2 [C] — H2: does the TYPE of CBDC communication move bank equity?
+==============================================================================
+
+  bank-events on file      : 2956
+  used in estimation       : 2956   (dropped 0 for missing RHS)
+  banks                    : 276
+  events                   : 11    distinct values of S : 10  (two events tie at S = 1.00)
+  dependent variable       : CAR over [t0-1, t0+5], market-model abnormal returns
+  coefficient of interest  : gamma1 on S (safeguard score)
+
+  H2 (as written). Communications that emphasise PROTECTIVE design (higher S)
+  produce LESS NEGATIVE abnormal returns than expansive ones. This is a
+  statement about the average effect of the communication, so the
+  prediction is gamma1 > 0 in  CAR = gamma0 + gamma1*S + controls.
+
+  STRUCTURAL POINT — READ BEFORE THE TABLES.
+  S varies ONLY at the event level: constant within each event, so it
+  carries 11 event-level values (10 of them distinct). Therefore:
+    (a) NO event-fixed-effects specification is estimated for S. Event
+        dummies absorb S perfectly (exact collinearity), so gamma1 would not
+        be identified at all — that is a design fact, not a null result.
+    (b) SEs are clustered on the EVENT, not on the bank, because the event
+        is the level at which the regressor varies. Bank-clustered SEs
+        would treat 276 banks as independent information about a
+        regressor that takes only 11 values. Event-clustered inference is
+        read off t with G-1 = 10 degrees of freedom.
+    (c) gamma1 is identified off 11 events and is IMPRECISE BY
+        CONSTRUCTION. With 11 clusters the cluster-robust SE is itself a
+        small-sample object. Section 1 makes the same comparison honestly,
+        with n = 11 in plain sight.
+
+  What is NOT the H2 test: the S x uninsured_share interaction. That asks
+  whether exposed banks react differently WITHIN an event — a
+  cross-sectional question, closer to H3 in spirit. It is retained in
+  Section 3 as a robustness/extension, clearly labelled.
+
+==============================================================================
+SECTION 0 — DID THE MARKET REACT AT ALL?  (PRIMARY H2 EVIDENCE)
+==============================================================================
+
+  H2 asks whether the type of CBDC communication moves bank equity. The
+  first question is therefore unconditional: was there any measurable
+  reaction to these 11 dates? If not, there is no average communication
+  effect for S to explain, and the S regressions below are testing a
+  gradient across events that did not move prices in the first place.
+
+  Source: scripts/rq2_enrich.py, PART B — reproduced verbatim from
+  data/processed/rq2_enrichment_results.txt (market model, one factor).
+  The relevant test is the Brown-Warner CROSS-CORRELATION-ROBUST portfolio
+  test: per-event cross-sectional t-stats treat banks as independent
+  within a date, which they are not, and are inflated.
+
+-- B1c. Cross-correlation-robust portfolio test --
+
+    The per-event t-stats in B1 assume banks are independent within a
+    date. They are not: a common factor moves them together, so those
+    t-stats are inflated, often by an order of magnitude. This test uses
+    the equal-weighted portfolio AR and its own estimation-window
+    time-series SD, which is robust to that dependence.
+
+     doc_id           t0  n_days     port_CAR    sigma_day         t         p  sig
+    ------------------------------------------------------------------------------------
+          1   2022-01-20       7      0.00191     0.010630      0.07    0.9459  (n.s.)
+          2   2021-08-05       7      0.02241     0.016175      0.52    0.6006  (n.s.)
+          3   2022-02-18       7     -0.00124     0.009198     -0.05    0.9595  (n.s.)
+          4   2022-05-26       7     -0.00086     0.009236     -0.04    0.9719  (n.s.)
+          5   2022-10-14       7      0.00211     0.008112      0.10    0.9216  (n.s.)
+          6   2023-04-18       7     -0.03070     0.006035     -1.92    0.0545  *
+          8   2019-10-16       7      0.02717     0.006958      1.48    0.1400  (n.s.)
+          9   2020-02-05       7     -0.02046     0.006671     -1.16    0.2464  (n.s.)
+         10   2020-08-13       7     -0.06227     0.016530     -1.42    0.1545  (n.s.)
+         11   2021-05-24       7     -0.00235     0.018174     -0.05    0.9611  (n.s.)
+         12   2021-06-28       7     -0.06005     0.016705     -1.36    0.1742  (n.s.)
+    ------------------------------------------------------------------------------------
+    events significant at 5% under the robust test : 0 of 11
+
+-- B4. TAKEAWAY: first moment vs second moment vs volume --
+
+     doc_id           t0 mean CAR (rob)   var ratio     dir  turn ratio     dir
+    ----------------------------------------------------------------------------
+          1   2022-01-20           null       1.031    flat       1.065      UP
+          2   2021-08-05           null       0.355    DOWN       0.704    DOWN
+          3   2022-02-18           null       1.197      UP       0.949    DOWN
+          4   2022-05-26           null       0.360    DOWN       0.890    DOWN
+          5   2022-10-14           null       1.495      UP       0.934    flat
+          6   2023-04-18           null       2.235      UP       1.152      UP
+          8   2019-10-16           null       0.519    DOWN       0.939    DOWN
+          9   2020-02-05           null       0.636    DOWN       0.826    DOWN
+         10   2020-08-13           null       0.612    DOWN       0.592    DOWN
+         11   2021-05-24           null       0.395    DOWN       0.819    DOWN
+         12   2021-06-28           null       0.544    DOWN       1.378      UP
+
+    events with a robust mean-CAR reaction : 0 of 11
+    events with elevated volatility (median ratio > 1, Wilcoxon p<.05) : 3 of 11
+    events with SUPPRESSED volatility                                 : 7 of 11
+    events with elevated turnover                                     : 3 of 11
+    events with SUPPRESSED turnover                                   : 7 of 11
+
+  VERDICT: events with a robust mean-CAR reaction : 0 of 11.
+           events with elevated volatility (median ratio > 1, Wilcoxon p<.05) : 3 of 11
+           events with SUPPRESSED volatility : 7 of 11
+
+  Read: no event produces a mean CAR distinguishable from zero once
+  cross-bank dependence is handled, and volatility/turnover on these
+  dates are suppressed at least as often as they are elevated. On the
+  unconditional evidence, H2 has nothing to work with.
+
+  For completeness, under the augmented (market+sector+rate) return
+  model the same robust test gives: events significant at 5% under the robust test : 2 of 11
+  (doc_id 3 and 6, with OPPOSITE signs: +0.028 and -0.027, so they do
+  not line up into a directional story; see rq2_enrichment_results.txt,
+  AUGMENTED MODEL B1c).
+  The published CAR is the market-model one, so 0 of 11 is the headline;
+  the augmented count is reported here rather than left out.
+
+==============================================================================
+SECTION 1 — H2 AT THE EVENT LEVEL  (the honest form of the test, n = 11)
+==============================================================================
+
+  S is a property of the COMMUNICATION, not of the bank: it is constant
+  within an event, so it carries 11 event-level values. H2 is therefore a
+  between-event question, and the natural test has 11 observations: does a
+  more protective communication (higher S) come with a less negative
+  average abnormal return? H2 predicts gamma1 > 0.
+
+-- 1.1 the 11 events --
+
+    doc_id           t0         S  n_banks    mean_CAR  median_CAR   SE(mean)  flag
+    ----------------------------------------------------------------------------------------
+         8   2019-10-16   -0.6667      258     0.02717     0.02627    0.00188  
+         9   2020-02-05   -0.1111      263    -0.02046    -0.02135    0.00161  
+        10   2020-08-13    0.0000      267    -0.06227    -0.07179    0.00261  
+        11   2021-05-24    0.2222      269    -0.00235    -0.00514    0.00161  
+        12   2021-06-28   -0.4375      269    -0.06005    -0.06629    0.00241  
+         2   2021-08-05   -0.2143      269     0.02241     0.02385    0.00192  
+         1   2022-01-20    0.1231      271     0.00191     0.00743    0.00245  
+         3   2022-02-18    1.0000      273    -0.00124     0.00030    0.00208  
+         4   2022-05-26    1.0000      274    -0.00085    -0.00278    0.00172  
+         5   2022-10-14    0.2500      272     0.00211     0.01062    0.00361  
+         6   2023-04-18    0.0952      271    -0.03070    -0.02761    0.00330  
+
+    S range [-0.6667, +1.0000]   SD(S) = 0.5182   expansive (S<0): 4   protective (S>=0): 7
+
+-- 1.2 OLS of the 11 event-mean CARs on the 11 S values --
+
+    mean_CAR = gamma0 + gamma1 * S        (n = 11, ordinary SEs)
+
+    term                             coef          SE         t         p
+    --------------------------------------------------------------------
+    Intercept                   -0.011947    0.009574    -1.248    0.2436
+    S                            0.005629    0.018874     0.298    0.7723  <<< gamma1
+
+    gamma1 = +0.005629   SE 0.018874   t +0.298   p 0.7723  (n.s.)
+      95% CI [-0.037067, +0.048325]     R^2 0.0098
+      MDE at 80% power (2.80 x SE) : 0.052847 of CAR per unit of S
+      i.e. across the full observed S range (1.667) we can
+      rule out an average CAR difference larger than 8.81 pp.
+
+    weighted by n_banks (secondary): gamma1 = +0.006177   SE 0.018776   p 0.7497  (n.s.)
+
+-- 1.3 correlation between event-mean CAR and S --
+
+    Pearson  corr(mean_CAR, S) = +0.0989   p 0.7723  (n.s.)   (n = 11)
+    Spearman corr(mean_CAR, S) = +0.0137   p 0.9682  (n.s.)   (n = 11)
+    (a POSITIVE correlation is the H2-consistent direction: protective
+     communications -> less negative abnormal returns)
+
+-- 1.4 protective vs expansive events, difference in means --
+
+    mean CAR, expansive  (S <  0, n=4) : -0.00773
+    mean CAR, protective (S >= 0, n=7) : -0.01334
+    difference (protective - expansive)     : -0.00561
+    Welch t = -0.250  p 0.8145  (n.s.)     Mann-Whitney p 0.6485  (n.s.)
+
+    With 11 events this test has very little power; the point of reporting
+    it is that the sign and the magnitude are on the record, not that the
+    p-value settles anything.
+
+==============================================================================
+SECTION 2 — H2 POOLED AT THE BANK-EVENT LEVEL (SEs clustered on the EVENT)
+==============================================================================
+
+  The same between-event comparison as Section 1, run on all bank-events so
+  that bank controls can be included. The extra rows add no independent
+  information about S — it still takes only 11 event-level values — which
+  is exactly why the SEs are clustered on the event, with t(G-1) inference.
+
+==============================================================================
+SPEC 1 — CAR ~ S, NO CONTROLS
+==============================================================================
+  formula : CAR ~ S
+  N bank-events : 2956     banks : 276     events : 11
+  R^2 : 0.0040     adj R^2 : 0.0037
+  SE  : cluster-robust on event (doc_id), 11 clusters
+
+    term                                 coef          SE         t         p
+    ------------------------------------------------------------------------
+    Intercept                       -0.012098    0.010484    -1.154    0.2754
+    S                                0.006177    0.017194     0.359    0.7269  <<< gamma1
+
+  gamma1 (S) = +0.006177   SE 0.017194   t +0.359   p 0.7269  (n.s.)
+    95% CI [-0.032133, +0.044487]
+    MDE at 80% power (2.80 x SE) : 0.048142 of CAR per unit of S
+
+==============================================================================
+SPEC 2 — CAR ~ S + CONTROLS
+==============================================================================
+  formula : CAR ~ S + size + ROA + NPL_ratio + equity_ratio
+  N bank-events : 2956     banks : 276     events : 11
+  R^2 : 0.0221     adj R^2 : 0.0204
+  SE  : cluster-robust on event (doc_id), 11 clusters
+
+    term                                 coef          SE         t         p
+    ------------------------------------------------------------------------
+    Intercept                        0.012131    0.017584     0.690    0.5060
+    S                                0.006441    0.017113     0.376    0.7145  <<< gamma1
+    size                            -0.002116    0.001428    -1.482    0.1692
+    ROA                              0.724822    0.463344     1.564    0.1488
+    NPL_ratio                       -0.126044    0.363778    -0.346    0.7362
+    equity_ratio                     0.011421    0.088536     0.129    0.8999
+
+  gamma1 (S) = +0.006441   SE 0.017113   t +0.376   p 0.7145  (n.s.)
+    95% CI [-0.031688, +0.044571]
+    MDE at 80% power (2.80 x SE) : 0.047916 of CAR per unit of S
+
+==============================================================================
+SPEC 3 — EVENT FIXED EFFECTS: NOT ESTIMABLE FOR S
+==============================================================================
+  CAR ~ S + controls + C(doc_id) is not reported because C(doc_id) absorbs S
+  exactly: S is constant within each of the 11 events, so the S column is a
+  linear combination of the event dummies. Any software that returns a
+  number here is reporting an artefact of its pseudo-inverse, not an
+  estimate. The between-event variation that identifies H2 is precisely what
+  event FE removes.
+
+-- clustering comparison (event-clustered is the reported spec) --
+
+    spec / cluster level                     gamma1          SE         t         p
+    ------------------------------------------------------------------------------
+    no controls, cluster = EVENT           0.006177    0.017194     0.359    0.7269
+    with controls, cluster = EVENT         0.006441    0.017113     0.376    0.7145
+    no controls, cluster = bank            0.006177    0.001189     5.194    0.0000
+    with controls, cluster = bank          0.006441    0.001223     5.265    0.0000
+
+    The bank-clustered rows are shown only to make the inflation
+    explicit; they are not the reported inference for gamma1.
+
+==============================================================================
+SECTION 3 — ROBUSTNESS / EXTENSION: S x uninsured_share  (NOT the H2 test)
+==============================================================================
+
+  This section answers a DIFFERENT question from H2: within a given event,
+  do banks with more uninsured deposits react differently? That is a
+  cross-sectional exposure question and sits closer to H3 (CAR ~
+  vulnerability_score) than to H2. beta3 = S:uninsured_share is its
+  coefficient; it is reported here for completeness and because the
+  interaction was the specification used in an earlier version of this
+  analysis (preserved at rq2_event_regression_interaction.txt).
+
+  Because uninsured_share varies within events, event FE IS legitimate here
+  and is the identifying specification for beta3. SEs are clustered on the
+  bank in this section, matching the level of the varying regressor.
+
+==============================================================================
+EXT 1a — POOLED OLS, NO CONTROLS
+==============================================================================
+  formula : CAR ~ S + uninsured_share + S:uninsured_share
+  N bank-events : 2956     banks : 276     events : 11
+  R^2 : 0.0071     adj R^2 : 0.0061
+  SE  : cluster-robust on bank (permno), 276 clusters
+
+    term                                 coef          SE         t         p
+    ------------------------------------------------------------------------
+    Intercept                       -0.005428    0.001825    -2.974    0.0029
+    S                               -0.000446    0.003170    -0.141    0.8880
+    uninsured_share                 -0.018093    0.004643    -3.897    0.0001
+    S:uninsured_share                0.018518    0.008155     2.271    0.0232  <<< beta3
+
+  beta3 (S:uninsured_share) = +0.018518   SE 0.008155   t +2.271   p 0.0232  **
+    95% CI [+0.002536, +0.034501]
+    MDE at 80% power (2.80 x SE) : 0.022833 of CAR per unit of S:uninsured_share
+
+==============================================================================
+EXT 1b — POOLED OLS WITH CONTROLS
+==============================================================================
+  formula : CAR ~ S + uninsured_share + S:uninsured_share + size + ROA + NPL_ratio + equity_ratio
+  N bank-events : 2956     banks : 276     events : 11
+  R^2 : 0.0234     adj R^2 : 0.0211
+  SE  : cluster-robust on bank (permno), 276 clusters
+
+    term                                 coef          SE         t         p
+    ------------------------------------------------------------------------
+    Intercept                        0.012523    0.009306     1.346    0.1784
+    S                               -0.001118    0.003209    -0.348    0.7276
+    uninsured_share                 -0.009904    0.005235    -1.892    0.0585
+    S:uninsured_share                0.019920    0.008186     2.433    0.0150  <<< beta3
+    size                            -0.001863    0.000655    -2.846    0.0044
+    ROA                              0.719798    0.114530     6.285    0.0000
+    NPL_ratio                       -0.153757    0.162400    -0.947    0.3438
+    equity_ratio                     0.006147    0.033014     0.186    0.8523
+
+  beta3 (S:uninsured_share) = +0.019920   SE 0.008186   t +2.433   p 0.0150  **
+    95% CI [+0.003876, +0.035964]
+    MDE at 80% power (2.80 x SE) : 0.022920 of CAR per unit of S:uninsured_share
+
+==============================================================================
+EXT 2 — EVENT FIXED EFFECTS (identifying spec for beta3)
+==============================================================================
+  formula : CAR ~ uninsured_share + S:uninsured_share + size + ROA + NPL_ratio + equity_ratio + C(doc_id)
+  N bank-events : 2956     banks : 276     events : 11
+  R^2 : 0.3488     adj R^2 : 0.3453
+  SE  : cluster-robust on bank (permno), 276 clusters
+
+    term                                 coef          SE         t         p
+    ------------------------------------------------------------------------
+    Intercept                        0.033615    0.008735     3.848    0.0001
+    uninsured_share                 -0.017859    0.005084    -3.513    0.0004
+    S:uninsured_share               -0.002117    0.007830    -0.270    0.7869  <<< beta3
+    size                            -0.001301    0.000587    -2.217    0.0266
+    ROA                              0.279380    0.076205     3.666    0.0002
+    NPL_ratio                       -0.051796    0.161044    -0.322    0.7477
+    equity_ratio                    -0.063568    0.032066    -1.982    0.0474
+
+  beta3 (S:uninsured_share) = -0.002117   SE 0.007830   t -0.270   p 0.7869  (n.s.)
+    95% CI [-0.017463, +0.013230]
+    MDE at 80% power (2.80 x SE) : 0.021923 of CAR per unit of S:uninsured_share
+
+    (11 event dummies estimated, not printed; C(doc_id) absorbs S.)
+
+-- beta3 across the extension specifications --
+
+    spec                                      beta3          SE         t         p
+    ------------------------------------------------------------------------------
+    1a pooled, no controls                 0.018518    0.008155     2.271    0.0232
+    1b pooled, with controls               0.019920    0.008186     2.433    0.0150
+    2  event FE, with controls            -0.002117    0.007830    -0.270    0.7869
+
+    The pooled sign is H2-flavoured but the interaction is absorbed to
+    zero once event FE is imposed, i.e. the pooled result reflects
+    between-event differences in the LEVEL of CAR rather than a
+    differential within-event reaction. Either way, this is the
+    extension, not the H2 test.
+
+==============================================================================
+SUMMARY — H2
+==============================================================================
+
+    test                                             estimate          SE         p
+    --------------------------------------------------------------------------------
+    event level: gamma1, mean_CAR ~ S (n=11)         0.005629    0.018874    0.7723
+    pooled: gamma1, no controls (cl=event)           0.006177    0.017194    0.7269
+    pooled: gamma1, with controls (cl=event)         0.006441    0.017113    0.7145
+    Pearson corr(event-mean CAR, S)                    0.0989                0.7723
+    Spearman corr(event-mean CAR, S)                   0.0137                0.9682
+    mean CAR: protective - expansive                 -0.00561
+
+    HOW TIGHT IS THIS NULL. MDE at 80% power for gamma1 (pooled, with
+    controls, event-clustered) = 0.0479 per unit of S, i.e. 2.37 pp of
+    CAR per one-SD move in S — about 49% of a CAR standard deviation (4.81 pp).
+    That is a WIDE bound, and it should be stated as one: with 11 events the
+    design can rule out a large average communication effect but not a modest
+    one. Contrast the H3 coefficient, whose MDE is ~5% of a CAR SD
+    (rq2_enrichment_results.txt, PART C). H2's null is directionally clear but
+    not tightly bounded.
+
+    H2 predicts gamma1 > 0. Observed sign: POSITIVE (H2 direction) at the event level, POSITIVE pooled with controls.  Significant at 5%: NO.
+
+    Read together with Section 0: the unconditional test finds no event with
+    a mean CAR distinguishable from zero. A null gamma1 is therefore not a
+    surprise — there is no average price reaction for the communication type
+    to modulate.
+

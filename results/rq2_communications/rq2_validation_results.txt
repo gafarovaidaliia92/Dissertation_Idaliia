@@ -1,0 +1,39 @@
+======================================================================
+RQ2 VALIDATION — inter-coder reliability (human vs Claude)
+======================================================================
+template: rq2_validation_template.csv   labels: rq2_sentence_labels.csv
+filled & merged sentences: 149
+
+--- mentions_design (binary) ---
+  % agreement     : 0.933
+  Cohen's kappa   : 0.839   (almost perfect)
+  confusion (rows=human, cols=Claude):
+human\claude   False    True
+     False       100       5
+      True         5      39
+
+--- design_stance (-1/0/1, where both coded mentions_design=true) ---
+  n = 39
+  % agreement            : 0.897
+  linear-weighted kappa  : 0.847
+  Krippendorff alpha (ord): 0.872
+  confusion (rows=human, cols=Claude):
+human\claude      -1       0       1
+        -1         4       0       0
+         0         1      18       1
+         1         0       2      13
+
+
+--- secondary check: sentence-aggregated vs preliminary doc hand-codes ---
+  docs compared: 11   doc-level agreement: 7/11
+    doc  1: hand= True  claude= True
+    doc  2: hand=False  claude= True  <-- differs
+    doc  3: hand= True  claude= True
+    doc  4: hand= True  claude= True
+    doc  5: hand=False  claude= True  <-- differs
+    doc  6: hand= True  claude= True
+    doc  8: hand= True  claude= True
+    doc  9: hand= True  claude= True
+    doc 10: hand=False  claude= True  <-- differs
+    doc 11: hand= True  claude= True
+    doc 12: hand=False  claude= True  <-- differs

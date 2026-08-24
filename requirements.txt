@@ -1,0 +1,27 @@
+# Minimum versions to run the pipeline. For the exact environment the published
+# results were estimated on, use requirements.lock.txt instead — scikit-learn in
+# particular changes RandomForest / SHAP output between minor releases, and the
+# RQ1 tables only reproduce on the pinned version.
+
+# --- core data handling ---
+pandas>=2.0
+numpy>=1.26
+pyarrow>=14         # CRSP parquet files (dsf, dsi, dsedelist)
+
+# --- estimation ---
+scipy>=1.11         # rq2_reaction, rq3_* — Wilcoxon, correlations, t/F tails
+statsmodels>=0.14   # every OLS / clustered-SE regression in RQ1-RQ3
+scikit-learn==1.8.0 # rq1_model — RandomForest / GradientBoosting / KFold; PINNED
+shap>=0.45          # rq1_model — TreeExplainer importances
+matplotlib>=3.8     # rq1_model — SHAP summary plots
+
+# --- fetching / parsing ---
+requests>=2.30
+beautifulsoup4>=4.12
+lxml>=4.9
+pyyaml>=6.0
+
+# --- frozen stages only (not needed to reproduce the tables) ---
+pdfplumber>=0.11    # _fetch_fulltext.py — PDF text + layout extraction
+nltk>=3.8           # _rq2_sentences.py — Punkt sentence tokenizer
+anthropic>=0.30     # _rq2_classify.py — sentence labelling; labels are frozen

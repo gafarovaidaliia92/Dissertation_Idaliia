@@ -1,0 +1,151 @@
+====================================================================================================
+RQ3 INTERACTION — ROBUSTNESS TO EXCLUDING CUSTODY / TRUST BANKS
+====================================================================================================
+
+Specification (unchanged from rq3_interaction.py):
+    static measure : CAR ~ S:vulnerability + C(doc_id) + C(permno)
+    uninsured_share: CAR ~ vulnerability + S:vulnerability + C(doc_id) + C(permno)
+    SEs clustered on the EVENT (11 clusters, t with 10 df).
+    Full sample: 2956 bank-events, 276 banks, 11 events.
+
+----------------------------------------------------------------------------------------------------
+1. WHICH BANKS ARE EXCLUDED, AND HOW THEY WERE IDENTIFIED
+----------------------------------------------------------------------------------------------------
+
+A flag already exists in the data: `is_trust_or_specialized`, built by
+_charter_flags.py and carried in vulnerability_scores_wide.csv and
+rq3_bridge.csv. It marks 9 banks, but 4 of them are CREDIT-CARD banks,
+not custodians, so the flag is broader than 'custody/trust'. All three
+definitions are reported below.
+
+  Definition A — 3 banks
+    how: named custodians, matched on permno (BNY Mellon 49656, State Street 72726, Northern Trust 58246)
+      permno 49656   BANK OF NEW YORK MELLON, THE             [low-loans+high-uninsured]
+      permno 58246   NORTHERN TRUST COMPANY, THE              [fiduciary>0.5]
+      permno 72726   STATE STREET BANK AND TRUST COMPANY      [low-loans+high-uninsured]
+
+  Definition B — 5 banks
+    how: is_trust_or_specialized = True AND flag_reason is not credit-card(SPECGRP3) — i.e. fiduciary / low-loans+high-uninsured
+      permno 10892   WILMINGTON SAVINGS FUND SOCIETY, FSB     [fiduciary>0.5]
+      permno 17970   FIRST WESTERN TRUST BANK                 [fiduciary>0.5]
+      permno 49656   BANK OF NEW YORK MELLON, THE             [low-loans+high-uninsured]
+      permno 58246   NORTHERN TRUST COMPANY, THE              [fiduciary>0.5]
+      permno 72726   STATE STREET BANK AND TRUST COMPANY      [low-loans+high-uninsured]
+
+  Definition C — 9 banks
+    how: is_trust_or_specialized = True as it stands in vulnerability_scores_wide.csv (the flag rq3_measures.py uses)
+      permno 10892   WILMINGTON SAVINGS FUND SOCIETY, FSB     [fiduciary>0.5]
+      permno 14776   SYNCHRONY BANK                           [credit-card(SPECGRP3)]
+      permno 17970   FIRST WESTERN TRUST BANK                 [fiduciary>0.5]
+      permno 49656   BANK OF NEW YORK MELLON, THE             [low-loans+high-uninsured]
+      permno 58246   NORTHERN TRUST COMPANY, THE              [fiduciary>0.5]
+      permno 59176   AMERICAN EXPRESS NATIONAL BANK           [credit-card(SPECGRP3)]
+      permno 72726   STATE STREET BANK AND TRUST COMPANY      [low-loans+high-uninsured]
+      permno 81055   CAPITAL ONE, NATIONAL ASSOCIATION        [credit-card(SPECGRP3)]
+      permno 92121   DISCOVER BANK                            [credit-card(SPECGRP3)]
+
+----------------------------------------------------------------------------------------------------
+2. INTERACTION COEFFICIENT, FULL SAMPLE vs EX-CUSTODY
+----------------------------------------------------------------------------------------------------
+
+  Definition A — dropping 3 banks
+  measure                 beta full      p full  N full    beta ex-cust   p ex-cust    N ex
+  ------------------------------------------------------------------------------------------------
+  RF score              -0.38507629  0.01148834    2946     -0.13316361  0.11626604    2913  (n.s.)
+  OLS score             -0.26387427  0.00285943    2946     -0.12160487  0.11229032    2913  (n.s.)
+  uninsured_share       -0.00049680  0.98188477    2956      0.00372397  0.86682439    2923  (n.s.)
+
+  Definition B — dropping 5 banks
+  measure                 beta full      p full  N full    beta ex-cust   p ex-cust    N ex
+  ------------------------------------------------------------------------------------------------
+  RF score              -0.38507629  0.01148834    2946     -0.13125570  0.11689338    2891  (n.s.)
+  OLS score             -0.26387427  0.00285943    2946     -0.12253392  0.11275048    2891  (n.s.)
+  uninsured_share       -0.00049680  0.98188477    2956      0.00355435  0.87358326    2901  (n.s.)
+
+  Definition C — dropping 9 banks
+  measure                 beta full      p full  N full    beta ex-cust   p ex-cust    N ex
+  ------------------------------------------------------------------------------------------------
+  RF score              -0.38507629  0.01148834    2946     -0.13939961  0.09978791    2847  *
+  OLS score             -0.26387427  0.00285943    2946     -0.16011717  0.04426306    2847  **
+  uninsured_share       -0.00049680  0.98188477    2956      0.00404051  0.85618746    2857  (n.s.)
+
+  Full detail (event-clustered SE and 95% CI, plus the two-way p):
+
+  measure           sample                    beta            SE   p (event)    p (2way)  95% CI                        
+  ------------------------------------------------------------------------------------------------------------------------
+  RF score          full               -0.38507629    0.12471181  0.01148834  0.02208081  [-0.66295153, -0.10720105]
+                    ex-custody A       -0.13316361    0.07744325  0.11626604  0.07954426  [-0.30571792, +0.03939069]
+                    ex-custody B       -0.13125570    0.07648234  0.11689338  0.07901087  [-0.30166897, +0.03915757]
+                    ex-custody C       -0.13939961    0.07685660  0.09978791  0.06331919  [-0.31064679, +0.03184757]
+
+  OLS score         full               -0.26387427    0.06728926  0.00285943  0.01370724  [-0.41380409, -0.11394446]
+                    ex-custody A       -0.12160487    0.06984490  0.11229032  0.07798383  [-0.27722901, +0.03401927]
+                    ex-custody B       -0.12253392    0.07048100  0.11275048  0.07859546  [-0.27957539, +0.03450754]
+                    ex-custody C       -0.16011717    0.06961968  0.04426306  0.01535799  [-0.31523948, -0.00499487]
+
+  uninsured_share   full               -0.00049680    0.02134018  0.98188477  0.98153708  [-0.04804568, +0.04705208]
+                    ex-custody A        0.00372397    0.02164376  0.86682439  0.86303337  [-0.04450133, +0.05194928]
+                    ex-custody B        0.00355435    0.02177413  0.87358326  0.87002067  [-0.04496144, +0.05207015]
+                    ex-custody C        0.00404051    0.02172684  0.85618746  0.85183536  [-0.04436991, +0.05245094]
+
+----------------------------------------------------------------------------------------------------
+3. HOW MUCH OF THE INTERACTION IS THE CUSTODY BANKS?
+----------------------------------------------------------------------------------------------------
+
+  share = (beta_full - beta_ex) / beta_full, in per cent. A share of 100%
+  means the coefficient collapses to zero once they are dropped; above
+  100% means it crosses zero and changes sign.
+
+  measure           defn           beta full    beta ex-cust          change      share %
+  --------------------------------------------------------------------------------------------
+  RF score          A            -0.38507629     -0.13316361      0.25191267      65.4189
+                    B            -0.38507629     -0.13125570      0.25382059      65.9144
+                    C            -0.38507629     -0.13939961      0.24567668      63.7995
+
+  OLS score         A            -0.26387427     -0.12160487      0.14226940      53.9156
+                    B            -0.26387427     -0.12253392      0.14134035      53.5635
+                    C            -0.26387427     -0.16011717      0.10375710      39.3207
+
+  uninsured_share   A            -0.00049680      0.00372397      0.00422078     849.5873 (sign flips)
+                    B            -0.00049680      0.00355435      0.00405116     815.4448 (sign flips)
+                    C            -0.00049680      0.00404051      0.00453732     913.3024 (sign flips)
+
+----------------------------------------------------------------------------------------------------
+4. IS THE SAFEGUARD SIGNAL CONFOUNDED WITH CALENDAR TIME?
+----------------------------------------------------------------------------------------------------
+
+  The 11 events, in calendar order:
+
+   doc_id          date    rank      days              S
+  --------------------------------------------------------
+        8    2019-10-16       1         0    -0.66670000
+        9    2020-02-05       2       112    -0.11110000
+       10    2020-08-13       3       302     0.00000000
+       11    2021-05-24       4       586     0.22220000
+       12    2021-06-28       5       621    -0.43750000
+        2    2021-08-05       6       659    -0.21430000
+        1    2022-01-20       7       827     0.12310000
+        3    2022-02-18       8       856     1.00000000
+        4    2022-05-26       9       953     1.00000000
+        5    2022-10-14      10      1094     0.25000000
+        6    2023-04-18      11      1280     0.09520000
+
+  corr(S, calendar rank (1..11)):
+      Pearson  r   = +0.60333196   p = 0.04939412
+      Spearman rho = +0.65148233   p = 0.02988378
+  corr(S, days since first event):
+      Pearson  r   = +0.56773622   p = 0.06847674
+      Spearman rho = +0.65148233   p = 0.02988378
+
+  n = 11 events.
+
+====================================================================================================
+5. WHAT THIS SHOWS
+====================================================================================================
+
+  RF score          full beta -0.38507629 (p 0.01148834)  ->  ex-custody A -0.13316361 (p 0.11626604)  does NOT survive at 5%
+  OLS score         full beta -0.26387427 (p 0.00285943)  ->  ex-custody A -0.12160487 (p 0.11229032)  does NOT survive at 5%
+  uninsured_share   full beta -0.00049680 (p 0.98188477)  ->  ex-custody A +0.00372397 (p 0.86682439)  does NOT survive at 5%
+
+  corr(S, calendar rank) = +0.60333196 across 11 events.
+

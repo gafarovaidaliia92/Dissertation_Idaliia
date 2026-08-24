@@ -1,0 +1,96 @@
+# ---------------------------------------------------------------------------
+# Data — exclude everything under data/ (raw inputs AND processed outputs).
+# Written as `data/*` rather than `data/` on purpose: git will not descend into
+# an excluded DIRECTORY, so `data/` would make the !data/frozen/ exception at
+# the bottom of this file impossible. `data/*` excludes the same content while
+# leaving the directory itself walkable.
+# ---------------------------------------------------------------------------
+data/*
+
+# Safety net: never track data file types anywhere in the repo
+*.csv
+*.parquet
+*.xlsx
+*.xls
+*.zip
+
+# Generated outputs living under data/ (redundant with data/, kept explicit)
+data/**/*.png
+data/**/*.txt
+
+# ---------------------------------------------------------------------------
+# Secrets / local config
+# ---------------------------------------------------------------------------
+.pgpass
+config.yaml
+
+# ---------------------------------------------------------------------------
+# System / editor junk
+# ---------------------------------------------------------------------------
+.DS_Store
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.vscode/
+.idea/
+# any virtualenv in the working tree, however it is named
+.venv*/
+venv/
+
+# ---------------------------------------------------------------------------
+# Explicitly KEEP tracked (code + project docs):
+#   scripts/*.py, README.md, requirements.txt, .gitignore
+# None of the patterns above match these. *.txt is scoped to data/ only,
+# so requirements.txt stays tracked.
+# ---------------------------------------------------------------------------
+
+
+# ---------------------------------------------------------------------------
+# Targeted exceptions to the rules above. The blanket `data/` and `*.csv` rules
+# stay as they are; these re-include exactly two things:
+#
+#   data/frozen/  the four artefacts NO script can rebuild — the LLM sentence
+#                 labels, the hand-coded validation template, the listed-bank
+#                 sample and the RSSD<->permno crosswalk. Losing them ends the
+#                 project, so they belong in version control.
+#   results/      the showcase snapshot. data/processed/ is ignored and the raw
+#                 inputs are not redistributable, so without this snapshot a
+#                 clone shows an examiner nothing at all.
+# ---------------------------------------------------------------------------
+!data/frozen/
+!data/frozen/*.csv
+!data/frozen/*.md
+!data/frozen/superseded/
+!data/frozen/superseded/*.csv
+!data/frozen/superseded/*.txt
+
+# data/raw/fed/ — the eleven-document corpus. Hand-collected from
+# federalreserve.gov and NOT rebuildable by any script (_fetch_fulltext.py only
+# restores doc 1's body text), so it is as unreproducible as data/frozen/ and is
+# tracked for the same reason. The PDF is pinned too: it is the primary source
+# for doc 1 and the Fed's URLs move. Everything else under data/raw/ stays out.
+!data/raw/
+!data/raw/fed/
+!data/raw/fed/*.xlsx
+!data/raw/fed/*.txt
+!data/raw/fed/*.pdf
+data/raw/*
+!data/raw/fed
+data/raw/fed/~$*
+!results/
+!results/**
+!results/**/*.csv
+!results/**/*.png
+
+# Working notes that are not part of the dissertation
+docs/superseded_results_ru.md
+
+# ---------------------------------------------------------------------------
+# PUBLIC REPOSITORY — CRSP is licensed and is not redistributed here.
+# The crosswalk was nothing but the RSSD -> permno mapping, so it is excluded
+# outright and re-listed after the !data/frozen/*.csv exception above so that
+# exception cannot pull it back in. See DATA.md.
+# ---------------------------------------------------------------------------
+data/frozen/crosswalk_rssd_permno.csv
+results/shared_inputs/crosswalk_rssd_permno.csv
+data/raw/wrds/

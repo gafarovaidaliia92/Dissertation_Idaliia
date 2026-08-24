@@ -1,0 +1,144 @@
+==============================================================================
+RQ2 — DOES THE TYPE OF CBDC COMMUNICATION MOVE BANK EQUITY ON AVERAGE?
+==============================================================================
+
+  bank-events on file : 2956
+  used in estimation  : 2956
+  banks 276   events 11
+  dependent variable  : CAR over [t0-1, t0+5], market-model abnormal returns
+  coefficient         : gamma1 on S. H2 predicts gamma1 > 0.
+
+  READ rq2_reaction.txt FIRST. It asks whether the market reacted to these
+  dates at all. If no event moved prices there is no average effect for S
+  to explain, and everything below is a gradient across events that did not
+  move.
+
+  The S x vulnerability interaction is NOT here: it tests whether
+  vulnerable banks react differently, which is H3. See rq3_interaction.py.
+
+==============================================================================
+1. H2 AT THE EVENT LEVEL — the honest form of the test (n = 11)
+==============================================================================
+
+  S is a property of the COMMUNICATION, not of the bank. H2 is therefore a
+  between-event question and the natural test has 11 observations.
+
+-- 1.1 the 11 events --
+
+    doc_id           t0           S  n_banks      mean_CAR    median_CAR     SE(mean)  flag
+    ------------------------------------------------------------------------------------------------
+         8   2019-10-16   -0.666700      258    0.02716512    0.02626939   0.00187731  
+         9   2020-02-05   -0.111100      263   -0.02045976   -0.02135449   0.00160504  
+        10   2020-08-13    0.000000      267   -0.06227153   -0.07178548   0.00260960  
+        11   2021-05-24    0.222200      269   -0.00234585   -0.00513674   0.00160650  
+        12   2021-06-28   -0.437500      269   -0.06004921   -0.06628763   0.00240741  
+         2   2021-08-05   -0.214300      269    0.02240670    0.02385238   0.00192048  
+         1   2022-01-20    0.123100      271    0.00190959    0.00742635   0.00245458  
+         3   2022-02-18    1.000000      273   -0.00123694    0.00030440   0.00208087  
+         4   2022-05-26    1.000000      274   -0.00084743   -0.00277620   0.00171983  
+         5   2022-10-14    0.250000      272    0.00211267    0.01062277   0.00360940  
+         6   2023-04-18    0.095200      271   -0.03069926   -0.02760518   0.00329504  
+
+    S range [-0.66670000, +1.00000000]   SD(S) = 0.51823921   expansive (S<0): 4   protective (S>=0): 7
+
+-- 1.2 OLS of the 11 event-mean CARs on the 11 S values --
+
+    mean_CAR = gamma0 + gamma1 * S      (n = 11, ordinary SEs)
+
+    gamma1 = +0.00562863   SE 0.01887397   t +0.298222   p 0.77230408  (n.s.)
+      95% CI [-0.03706726, +0.04832452]     R^2 0.00978511
+      intercept -0.01194664 (SE 0.00957369)
+      MDE at 80% power = 0.05284712 of CAR per unit of S;
+      across the observed S range (1.666700) that is 8.808030 pp of CAR.
+    weighted by n_banks (secondary): gamma1 = +0.00617690   SE 0.01877635   p 0.74970262
+
+-- 1.3 correlation between event-mean CAR and S --
+
+    Pearson  = +0.09891973   p 0.77230408  (n.s.)   (n = 11)
+    Spearman = +0.01366746   p 0.96818622  (n.s.)   (n = 11)
+    A POSITIVE correlation is the H2-consistent direction.
+
+-- 1.4 protective vs expansive events --
+
+    mean CAR, expansive  (S <  0, n=4) : -0.00773429
+    mean CAR, protective (S >= 0, n=7) : -0.01333982
+    difference (protective - expansive)     : -0.00560553
+    Welch t = -0.249627  p 0.81445249   Mann-Whitney p 0.64848485
+
+    With 11 events this has very little power. The point of reporting it
+    is that the sign and magnitude are on the record.
+
+==============================================================================
+2. H2 POOLED AT THE BANK-EVENT LEVEL (SEs clustered on the EVENT)
+==============================================================================
+
+  2956 bank-events, 276 banks, 11 events,
+  10 distinct values of S. The extra rows add no independent
+  information about S, which is why the SEs are clustered on the event.
+
+-- 2.1 why there is no event-FE specification for S --
+
+    S regressed on the event dummies: R^2 = 1.000000000000,
+    max |residual| = 7.061e-14, residual SD = 3.572e-14
+    -> ABSORBED. The S column is a linear combination of
+    the event dummies, so gamma1 is NOT IDENTIFIED under event FE. This is a
+    design fact, not a null result, and nothing is printed for it.
+
+-- 2.2 gamma1 --
+
+    spec / cluster                           gamma1            SE        t          p  sig
+    ----------------------------------------------------------------------------------------
+    no controls, cluster = EVENT         0.00617690    0.01719368    0.359 0.72687493  (n.s.)
+    with controls, cluster = EVENT       0.00645428    0.01712870    0.377 0.71418685  (n.s.)
+    no controls, cluster = bank          0.00617690    0.00118933    5.194 0.00000021  ***
+    with controls, cluster = bank        0.00645428    0.00122074    5.287 0.00000012  ***
+
+    inference df (event-clustered) = 10  (= 11 clusters - 1)
+    The bank-clustered rows are shown ONLY to make the inflation visible:
+    the SE falls from 0.01712870 to 0.00122074, a factor of 14.03.
+    They are not the reported inference.
+
+-- 2.3 how tight is this null? --
+
+    MDE at 80% power for gamma1 (with controls, event-clustered)
+      = 0.04796036 per unit of S
+      = 2.371343 pp of CAR per one-SD move in S
+      = 49.3508% of a CAR standard deviation (4.805071 pp)
+
+    That is a WIDE bound and must be stated as one. With 11 events the
+    design can rule out a LARGE average communication effect but not a
+    modest one. H2's null is directionally clear but not tightly bounded.
+
+==============================================================================
+3. THE SAME TEST ON THE MARKET+SECTOR+RATE CAR
+==============================================================================
+
+  Bank stocks load on a common banking factor and differ in rate
+  sensitivity. If gamma1 were a rate artefact it would move here.
+
+    N 2956   gamma1 = +0.01519349   SE 0.01133690   p 0.20984098  (n.s.)
+
+    Same conclusion as the market-model CAR.
+
+==============================================================================
+VERDICT — RQ2
+==============================================================================
+
+    test                                                 gamma1            SE          p
+    ------------------------------------------------------------------------------------
+    event level, mean_CAR ~ S (n=11)                 0.00562863    0.01887397 0.77230408
+    pooled with controls (cluster = event)           0.00645428    0.01712870 0.71418685
+    Pearson corr(event-mean CAR, S)                  0.09891973               0.77230408
+    Spearman corr(event-mean CAR, S)                 0.01366746               0.96818622
+
+    H2 predicts gamma1 > 0. Observed sign: POSITIVE (H2 direction).  Significant at 5%: NO.
+
+    H2 IS NOT SUPPORTED. The sign is in the predicted direction but no
+    specification comes close to significance, and the correlation across
+    the 11 events is essentially zero. Read together with rq2_reaction.txt:
+    no event produced a mean CAR distinguishable from zero, so a null
+    gamma1 is what the unconditional evidence already implied.
+
+    The null is NOT tightly bounded (see 2.3). Say 'H2 not supported and a
+    large average effect ruled out', not 'no effect'.
+

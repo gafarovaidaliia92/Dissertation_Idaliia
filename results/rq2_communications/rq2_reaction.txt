@@ -1,0 +1,155 @@
+==============================================================================
+RQ2 — DID THE EQUITY MARKET REACT TO CBDC COMMUNICATIONS AT ALL?
+==============================================================================
+
+  The primary RQ2 result. Read this before rq2_avg_effect.txt.
+
+  Design: 11 Federal Reserve CBDC communications, 2019-2023. Market-model
+  abnormal returns, estimation window [t0-230, t0-31], event window
+  [t0-1, t0+5]. 2956 bank-events, 276 banks. CAR construction is in
+  rq2_car.py and is unchanged.
+
+==============================================================================
+1. FIRST MOMENT — cross-correlation-robust mean-CAR test
+==============================================================================
+
+  Banks are not independent within a date: a common factor moves them
+  together. The naive cross-sectional t-stats therefore overstate
+  significance badly. The Brown-Warner portfolio test below is robust to
+  that dependence and is the one to quote.
+
+-- B1c. Cross-correlation-robust portfolio test --
+
+    The per-event t-stats in B1 assume banks are independent within a
+    date. They are not: a common factor moves them together, so those
+    t-stats are inflated, often by an order of magnitude. This test uses
+    the equal-weighted portfolio AR and its own estimation-window
+    time-series SD, which is robust to that dependence.
+
+     doc_id           t0  n_days     port_CAR    sigma_day         t         p  sig
+    ------------------------------------------------------------------------------------
+          1   2022-01-20       7      0.00191     0.010630      0.07    0.9459  (n.s.)
+          2   2021-08-05       7      0.02241     0.016175      0.52    0.6006  (n.s.)
+          3   2022-02-18       7     -0.00124     0.009198     -0.05    0.9595  (n.s.)
+          4   2022-05-26       7     -0.00086     0.009236     -0.04    0.9719  (n.s.)
+          5   2022-10-14       7      0.00211     0.008112      0.10    0.9216  (n.s.)
+          6   2023-04-18       7     -0.03070     0.006035     -1.92    0.0545  *
+          8   2019-10-16       7      0.02717     0.006958      1.48    0.1400  (n.s.)
+          9   2020-02-05       7     -0.02046     0.006671     -1.16    0.2464  (n.s.)
+         10   2020-08-13       7     -0.06227     0.016530     -1.42    0.1545  (n.s.)
+         11   2021-05-24       7     -0.00235     0.018174     -0.05    0.9611  (n.s.)
+         12   2021-06-28       7     -0.06005     0.016705     -1.36    0.1742  (n.s.)
+    ------------------------------------------------------------------------------------
+    events significant at 5% under the robust test : 0 of 11
+
+-- B2. Beaver variance ratio: mean(AR^2) in event window / AR variance
+       in estimation window. H0: ratio = 1 (no volatility spike) --
+
+     doc_id           t0      n  mean_ratio     median   t vs 1         p Wilcoxon p
+    ----------------------------------------------------------------------------------
+          1   2022-01-20    271      1.2607     1.0308     4.01    0.0001     0.1196
+          2   2021-08-05    269      0.4133     0.3546   -35.10    0.0000  2.198e-43
+          3   2022-02-18    273      1.4937     1.1974     2.54    0.0118  3.921e-06
+          4   2022-05-26    274      0.5552     0.3596   -10.76    0.0000   5.99e-32
+          5   2022-10-14    272      2.1614     1.4948     8.11    0.0000  2.737e-23
+          6   2023-04-18    271      3.8035     2.2353     4.84    0.0000   4.18e-34
+          8   2019-10-16    258      0.8534     0.5192    -2.52    0.0124  2.089e-09
+          9   2020-02-05    263      0.8211     0.6362    -2.69    0.0077  4.029e-21
+         10   2020-08-13    267      0.6263     0.6120   -19.61    0.0000  1.309e-36
+         11   2021-05-24    269      0.4414     0.3945   -24.99    0.0000  2.722e-41
+         12   2021-06-28    269      0.6167     0.5436   -14.25    0.0000  1.099e-30
+    ----------------------------------------------------------------------------------
+     POOLED                2956      1.1906     0.6493     3.11    0.0019  1.094e-33
+
+    A ratio > 1 means returns were more dispersed than normal on these
+    dates even if the average move was zero.
+
+-- B3. Turnover ratio: mean event-window turnover / mean estimation-window
+       turnover (turnover = vol / shrout). H0: ratio = 1 --
+
+     doc_id           t0      n  mean_ratio     median   t vs 1         p Wilcoxon p
+    ----------------------------------------------------------------------------------
+          1   2022-01-20    271      1.1370     1.0648     3.73    0.0002   0.002835
+          2   2021-08-05    269      0.8096     0.7036    -3.85    0.0001  3.542e-22
+          3   2022-02-18    273      0.9795     0.9492    -0.55    0.5841    0.02749
+          4   2022-05-26    274      1.0062     0.8898     0.18    0.8588  0.0004215
+          5   2022-10-14    272      1.0194     0.9339     0.63    0.5308      0.235
+          6   2023-04-18    271      1.4521     1.1521     2.85    0.0047  2.938e-08
+          8   2019-10-16    258      0.9824     0.9386    -0.57    0.5725    0.02226
+          9   2020-02-05    263      0.9316     0.8261    -1.61    0.1088  3.167e-11
+         10   2020-08-13    267      0.7163     0.5921    -5.12    0.0000  1.292e-35
+         11   2021-05-24    269      1.0090     0.8188     0.17    0.8631  2.954e-06
+         12   2021-06-28    269      2.8792     1.3784     8.88    0.0000  1.156e-23
+    ----------------------------------------------------------------------------------
+     POOLED                2956      1.1757     0.8909     6.14    0.0000  6.295e-10
+
+    Turnover ratios are right-skewed, so the median and the Wilcoxon
+    test are the more reliable readings.
+
+-- B4. TAKEAWAY: first moment vs second moment vs volume --
+
+     doc_id           t0 mean CAR (rob)   var ratio     dir  turn ratio     dir
+    ----------------------------------------------------------------------------
+          1   2022-01-20           null       1.031    flat       1.065      UP
+          2   2021-08-05           null       0.355    DOWN       0.704    DOWN
+          3   2022-02-18           null       1.197      UP       0.949    DOWN
+          4   2022-05-26           null       0.360    DOWN       0.890    DOWN
+          5   2022-10-14           null       1.495      UP       0.934    flat
+          6   2023-04-18           null       2.235      UP       1.152      UP
+          8   2019-10-16           null       0.519    DOWN       0.939    DOWN
+          9   2020-02-05           null       0.636    DOWN       0.826    DOWN
+         10   2020-08-13           null       0.612    DOWN       0.592    DOWN
+         11   2021-05-24           null       0.395    DOWN       0.819    DOWN
+         12   2021-06-28           null       0.544    DOWN       1.378      UP
+
+    events with a robust mean-CAR reaction : 0 of 11
+    events with elevated volatility (median ratio > 1, Wilcoxon p<.05) : 3 of 11
+    events with SUPPRESSED volatility                                 : 7 of 11
+    events with elevated turnover                                     : 3 of 11
+    events with SUPPRESSED turnover                                   : 7 of 11
+
+==============================================================================
+2. VERDICT ON THE UNCONDITIONAL REACTION
+==============================================================================
+
+    events significant at 5% under the robust test : 0 of 11   (market model — the published CAR)
+    events significant at 5% under the robust test : 2 of 11   (market+sector+rate model)
+
+  The two events that reach 5% under the augmented model are doc_id 3 and
+  6, and they carry OPPOSITE signs (+0.028 and -0.027), so they do not add
+  up to a directional reaction.
+
+  Volatility and turnover are SUPPRESSED on these dates at least as often
+  as they are elevated (7 of 11 against 3 of 11 on both measures). This is
+  not 'a null mean with violent trading underneath'. On most of these
+  dates bank stocks were quieter than on an ordinary day.
+
+  RQ2 CONCLUSION: the market did not react to CBDC communications on
+  average. Federal Reserve CBDC speeches were not events for bank equity.
+  Everything conditional — the average effect of communication type in
+  rq2_avg_effect.py, and the whole RQ3 bridge — inherits this. There is no
+  reaction for a cross-section to modulate.
+
+==============================================================================
+3. HOW BIG AN AVERAGE EFFECT COULD WE HAVE MISSED?
+==============================================================================
+
+  MDE = 2.80 x SE, i.e. the effect that would have been detected with 80%
+  probability at a two-sided 5% level. This turns the RQ2 null into a
+  bounded claim.
+
+    gamma1 estimate            +0.00645428
+    SE (event-clustered)       0.01712870
+    MDE, raw                   0.04796036 per unit of S
+    MDE, per one-SD move in S  2.371343 pp of CAR
+    as a share of a CAR SD     49.3508%   (CAR SD = 4.805071 pp)
+
+  This bound is WIDE. gamma1 is identified off 11 events, so the design can
+  rule out a large average communication effect but not a modest one. The
+  correct sentence is 'H2 not supported, and a large effect ruled out',
+  not 'there is no effect'.
+
+  For contrast, the RQ3 coefficients are bounded far more tightly (~5% and
+  ~9.5% of a CAR SD) — see rq3_link.py. Do not describe all the nulls in
+  this project as equally informative; they are not.
+

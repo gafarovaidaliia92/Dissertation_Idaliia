@@ -1,0 +1,103 @@
+doc_id,t0,n_est,reason
+1,2022-01-20,94,estimation window < 100 valid returns
+1,2022-01-20,85,estimation window < 100 valid returns
+1,2022-01-20,18,estimation window < 100 valid returns
+1,2022-01-20,0,no CRSP returns in estimation window (not listed / already delisted)
+1,2022-01-20,0,no CRSP returns in estimation window (not listed / already delisted)
+1,2022-01-20,0,no CRSP returns in estimation window (not listed / already delisted)
+1,2022-01-20,0,no CRSP returns in estimation window (not listed / already delisted)
+2,2021-08-05,55,estimation window < 100 valid returns
+2,2021-08-05,33,estimation window < 100 valid returns
+2,2021-08-05,0,no CRSP returns in estimation window (not listed / already delisted)
+2,2021-08-05,0,no CRSP returns in estimation window (not listed / already delisted)
+2,2021-08-05,0,no CRSP returns in estimation window (not listed / already delisted)
+2,2021-08-05,0,no CRSP returns in estimation window (not listed / already delisted)
+2,2021-08-05,0,no CRSP returns in estimation window (not listed / already delisted)
+2,2021-08-05,0,no CRSP returns in estimation window (not listed / already delisted)
+2,2021-08-05,0,no CRSP returns in estimation window (not listed / already delisted)
+3,2022-02-18,39,estimation window < 100 valid returns
+3,2022-02-18,0,no CRSP returns in estimation window (not listed / already delisted)
+3,2022-02-18,0,no CRSP returns in estimation window (not listed / already delisted)
+3,2022-02-18,0,no CRSP returns in estimation window (not listed / already delisted)
+3,2022-02-18,0,no CRSP returns in estimation window (not listed / already delisted)
+4,2022-05-26,0,no CRSP returns in estimation window (not listed / already delisted)
+4,2022-05-26,0,no CRSP returns in estimation window (not listed / already delisted)
+4,2022-05-26,0,no CRSP returns in estimation window (not listed / already delisted)
+4,2022-05-26,0,no CRSP returns in estimation window (not listed / already delisted)
+5,2022-10-14,136,incomplete event window (0/7 days)
+5,2022-10-14,87,estimation window < 100 valid returns
+5,2022-10-14,61,estimation window < 100 valid returns
+5,2022-10-14,0,no CRSP returns in estimation window (not listed / already delisted)
+5,2022-10-14,0,no CRSP returns in estimation window (not listed / already delisted)
+5,2022-10-14,197,incomplete event window (0/7 days)
+6,2023-04-18,200,incomplete event window (0/7 days)
+6,2023-04-18,10,estimation window < 100 valid returns
+6,2023-04-18,0,no CRSP returns in estimation window (not listed / already delisted)
+6,2023-04-18,0,no CRSP returns in estimation window (not listed / already delisted)
+6,2023-04-18,71,estimation window < 100 valid returns
+6,2023-04-18,200,incomplete event window (0/7 days)
+6,2023-04-18,158,incomplete event window (0/7 days)
+8,2019-10-16,93,estimation window < 100 valid returns
+8,2019-10-16,86,estimation window < 100 valid returns
+8,2019-10-16,84,estimation window < 100 valid returns
+8,2019-10-16,80,estimation window < 100 valid returns
+8,2019-10-16,43,estimation window < 100 valid returns
+8,2019-10-16,12,estimation window < 100 valid returns
+8,2019-10-16,0,no CRSP returns in estimation window (not listed / already delisted)
+8,2019-10-16,0,no CRSP returns in estimation window (not listed / already delisted)
+8,2019-10-16,0,no CRSP returns in estimation window (not listed / already delisted)
+8,2019-10-16,0,no CRSP returns in estimation window (not listed / already delisted)
+8,2019-10-16,0,no CRSP returns in estimation window (not listed / already delisted)
+8,2019-10-16,0,no CRSP returns in estimation window (not listed / already delisted)
+8,2019-10-16,0,no CRSP returns in estimation window (not listed / already delisted)
+8,2019-10-16,0,no CRSP returns in estimation window (not listed / already delisted)
+8,2019-10-16,0,no CRSP returns in estimation window (not listed / already delisted)
+8,2019-10-16,0,no CRSP returns in estimation window (not listed / already delisted)
+8,2019-10-16,0,no CRSP returns in estimation window (not listed / already delisted)
+8,2019-10-16,0,no CRSP returns in estimation window (not listed / already delisted)
+8,2019-10-16,0,no CRSP returns in estimation window (not listed / already delisted)
+8,2019-10-16,0,no CRSP returns in estimation window (not listed / already delisted)
+9,2020-02-05,88,estimation window < 100 valid returns
+9,2020-02-05,68,estimation window < 100 valid returns
+9,2020-02-05,48,estimation window < 100 valid returns
+9,2020-02-05,54,estimation window < 100 valid returns
+9,2020-02-05,0,no CRSP returns in estimation window (not listed / already delisted)
+9,2020-02-05,0,no CRSP returns in estimation window (not listed / already delisted)
+9,2020-02-05,0,no CRSP returns in estimation window (not listed / already delisted)
+9,2020-02-05,0,no CRSP returns in estimation window (not listed / already delisted)
+9,2020-02-05,0,no CRSP returns in estimation window (not listed / already delisted)
+9,2020-02-05,0,no CRSP returns in estimation window (not listed / already delisted)
+9,2020-02-05,0,no CRSP returns in estimation window (not listed / already delisted)
+9,2020-02-05,0,no CRSP returns in estimation window (not listed / already delisted)
+9,2020-02-05,0,no CRSP returns in estimation window (not listed / already delisted)
+9,2020-02-05,0,no CRSP returns in estimation window (not listed / already delisted)
+9,2020-02-05,0,no CRSP returns in estimation window (not listed / already delisted)
+10,2020-08-13,99,estimation window < 100 valid returns
+10,2020-08-13,0,no CRSP returns in estimation window (not listed / already delisted)
+10,2020-08-13,0,no CRSP returns in estimation window (not listed / already delisted)
+10,2020-08-13,0,no CRSP returns in estimation window (not listed / already delisted)
+10,2020-08-13,0,no CRSP returns in estimation window (not listed / already delisted)
+10,2020-08-13,0,no CRSP returns in estimation window (not listed / already delisted)
+10,2020-08-13,0,no CRSP returns in estimation window (not listed / already delisted)
+10,2020-08-13,0,no CRSP returns in estimation window (not listed / already delisted)
+10,2020-08-13,0,no CRSP returns in estimation window (not listed / already delisted)
+10,2020-08-13,0,no CRSP returns in estimation window (not listed / already delisted)
+10,2020-08-13,0,no CRSP returns in estimation window (not listed / already delisted)
+11,2021-05-24,4,estimation window < 100 valid returns
+11,2021-05-24,0,no CRSP returns in estimation window (not listed / already delisted)
+11,2021-05-24,0,no CRSP returns in estimation window (not listed / already delisted)
+11,2021-05-24,0,no CRSP returns in estimation window (not listed / already delisted)
+11,2021-05-24,0,no CRSP returns in estimation window (not listed / already delisted)
+11,2021-05-24,0,no CRSP returns in estimation window (not listed / already delisted)
+11,2021-05-24,0,no CRSP returns in estimation window (not listed / already delisted)
+11,2021-05-24,0,no CRSP returns in estimation window (not listed / already delisted)
+11,2021-05-24,0,no CRSP returns in estimation window (not listed / already delisted)
+12,2021-06-28,28,estimation window < 100 valid returns
+12,2021-06-28,6,estimation window < 100 valid returns
+12,2021-06-28,0,no CRSP returns in estimation window (not listed / already delisted)
+12,2021-06-28,0,no CRSP returns in estimation window (not listed / already delisted)
+12,2021-06-28,0,no CRSP returns in estimation window (not listed / already delisted)
+12,2021-06-28,0,no CRSP returns in estimation window (not listed / already delisted)
+12,2021-06-28,0,no CRSP returns in estimation window (not listed / already delisted)
+12,2021-06-28,0,no CRSP returns in estimation window (not listed / already delisted)
+12,2021-06-28,0,no CRSP returns in estimation window (not listed / already delisted)

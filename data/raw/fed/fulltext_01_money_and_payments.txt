@@ -1,0 +1,265 @@
+For a nation’s economy to function effectively, its citizens must have confidence in its money and payment services. The Federal Reserve, as the nation’s central bank, works to maintain the public’s confidence by fostering monetary stability, financial stability, and a safe and efficient payment system.
+
+This paper is the first step in a public discussion between the Federal Reserve and stakeholders about central bank digital currencies (CBDCs). For the purpose of this paper, a CBDC is defined as a digital liability of a central bank that is widely available to the general public. In this respect, it is analogous to a digital form of paper money. The paper has been designed to foster a broad and transparent public dialogue about CBDCs in general, and about the potential benefits and risks of a U.S. CBDC. The paper is not intended to advance any specific policy outcome, nor is it intended to signal that the Federal Reserve will make any imminent decisions about the appropriateness of issuing a U.S. CBDC.
+
+Payment technologies offered by the Federal Reserve have evolved over time. In the Federal Reserve’s early years, it established a national check-clearing system and used dedicated telegraph wires to transfer funds between banks. In the 1970s, the Federal Reserve developed an automated clearinghouse (ACH) system that offered an electronic alternative to paper checks. And in 2019, the Federal Reserve committed to building the FedNow Service, which will provide real-time, around-the-clock interbank payments, every day of the year.
+
+Recent technological advances have ushered in a wave of new private-sector financial products and services, including digital wallets, mobile payment apps, and new digital assets such as cryptocurrencies and stablecoins. These technological advances have also led central banks around the globe to explore the potential benefits and risks of issuing a CBDC.
+
+Federal Reserve policymakers and staff have studied CBDC closely for several years, guided by an understanding that any U.S. CBDC should, among other things
+
+provide benefits to households, businesses, and the overall economy that exceed any costs and risks;
+
+yield such benefits more effectively than alternative methods;
+
+complement, rather than replace, current forms of money and methods for providing financial services;
+
+protect consumer privacy;
+
+protect against criminal activity; and
+
+have broad support from key stakeholders.
+
+The Federal Reserve is committed to soliciting and reviewing a wide range of views as it continues to study whether a U.S. CBDC would be appropriate. Irrespective of any ultimate conclusion, Federal Reserve staff will continue to play an active role in developing international standards for CBDCs.
+
+This paper begins with a discussion of existing forms of money; the current state of the U.S. payment system and its relative strengths and challenges; and the various digital assets that have emerged in recent years, including stablecoins and other cryptocurrencies. The paper then turns to CBDC, focusing on its uses and functions; potential benefits and risks; and related policy considerations.
+
+The Federal Reserve’s initial analysis suggests that a potential U.S. CBDC, if one were created, would best serve the needs of the United States by being privacy-protected, intermediated, widely transferable, and identity-verified. As noted above, however, the paper is not intended to advance a specific policy outcome and takes no position on the ultimate desirability of a U.S. CBDC.
+
+The Federal Reserve will seek input from a wide range of stakeholders that might use a CBDC or be affected by its introduction. This paper concludes with a request for public comment, the first step in a broad consultation that will also include targeted outreach and public forums.
+
+The Federal Reserve is exploring the implications of, and options for, issuing a CBDC. For the purpose of this paper, a CBDC is defined as a digital liability of the Federal Reserve that is widely available to the general public. While Americans have long held money predominantly in digital form—for example in bank accounts recorded as computer entries on commercial bank ledgers—a CBDC would differ from existing digital money available to the general public because a CBDC would be a liability of the Federal Reserve, not of a commercial bank.
+
+A CBDC could potentially offer a range of benefits. For example, it could provide households and businesses a convenient, electronic form of central bank money, with the safety and liquidity that would entail; give entrepreneurs a platform on which to create new financial products and services; support faster and cheaper payments (including cross-border payments); and expand consumer access to the financial system. A CBDC could also pose certain risks and would raise a variety of important policy questions, including how it might affect financial-sector market structure, the cost and availability of credit, the safety and stability of the financial system, and the efficacy of monetary policy.
+
+The introduction of a CBDC would represent a highly significant innovation in American money. Accordingly, broad consultation with the general public and key stakeholders is essential. This paper is the first step in such a conversation. It describes the economic context for a CBDC, key policy considerations, and the potential risks and benefits of a U.S. CBDC. It also solicits feedback from all interested parties.
+
+The Federal Reserve does not intend to proceed with issuance of a CBDC without clear support from the executive branch and from Congress, ideally in the form of a specific authorizing law.
+
+Money serves as a means of payment, a store of value, and a unit of account. In the United States, money takes multiple forms:
+
+Central bank money is a liability of the central bank. In the United States, central bank money comes in the form of physical currency issued by the Federal Reserve and digital balances held by commercial banks at the Federal Reserve.
+
+Commercial bank money is the digital form of money that is most commonly used by the public. Commercial bank money is held in accounts at commercial banks.
+
+Nonbank money is digital money held as balances at nonbank financial service providers. These firms typically conduct balance transfers on their own books using a range of technologies, including mobile apps.
+
+The different types of money carry different amounts of credit and liquidity risk. Commercial bank money has very little credit or liquidity risk due to federal deposit insurance, the supervision and regulation of commercial banks, and commercial banks’ access to central bank liquidity. Nonbank money lacks the full range of protections of commercial bank money and therefore generally carries more credit and liquidity risk. Central bank money carries neither credit nor liquidity risk, and is therefore considered the safest form of money.
+
+Central bank money serves as the foundation of the financial system and the overall economy. Commercial bank money and nonbank money are denominated in the same units as central bank money (i.e., U.S. dollars) and are intended to be convertible into central bank money.
+
+The U.S. payment system connects a broad range of financial institutions, households, and businesses. Most payments in the United States rely on interbank payment services—such as the ACH network or wire-transfer systems—to move money from a sender’s account at one bank to a recipient’s account at another bank. Accordingly, interbank payment services are critical to the functioning and stability of the financial system and the economy more broadly. The firms that operate interbank payment services are subject to federal supervision, and systemically important payment firms are subject to heightened supervision and regulation.
+
+Interbank payment systems may initially settle in commercial bank money, or in central bank money, depending on their design. However, because central bank money has no credit or liquidity risk, central bank payment systems tend to underpin interbank payments and serve as the backbone of the broader payment system. The use of central bank money to settle interbank payments promotes financial stability because it eliminates credit and liquidity risk in systemically important payment systems.
+
+Recent improvements to the U.S. payment system have focused on making payments faster, cheaper, more convenient, and more accessible. “Instant” payments have been a particularly active field of private- and public-sector innovation. For example, The Clearing House has developed the RTP network, which is a real-time interbank payment system for lower-value payments. The Federal Reserve is also building a new interbank settlement service for instant payments, the FedNow Service, scheduled to debut in 2023. These instant payment services will enable commercial banks to provide payment services to households and businesses around the clock, every day of the year, with recipients gaining immediate access to transferred funds. The growth of these instant payment services also could reduce the costs and fees associated with certain types of payments.
+
+In addition, a host of consumer-focused services that are accessible through mobile devices have made digital payments faster and more convenient. Some of these new payment services, however, could pose financial stability, payment system integrity, and other risks. For example, if the growth of nonbank payment services were to cause a large-scale shift of money from commercial banks to nonbanks, the resulting lack of equivalent protections that come with commercial bank money could introduce run risk or other instabilities to the financial system.
+
+While the existing U.S. payment system is generally effective and efficient, certain challenges remain. In particular, a significant number of Americans currently lack access to digital banking and payment services. Additionally, some payments—especially cross-border payments—remain slow and costly.
+
+Digital financial services and commercial bank money have become more accessible over time, and increasing numbers of Americans have opened and maintain bank accounts. Nonetheless, more than 7 million—or over 5 percent of U.S. households—remain unbanked. Nearly 20 percent more have bank accounts, but still rely on more costly financial services such as money orders, check-cashing services, and payday loans.
+
+A variety of public- and private-sector efforts are underway to support financial inclusion. For example, the private-sector Bank On initiative promotes low-cost, low-risk consumer checking accounts. The Federal Reserve Bank of Atlanta has also formed a Special Committee on Payments Inclusion, a public-private sector collaboration that is working to promote access to digital payments for vulnerable populations.
+
+Cross-border payments currently face a number of challenges, including slow settlement, high fees, and limited accessibility. The sources of these frictions include the mechanics of currency exchange, variations in different countries’ legal regimes and technological infrastructure, timezone complications, and coordination problems among intermediaries, including correspondent banks and nonbank financial service providers. Regulatory requirements related to money laundering and other illicit activities introduce further complications. Finally, certain destination countries for cross-border payments have limited competition, allowing existing providers to charge high fees.
+
+As of the second quarter of 2021, the average cost of sending a remittance from the United States to other countries was 5.41 percent of the notional value of the transaction. These high costs have a significant impact on households that make remittance transactions. High costs for cross-border payments also affect smaller businesses that make infrequent global payments to suppliers. Reducing these costs could benefit economic growth, enhance global commerce, improve international remittances, and reduce inequality.
+
+Technological innovation has recently ushered in a wave of digital assets with money-like characteristics. These “cryptocurrencies” arose from a combination of cryptographic and distributedledger technologies, which together provide a foundation for decentralized, peer-to-peer payments.
+
+Cryptocurrencies have not been widely adopted as a means of payment in the United States. They remain subject to extreme price volatility, are difficult to use without service providers, and have severe limitations on transaction throughput. Many cryptocurrencies also come with a significant energy footprint and make consumers vulnerable to loss, theft, and fraud.
+
+Stablecoins are a more recent incarnation of cryptocurrency that peg their value to one or more assets, such as a sovereign currency or commodity. Stablecoins pegged to the U.S. dollar are predominantly used today to facilitate trading of other digital assets, but many firms are exploring ways to promote stablecoins as a widespread means of payment.
+
+A full discussion of stablecoin arrangements is outside the scope of this paper. However, the President’s Working Group on Financial Markets (PWG), along with the Federal Deposit Insurance Corporation (FDIC) and the Office of the Comptroller of the Currency (OCC), recently published a report on payment stablecoins. The PWG report notes that well-designed and appropriately regulated stablecoins could potentially support faster, more efficient, and more inclusive payment options. The PWG report also notes, however, that the potential for the increased use of stablecoins as a means of payment raises a range of concerns related to the potential for destabilizing runs, disruptions in the payment system, and concentration of economic power. The PWG report highlights gaps in the authority of regulators to reduce these risks.
+
+To address the risks of payment stablecoins, the PWG report recommends that Congress act promptly to enact legislation that would ensure payment stablecoins and payment stablecoin arrangements are subject to a consistent and comprehensive federal regulatory framework. Such legislation would complement existing authorities regarding market integrity, investor protection, and illicit finance.
+
+The Federal Reserve is considering how a CBDC might fit into the U.S. money and payments landscape. A crucial test for a potential CBDC is whether it would prove superior to other methods that might address issues of concern outlined in this paper.
+
+As noted above, for the purposes of this discussion paper, CBDC is defined as a digital liability of the Federal Reserve that is widely available to the general public. Today, Federal Reserve notes (i.e., physical currency) are the only type of central bank money available to the general public. Like existing forms of commercial bank money and nonbank money, a CBDC would enable the general public to make digital payments. As a liability of the Federal Reserve, however, a CBDC would not require mechanisms like deposit insurance to maintain public confidence, nor would a CBDC depend on backing by an underlying asset pool to maintain its value. A CBDC would be the safest digital asset available to the general public, with no associated credit or liquidity risk.
+
+The Federal Reserve will continue to explore a wide range of design options for a CBDC. While no decisions have been made on whether to pursue a CBDC, analysis to date suggests that a potential U.S. CBDC, if one were created, would best serve the needs of the United States by being privacy-protected, intermediated, widely transferable, and identity-verified.
+
+Privacy-protected: Protecting consumer privacy is critical. Any CBDC would need to strike an appropriate balance, however, between safeguarding the privacy rights of consumers and affording the transparency necessary to deter criminal activity.
+
+Intermediated: The Federal Reserve Act does not authorize direct Federal Reserve accounts for individuals, and such accounts would represent a significant expansion of the Federal Reserve’s role in the financial system and the economy. Under an intermediated model, the private sector would offer accounts or digital wallets to facilitate the management of CBDC holdings and payments. Potential intermediaries could include commercial banks and regulated nonbank financial service providers, and would operate in an open market for CBDC services. Although commercial banks and nonbanks would offer services to individuals to manage their CBDC holdings and payments, the CBDC itself would be a liability of the Federal Reserve. An intermediated model would facilitate the use of the private sector’s existing privacy and identity-management frameworks; leverage the private sector’s ability to innovate; and reduce the prospects for destabilizing disruptions to the well-functioning U.S. financial system.
+
+Transferable: For a CBDC to serve as a widely accessible means of payment, it would need to be readily transferable between customers of different intermediaries. The ability to transfer value seamlessly between different intermediaries makes the payment system more efficient by allowing money to move freely throughout the economy.
+
+Identity-verified: Financial institutions in the United States are subject to robust rules that are designed to combat money laundering and the financing of terrorism. A CBDC would need to be designed to comply with these rules. In practice, this would mean that a CBDC intermediary would need to verify the identity of a person accessing CBDC, just as banks and other financial institutions currently verify the identities of their customers.
+
+CBDC transactions would need to be final and completed in real time, allowing users to make payments to one another using a risk-free asset. Individuals, businesses, and governments could potentially use a CBDC to make basic purchases of goods and services or pay bills, and governments could use a CBDC to collect taxes or make benefit payments directly to citizens. Additionally, a CBDC could potentially be programmed to, for example, deliver payments at certain times.
+
+A CBDC could potentially serve as a new foundation for the payment system and a bridge between different payment services, both legacy and new. It could also maintain the centrality of safe and trusted central bank money in a rapidly digitizing economy.
+
+A U.S. CBDC would offer the general public broad access to digital money that is free from credit risk and liquidity risk. As such, it could provide a safe foundation for private-sector innovations to meet current and future needs and demands for payment services. All options for private digital money, including stablecoins and other cryptocurrencies, require mechanisms to reduce liquidity risk and credit risk. But all these mechanisms are imperfect. In our rapidly digitizing economy, the proliferation of private digital money could present risks to both individual users and the financial system as a whole. A U.S. CBDC could mitigate some of these risks while supporting private-sector innovation.
+
+A CBDC might also help to level the playing field in payment innovation for private-sector firms of all sizes. For some smaller firms, the costs and risks of issuing a safe and robust form of private money may be prohibitive. A CBDC could overcome this barrier and allow private-sector innovators to focus on new access services, distribution methods, and related service offerings.
+
+Finally, a CBDC might generate new capabilities to meet the evolving speed and efficiency requirements of the digital economy. As noted above, for example, a CBDC could potentially be programmed to deliver payments at certain times. Additionally, a CBDC could potentially be used to carry out micropayments—financial transactions that usually occur online and involve very small sums of money—which traditional payment systems are not necessarily designed to facilitate.
+
+CBDC has the potential to streamline cross-border payments by using new technologies, introducing simplified distribution channels, and creating additional opportunities for crossjurisdictional collaboration and interoperability. Realizing these potential improvements would require significant international coordination to address issues such as common standards and infrastructure, the types of intermediaries that would be able to access any new infrastructure, legal frameworks, preventing illicit transactions, and the cost and timing of implementation.
+
+Another potential benefit of a U.S.-issued CBDC could be to preserve the dominant international role of the U.S. dollar. The dollar is the world’s most widely used currency for payments and investments; it also serves as the world’s reserve currency. The dollar’s international role benefits the United States by, among other things, lowering transaction and borrowing costs for U.S. households, businesses, and government. The dollar’s international role also allows the United States to influence standards for the global monetary system.
+
+Today, the dollar is widely used across the globe because of the depth and liquidity of U.S. financial markets, the size and openness of the U.S. economy, and international trust in U.S. institutions and rule of law. It is important, however, to consider the implications of a potential future state in which many foreign countries and currency unions may have introduced CBDCs. Some have suggested that, if these new CBDCs were more attractive than existing forms of the U.S. dollar, global use of the dollar could decrease—and a U.S. CBDC might help preserve the international role of the dollar.
+
+Promoting financial inclusion—particularly for economically vulnerable households and communities—is a high priority for the Federal Reserve. Private-sector electronic transactions accounts facilitate access to digital payments; enable rapid and cost-effective payment of taxes; enable rapid and cost-effective delivery of wages, tax refunds, and other federal payments; provide a secure way for people to save; and promote access to credit.
+
+Some have suggested that a CBDC could reduce common barriers to financial inclusion and could lower transaction costs, which could be particularly helpful for lower-income households. Further study would be helpful to assess the potential for CBDC to expand financial inclusion, including cases targeted to underserved and lower income households.
+
+Cash is currently the only central bank money that is available to the general public, and it remains an important and popular means of payment. According to a 2020 survey, U.S. consumers used cash for 19 percent of total transactions (6 percent by value). The Federal Reserve is committed to ensuring the continued safety and availability of cash and is considering a CBDC as a means to expand safe payment options, not to reduce or replace them.
+
+In some jurisdictions, however, digital payments have rapidly supplanted cash. While cash use in the United States fell from 40 percent of transactions in 2012 (12 percent by value) to 19 percent in 2020, other countries have seen more rapid declines. In Sweden, for example, the proportion of cash payments fell from 33 percent to less than 10 percent over the same period. In China, 50 percent of point-of-sale (POS) payments are made with a mobile wallet or app, while cash accounts for just 13 percent of POS payments. If these trends were to emerge in the United States, consumers might want the option of digitized central bank money that, like cash, would have no credit or liquidity risk attached to it.
+
+Although the introduction of a CBDC could benefit U.S. consumers and the broader financial system, it would also raise complex policy issues and risks. Each of the issues described below will require additional research and analysis.
+
+A CBDC could fundamentally change the structure of the U.S. financial system, altering the roles and responsibilities of the private sector and the central bank.
+
+Banks currently rely (in large part) on deposits to fund their loans. A widely available CBDC would serve as a close—or, in the case of an interest-bearing CBDC, near-perfect—substitute for commercial bank money. This substitution effect could reduce the aggregate amount of deposits in the banking system, which could in turn increase bank funding expenses, and reduce credit availability or raise credit costs for households and businesses. Similarly, an interest-bearing CBDC could result in a shift away from other low-risk assets, such as shares in money market mutual funds, Treasury bills, and other short-term instruments. A shift away from these other low-risk assets could reduce credit availability or raise credit costs for businesses and governments.
+
+These concerns could potentially be mitigated by CBDC design choices. A non-interest-bearing CBDC, for example, would be less attractive as a substitute for commercial bank money. In addition, a central bank might limit the amount of CBDC an end user could hold.
+
+A CBDC could spur innovation by banks and other actors and would be a safer deposit substitute than many other products, including stablecoins and other types of nonbank money. These forms of nonbank money could cause a shift in deposits away from banks even without a CBDC.
+
+Because central bank money is the safest form of money, a widely accessible CBDC would be particularly attractive to risk-averse users, especially during times of stress in the financial system. The ability to quickly convert other forms of money—including deposits at commercial banks—into CBDC could make runs on financial firms more likely or more severe. Traditional measures such as prudential supervision, government deposit insurance, and access to central bank liquidity may be insufficient to stave off large outflows of commercial bank deposits into CBDC in the event of financial panic.
+
+As with concerns related to financial-sector market structure, some of these flight-to-safety concerns could potentially be mitigated by CBDC design choices. For example, a central bank could pay no interest on CBDC. Nonetheless, because a liability of the central bank is essentially riskless, depositors may prefer CBDC over bank deposits in a crisis even if the CBDC has a less attractive rate of return. A central bank could potentially address this risk by limiting the total amount of CBDC an end user could hold, or it could limit the amount of CBDC an end user could accumulate over short periods.
+
+A CBDC’s design would influence how it might affect monetary policy. Under the current “ample reserves” monetary policy regime, the Federal Reserve exercises control over the level of the federal funds rate and other short-term interest rates primarily through the setting of the Federal Reserve’s administered rates. This regime does not require active management of the supply of reserves. Expected levels of daily fluctuations in the quantity of reserves generally have little effect on the level of the federal funds rate and other short-term interest rates.
+
+In this framework, the introduction of CBDC could affect monetary policy implementation and interest rate control by altering the supply of reserves in the banking system. In the case of a noninterest-bearing CBDC, the level and volatility of the public’s demand for CBDC might be comparable to other factors that currently affect the quantity of reserves in the banking system, such as changes in physical currency or overnight repurchase agreements. In this case, a decline in CBDC that resulted in a corresponding increase in reserves would only make reserves more ample and would have little effect on the federal funds rate.
+
+Similarly, an increase in CBDC that pushed reserves lower would also have little effect on the federal funds rate if the initial supply of reserves were large enough to provide an adequate buffer. Over the long term, the Federal Reserve might have to increase the size of its balance sheet to accommodate CBDC growth, similar to the balance-sheet impact of issuing increasing amounts of physical currency. This need would be mitigated to the extent that demand for the CBDC represented a shift, directly or indirectly, away from the Federal Reserve’s nonreserve liabilities, including physical currency. Additionally, the Federal Reserve would likely need to increase the level of reserves on average, in order to provide an adequate buffer against unanticipated increases in CBDC. Such surges could otherwise push the aggregate quantity of reserves in the banking system below the “ample” level and put upward pressure on the federal funds rate.
+
+The interactions between CBDC and monetary policy implementation would be more pronounced and more complicated if the CBDC were interest-bearing at levels that are comparable to rates of return on other safe assets. In this case, the level and volatility of the public’s demand for CBDC could be quite substantial. Consumers, businesses, and potentially others could decide to pare their holdings of bank deposits, Treasury bills, and money market mutual fund investments and increase holdings of CBDC.
+
+The potential for significant foreign demand for CBDC in this scenario would further complicate monetary policy implementation. Changes in interest rates and other market factors could also significantly affect public demand for CBDC over time. To maintain an ample supply of reserves, the Federal Reserve might need to substantially expand its holdings of securities. The potential for market developments to have a material effect on the variability in demand for CBDC could also present challenges for managing reserves and implementing policy.
+
+Beyond these reserve-management effects, a rapidly expanding economic literature has considered the broader potential of interest-bearing CBDC as a new policy tool with associated effects on the channels of influence in monetary policy. The issues studied include topics such as the potential effects of CBDC on bank deposits and bank lending, the potential effects of CBDC on the economic decisions of households and businesses, and the possible interactions of CBDC with the Federal Reserve’s other tools in conducting monetary policy to achieve its macroeconomic objectives. These and related topics are active areas of research that will no doubt yield additional insights over time.
+
+Any CBDC would need to strike an appropriate balance between safeguarding consumer privacy rights and affording the transparency necessary to deter criminal activity.
+
+Consumer privacy: A general-purpose CBDC would generate data about users’ financial transactions in the same ways that commercial bank and nonbank money generates such data today. In the intermediated CBDC model that the Federal Reserve would consider, intermediaries would address privacy concerns by leveraging existing tools.
+
+Prevention of financial crimes: Relatedly, financial institutions must comply with a robust set of rules that are designed to combat money laundering and the financing of terrorism. These rules include customer due diligence, recordkeeping, and reporting requirements. As noted above, any CBDC would need to be designed in a manner that facilitates compliance with these rules. Intermediated models for a U.S. CBDC have the distinct advantage of involving private-sector partners with established programs to help ensure compliance with these rules.
+
+Threats to existing payment services—including operational disruptions and cybersecurity risks— would apply to a CBDC as well. Any dedicated infrastructure for a CBDC would need to be extremely resilient to such threats, and the operators of the CBDC infrastructure would need to remain vigilant as bad actors employ ever more sophisticated methods and tactics. Designing appropriate defenses for CBDC could be particularly difficult because a CBDC network could potentially have more entry points than existing payment services.
+
+Although securing CBDC would be challenging, a CBDC could enhance the operational resilience of the payment system if it were designed with offline capability (that is, if it allowed some payments to be made without internet access). Many digital payments today cannot be executed during natural disasters or other large disruptions, and affected areas must rely on in-person cash transactions. Central banks are currently researching whether offline CBDC payment options would be feasible.
+
+As noted above, the introduction of a CBDC would represent a highly significant innovation in American money. This paper is the first step in a public discussion between the Federal Reserve and stakeholders about CBDC.
+
+The Federal Reserve will only take further steps toward developing a CBDC if research points to benefits for households, businesses, and the economy overall that exceed the downside risks, and indicates that CBDC is superior to alternative methods. Furthermore, the Federal Reserve would only pursue a CBDC in the context of broad public and cross-governmental support.
+
+The Federal Reserve welcomes comments from all stakeholders on the questions listed below. The Federal Reserve will also conduct targeted outreach and convene public forums to foster a broad dialogue about CBDC.
+
+Please provide any answers to questions by May 20, 2022, using the form at https:// www.federalreserve.gov/apps/forms/cbdc. It is not a requirement that all questions be answered.
+
+Please note: All public questions and comments on the Money and Payments: The U.S. Dollar in the Age of Digital Transformation discussion paper, however they are submitted (i.e., electronically or in paper form), will be made available publicly (including by posting on our website). Questions and comments are not edited for public viewing but are reproduced as submitted. However, the Board reserves the ability to redact information when necessary for technical reasons or to remove sensitive information. The names and addresses of commenters are included with all comments made available for public viewing.
+
+1. What additional potential benefits, policy considerations, or risks of a CBDC may exist that have not been raised in this paper?
+
+2. Could some or all of the potential benefits of a CBDC be better achieved in a different way?
+
+3. Could a CBDC affect financial inclusion? Would the net effect be positive or negative for inclusion?
+
+4. How might a U.S. CBDC affect the Federal Reserve’s ability to effectively implement monetary policy in the pursuit of its maximum-employment and price-stability goals?
+
+5. How could a CBDC affect financial stability? Would the net effect be positive or negative for stability?
+
+6. Could a CBDC adversely affect the financial sector? How might a CBDC affect the financial sector differently from stablecoins or other nonbank money?
+
+7. What tools could be considered to mitigate any adverse impact of CBDC on the financial sector? Would some of these tools diminish the potential benefits of a CBDC?
+
+8. If cash usage declines, is it important to preserve the general public’s access to a form of central bank money that can be used widely for payments?
+
+9. How might domestic and cross-border digital payments evolve in the absence of a U.S. CBDC?
+
+10. How should decisions by other large economy nations to issue CBDCs influence the decision whether the United States should do so?
+
+11. Are there additional ways to manage potential risks associated with CBDC that were not raised in this paper?
+
+12. How could a CBDC provide privacy to consumers without providing complete anonymity and facilitating illicit financial activity?
+
+13. How could a CBDC be designed to foster operational and cyber resiliency? What operational or cyber risks might be unavoidable?
+
+14. Should a CBDC be legal tender?
+
+15. Should a CBDC pay interest? If so, why and how? If not, why not?
+
+16. Should the amount of CBDC held by a single end user be subject to quantity limits?
+
+17. What types of firms should serve as intermediaries for CBDC? What should be the role and regulatory structure for these intermediaries?
+
+18. Should a CBDC have “offline” capabilities? If so, how might that be achieved?
+
+19. Should a CBDC be designed to maximize ease of use and acceptance at the point of sale? If so, how?
+
+20. How could a CBDC be designed to achieve transferability across multiple payment platforms? Would new technology or technical standards be needed?
+
+21. How might future technological innovations affect design and policy choices related to CBDC?
+
+22. Are there additional design principles that should be considered? Are there tradeoffs around any of the identified design principles, especially in trying to achieve the potential benefits of a CBDC?
+
+The Federal Reserve is actively researching and experimenting with digital currencies. The work falls into four categories: technological experimentation, economic and policy research, stakeholder engagement and outreach, and international collaboration.
+
+The Federal Reserve is engaged in a number of experiments related to digital currencies, including a hypothetical CBDC. These experiments enrich the Federal Reserve’s policy discussions related to digital currency by giving experimenters hands-on experience with the opportunities and limitations of various technologies. Examples of current experiments include
+
+building a hypothetical CBDC that would leverage existing technologies and systems: The Board’s Technology Lab has been assessing the potential of a centralized CBDC design that leverages existing infrastructure and technology;
+
+exploring a CBDC design that would leverage newer technologies, such as blockchain: The Federal Reserve Bank of Boston is collaborating with the Massachusetts Institute of Technology’s Digital Currency Initiative to explore the development of alternative platforms;
+
+considering the use of distributed ledger technology for wholesale payments: The Board’s Technology Lab has been studying how distributed ledger technology could be used to support interbank settlement;
+
+enhancing existing services to support privately issued digital currencies: The Board’s Technology Lab has been studying the use of application programming interfaces to support the issuance, distribution, and use of privately issued digital currencies;
+
+advancing other payments innovation, including payments fraud research: The Federal Reserve Bank of Atlanta is collaborating with Georgia State University and its Evidence-Based Cybersecurity Research Group on using darknet data to reduce fraud; and
+
+advancing thinking on key issues related to security, programmable money, interoperability, and standards, among other topics.
+
+The Federal Reserve is engaged in extensive economic and policy research on digital currencies, focusing especially on financial inclusion and financial stability.
+
+The Federal Reserve Bank of Cleveland is creating an academic collaboration that will examine how a CBDC could be designed to support financial inclusion.
+
+The Federal Reserve Bank of Atlanta is considering whether cash-based and vulnerable populations could safely access and benefit from digital payments.
+
+Policy analysts and economists are studying a range of digital currency issues, including privacy considerations and monetary policy implications for CBDCs and private digital assets.
+
+The Federal Reserve closely follows developments related to digital payments and CBDC in the private sector, foreign central banks, and academia. The Federal Reserve also meets with a variety of stakeholders to understand different perspectives on CBDC. One venue for such dialogue is the Innovation Office Hours hosted by the Federal Reserve Banks. These meetings help Federal Reserve staff understand market developments and allow private-sector and academic stakeholders to better understand the types of questions the Federal Reserve is considering related to CBDC. The Federal Reserve will expand its public dialogue this year to ensure it solicits a wide range of views.
+
+The Federal Reserve works closely with other central banks and international organizations to understand key issues related to CBDCs and other payment innovations. The Federal Reserve collaborated with six other central banks and the Bank for International Settlements to produce a report in October 2020 on foundational principles for CBDCs. It has continued this work in 2021 with further analysis of policy options and practical implementation issues.
+
+The Federal Reserve is also an active participant in workstreams supporting the Financial Stability Board’s roadmap for improving cross-border payments. In addition, the Federal Reserve Bank of New York has established an Innovation Center to facilitate collaboration with the Bank for International Settlements on a number of financial innovations.
+
+In the United States, central bank money is a liability of the Federal Reserve and comes in two forms: (1) physical currency circulating among the general public (with some held by banks) and (2) digital account balances held by banks and a limited number of other eligible institutions at the Federal Reserve. Physical currency has legal tender status in the United States.
+
+As of November 2021, there was around $6.39 trillion of central bank money. Of this, $4.18 trillion was in the form of balances at the Federal Reserve and $2.21 trillion was in the form of circulating cash.
+
+Central bank money is the most trusted and safest form of money because the Federal Reserve, as a central bank issuer, presents no credit risk and no liquidity risk. As the safest form of money, central bank money plays an important role as a settlement asset for critically important interbank payment systems.
+
+Dollar-denominated balances held by consumers in commercial bank accounts are “commercial bank money.” These balances are liabilities of commercial banks, not of the Federal Reserve. As of November 2021, commercial banks held approximately $4.76 trillion in demand deposits and $13.47 trillion in other liquid deposits.
+
+Balances at commercial banks are also integral to banks’ function as providers of credit to the economy. Banks extend loans to consumers and businesses, funded in part by the deposits they hold. As of December 2021, there was around $16.41 trillion in bank credit outstanding, reflecting loans and other credit provided to households, businesses, and governments.
+
+Today, the safety of commercial bank money is supported by federal deposit insurance (subject to certain limits), a system of prudential regulation and supervision, and access to liquidity from the Federal Reserve. Under this regime, commercial bank money is sufficiently safe that the general public can transact in commercial bank money with confidence that a dollar of bank deposits is easily exchangeable for a dollar of physical currency or a dollar of deposits at another bank. This has not always been the case. In the early nineteenth century, the principal form of commercial bank money was the banknote—paper money issued by a particular bank rather than the government—rather than deposit balances, and banknotes were often treated very differently depending on the issuing bank.
+
+Some nonbank financial service providers also issue liabilities that can be considered money. These providers often hold balances on behalf of consumers or businesses and effect transfers of those balances on their own books for users that have signed up for their services.
+
+Money market mutual fund (MMF) shares can be viewed as another form of nonbank money. MMF shares are issued by nonbanks, and some MMFs, particularly those offered to businesses and institutions, offer immediate liquidity through the sale of shares, fostering their use as money. MMF shares can also serve as a store of value, and frequently are designed to offer investors a stable share price.
+
+Balances held at nonbank financial service providers are typically supported by specific assets or are backed one-for-one with deposits in a bank account. The public often expects that nonbank money will maintain a stable value and remain readily convertible into both physical currency and bank deposits, but that is not always the case because the assets supporting nonbank money are not risk-free. For example, a decline in the value of a security that backs nonbank money may imperil the nonbank money’s conversion into commercial bank money quickly and at a fixed rate. Concern that nonbank money will not remain convertible quickly at full one-for-one value may fuel runs on this money. That is, having lost confidence, holders will try to convert out of their nonbank money more quickly and in greater amounts. This puts more pressure on sales of supporting securities or other assets, causing worse losses.
+
+Over the years, many forms of nonbank money have succumbed to these types of runs. Indeed, the global financial crisis in 2008 was in large part a crisis of nonbank money, and nonbank money contributed to financial strains again at the onset of the COVID-19 pandemic.
+
+While nonbank financial service providers may be subject to certain state regulations (such as money transmitter laws ) and MMFs are regulated by the Securities and Exchange Commission, nonbank money lacks many of the protections of commercial bank money. For example, nonbank money issuers are currently not eligible for certain protections against run risk, including regular access to liquidity from the Federal Reserve and federal deposit insurance for customer balances.
+
+In order to serve as a means of payment and a store of value, money must be accessible to the general public. The means by which the general public accesses different types of money vary.
+
+As described above, central bank money currently comes in two forms: physical currency and digital account balances held by eligible institutions at the Federal Reserve. The Federal Reserve distributes physical currency to commercial banks, which in turn distribute physical currency to the general public. Digital account balances, by law, may only be maintained at the Federal Reserve by banks and a limited number of other eligible entities, which are then able to use these balances to settle payments between each other. That is, such transfers are effected by the Federal Reserve through accounts held at Reserve Banks, with the Federal Reserve maintaining records of transactions that are accepted by all parties.
+
+Commercial banks serve as the general public’s primary access point to accounts and payment services, providing 124 million U.S. households access to commercial bank money and payment services. Given the risks of fraud, theft, and illicit activity related to the access and use of commercial bank money, commercial banks are subject to regulatory requirements for customer identification.
+
+In recent years, nonbank service providers have developed convenient new ways for the general public to access both commercial bank and nonbank money. For example, some nonbank financial service providers offer user-friendly interfaces that facilitate transactions in commercial bank money between participating institutions. Other nonbank financial service providers offer access to nonbank money in the form of balances at nonbanks that can be accessed online or on mobile device applications. Nonbank financial service providers typically operate closed systems—that is, both the sender and recipient of a payment must establish a customer relationship with the nonbank service provider before a transaction can be completed.

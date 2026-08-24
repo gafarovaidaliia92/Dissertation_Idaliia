@@ -1,0 +1,46 @@
+==============================================================================
+RQ3 (1/3) — THE LEVEL LINK: CAR ~ vulnerability + controls
+==============================================================================
+
+  H3 predicts delta1 < 0: a bank the RQ1 model calls more vulnerable
+  should earn a more negative abnormal return around CBDC communications.
+
+  sample: 2956 bank-events, 276 banks, 11 events
+  CAR standard deviation: 0.04805071  (4.805071 pp)
+  SEs clustered on the bank, t with G-1 df.
+
+  All three measures are oriented HIGHER = MORE VULNERABLE. Because they
+  live on very different scales, the comparable column is 'per 1 SD' —
+  delta1 x SD(measure), in CAR percentage points — and the MDE beside it.
+
+    measure                    spec               delta1            SE          p  per 1 SD pp       MDE pp  sig
+    ------------------------------------------------------------------------------------------------------------
+    uninsured_share            pooled        -0.00617896    0.00537566   0.251376    -0.090328     0.220037  (n.s.)
+    uninsured_share            event FE      -0.01877493    0.00515207   0.000321    -0.274463     0.210885  ***
+
+    RF score (leakage-free)    pooled         0.13184258    0.06361510   0.039153     0.184220     0.248886  **
+    RF score (leakage-free)    event FE       0.06011100    0.06188426   0.332233     0.083992     0.242114  (n.s.)
+
+    OLS score (same split)     pooled         0.10934188    0.04864482   0.025387     0.184937     0.230374  **
+    OLS score (same split)     event FE       0.01232232    0.04451645   0.782140     0.020842     0.210822  (n.s.)
+
+-- reading --
+
+    uninsured_share  delta1 = -0.01877493   p = 0.00032066  ***
+    RF score         delta1 = +0.06011100   p = 0.33223292  (n.s.)
+    OLS score        delta1 = +0.01232232   p = 0.78213952  (n.s.)
+
+    The two model-based scores are null and carry the WRONG sign for H3
+    (positive = more vulnerable, higher CAR). uninsured_share is
+    significant with the H3-predicted NEGATIVE sign.
+
+    Do not over-read the significant one. A negative level effect of
+    uninsured_share on CAR in these windows says vulnerable banks sat at a
+    lower average abnormal return; it does NOT say they were reacting to
+    the CBDC communication. Separating those two readings is exactly what
+    the interaction in rq3_interaction.py does, and the verdict is in
+    rq3_measures.py. Read them before quoting this coefficient.
+
+    Note also the published RQ3 null is a statement about the ML SCORE.
+    It does not extend to uninsured_share, and saying so would be wrong.
+

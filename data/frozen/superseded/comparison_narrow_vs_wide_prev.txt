@@ -1,0 +1,134 @@
+====================================================================================================
+RQ1 — NARROW vs WIDE TRAINING POPULATION
+====================================================================================================
+seed=42  |  5-fold CV  |  features=10  |  identical hyper-parameters in all variants
+
+----------------------------------------------------------------------------------------------------
+0. CHARTER FILTER EFFECT  —  pre-filter wide (all charters) vs filtered wide
+----------------------------------------------------------------------------------------------------
+  pre-filter WIDE-ALL : N=963  (all 2022Q4 filers >$1bn, deposit_reliance>=0.50)
+  filtered  WIDE      : N=953  (credit-card banks HARD-DROPPED; trust/custody FLAGGED & kept)
+  removed by the filter: 10 credit-card banks (FDIC SPECGRP==3)
+  trust/custody/servicer flagged & kept: 23
+
+  WIDE-ALL         better=RandomForest    OLS oosR2=+0.0232  RandomForest oosR2=+0.0571  H1b SUPPORTED
+  WIDE(filtered)   better=RandomForest    OLS oosR2=+0.0250  RandomForest oosR2=+0.0389  H1b SUPPORTED
+
+  OLS signs on the two headline predictors (does the filter move them?):
+    variable              WIDE-ALL coef         p     FILTERED coef         p
+    uninsured_share            -0.07754   0.00006          -0.07713   0.00007
+    unrealised_losses           0.00110   0.68633           0.00119   0.66299
+
+  SHAP top-5:
+   WIDE-ALL                                 |     FILTERED
+         feature  mean_abs_shap             |           feature  mean_abs_shap
+       liquidity       0.008410             |         liquidity       0.007711
+ uninsured_share       0.004342             |   uninsured_share       0.004132
+   int_inc_ratio       0.003433             |     int_inc_ratio       0.004046
+            size       0.002456             |              size       0.002731
+deposit_reliance       0.001314             |  deposit_reliance       0.001437
+
+  TOP-10 vulnerable — does removing trust cos change it?
+   FILTERED wide, all kept (* = trust-flagged)        |     FILTERED wide, trust-flagged EXCLUDED
+ 1. BANK OF NEW YORK MELLON, THE    0.2107 *trust     |   1. SILICON VALLEY BANK             0.1737
+ 2. SILICON VALLEY BANK             0.1737            |   2. STIFEL BANK AND TRUST           0.1443
+ 3. CENLAR FSB                      0.1521 *trust     |   3. MORGAN STANLEY PRIVATE BANK, N  0.1413
+ 4. DEUTSCHE BANK TRUST COMPANY AM  0.1459 *trust     |   4. TIB, NATIONAL ASSOCIATION       0.1379
+ 5. STIFEL BANK AND TRUST           0.1443            |   5. CHARLES SCHWAB BANK, SSB        0.1364
+ 6. MORGAN STANLEY PRIVATE BANK, N  0.1413            |   6. CONNECTONE BANK                 0.1254
+ 7. TIB, NATIONAL ASSOCIATION       0.1379            |   7. CROSS RIVER BANK                0.1126
+ 8. CHARLES SCHWAB BANK, SSB        0.1364            |   8. JOHN DEERE FINANCIAL, F.S.B.    0.1066
+ 9. CONNECTONE BANK                 0.1254            |   9. GOLDMAN SACHS BANK USA          0.0945
+10. SUMITOMO MITSUI TRUST BANK (U.  0.1180 *trust     |  10. JPMORGAN CHASE BANK, NATIONAL   0.0807
+
+NARROW = 278 listed banks matched to CRSP (277 modelled after the merger exit).
+WIDE   = all 2022Q4 Call Report filers, assets > $1bn, deposit_reliance >= 0.50 (953 modelled; 265 of them are listed).
+
+----------------------------------------------------------------------------------------------------
+1. OUT-OF-SAMPLE PERFORMANCE (H1b)
+----------------------------------------------------------------------------------------------------
+NARROW  (N=277)                                 |  WIDE  (N=953)
+                                                |  
+                  oos_RMSE   oos_R2             |                    oos_RMSE   oos_R2
+model                                           |  model                              
+OLS                0.13195 -0.02210             |  OLS                0.09195  0.02498
+RandomForest       0.13260 -0.03223             |  RandomForest       0.09129  0.03886
+GradientBoosting   0.13585 -0.08341             |  GradientBoosting   0.09317 -0.00112
+
+  NARROW  better tree = RandomForest      H1b NOT supported  (RandomForest oos_RMSE 0.13260 >= OLS 0.13195)
+  WIDE    better tree = RandomForest      H1b SUPPORTED  (RandomForest oos_RMSE 0.09129 < OLS 0.09195)
+
+----------------------------------------------------------------------------------------------------
+2. OLS — the two predictors that carried H1a in the narrow sample
+----------------------------------------------------------------------------------------------------
+variable            variant         coef        t          p   beta_std  sign
+uninsured_share     NARROW      -0.23289   -4.076   0.000061   -0.25722  -
+uninsured_share     WIDE        -0.07713   -4.003   0.000067   -0.12998  -
+
+unrealised_losses   NARROW       0.13259    2.808   0.005352    0.22714  +
+unrealised_losses   WIDE         0.00119    0.436   0.662988    0.01420  +
+
+  in-sample OLS R^2:  narrow=0.1384   wide=0.0782
+
+----------------------------------------------------------------------------------------------------
+3. SHAP top-5 (chosen tree, fitted on the full respective population)
+----------------------------------------------------------------------------------------------------
+NARROW — RandomForest                           |  WIDE — RandomForest
+                                                |  
+          feature  mean_abs_shap                |           feature  mean_abs_shap
+  uninsured_share       0.012105                |         liquidity       0.007711
+        liquidity       0.004525                |   uninsured_share       0.004132
+             size       0.003909                |     int_inc_ratio       0.004046
+unrealised_losses       0.003763                |              size       0.002731
+    int_inc_ratio       0.003590                |  deposit_reliance       0.001437
+
+----------------------------------------------------------------------------------------------------
+4. TOP-10 BY VULNERABILITY SCORE
+----------------------------------------------------------------------------------------------------
+NARROW (cross_val_predict, listed only)               |  WIDE (cross_val_predict, all 953)
+                                                      |  
+ 1. STATE STREET BANK AND TRUST COMPAN  0.2169        |   1. BANK OF NEW YORK MELLON, THE        0.2107
+ 2. UMB BANK, NATIONAL ASSOCIATION      0.1987        |   2. SILICON VALLEY BANK                 0.1737
+ 3. TRISTATE CAPITAL BANK               0.1936        |   3. CENLAR FSB                          0.1521
+ 4. CONNECTONE BANK                     0.1702        |   4. DEUTSCHE BANK TRUST COMPANY AMERIC  0.1459
+ 5. QUAD CITY BANK AND TRUST COMPANY    0.1573        |   5. STIFEL BANK AND TRUST               0.1443
+ 6. BANK OF NEW YORK MELLON, THE        0.1454        |   6. MORGAN STANLEY PRIVATE BANK, NATIO  0.1413
+ 7. BANKWELL BANK                       0.1108        |   7. TIB, NATIONAL ASSOCIATION           0.1379
+ 8. SILICON VALLEY BANK                 0.1061        |   8. CHARLES SCHWAB BANK, SSB            0.1364
+ 9. NORTHERN TRUST COMPANY, THE         0.0999        |   9. CONNECTONE BANK                     0.1254
+10. BANK OF AMERICA, NATIONAL ASSOCIAT  0.0922        |  10. SUMITOMO MITSUI TRUST BANK (U.S.A.  0.1180
+
+----------------------------------------------------------------------------------------------------
+5. SIZE-FLOOR SENSITIVITY (wide population; only the floor changes)
+----------------------------------------------------------------------------------------------------
+         N  listed  OLS_oos_RMSE  OLS_oos_R2          tree  tree_oos_RMSE  tree_oos_R2        H1b
+floor                                                                                            
+$1bn   953     265       0.09195     0.02498  RandomForest        0.09129      0.03886  SUPPORTED
+$5bn   261     154       0.15039    -0.03666  RandomForest        0.14554      0.02909  SUPPORTED
+$10bn  149      94       0.19074    -0.08002  RandomForest        0.18747     -0.04335  SUPPORTED
+
+----------------------------------------------------------------------------------------------------
+6. RQ3 HAND-OFF — leakage-free scores for the listed banks
+----------------------------------------------------------------------------------------------------
+  trained on the wide population EXCLUDING all listed banks (N=688), model = RandomForest
+  its own 5-fold CV on that training set:  oos_RMSE=0.07171  oos_R2=0.0110
+  transferred to 277 listed banks: RMSE=0.12853  R2=0.0302
+
+  (9 of the 277 listed scored banks carry is_trust_or_specialized=True — kept, not dropped; '* trust' below)
+  top-10 listed banks by leakage-free vulnerability_score:
+     1. BANK OF NEW YORK MELLON, THE             permno=49656   0.0571 * trust
+     2. STATE STREET BANK AND TRUST COMPANY      permno=72726   0.0567 * trust
+     3. NORTHERN TRUST COMPANY, THE              permno=58246   0.0555 * trust
+     4. FROST BANK                               permno=27888   0.0468
+     5. SILICON VALLEY BANK                      permno=11786   0.0359
+     6. EASTERN BANK                             permno=19854   0.0251
+     7. MACATAWA BANK                            permno=87501   0.0242
+     8. JPMORGAN CHASE BANK, NATIONAL ASSOCIATIO permno=47896   0.0216
+     9. BANK OF AMERICA, NATIONAL ASSOCIATION    permno=59408   0.0193
+    10. NORTHRIM BANK                            permno=76529   0.0149
+
+  rank agreement with the narrow scores (same 277 banks):
+    Spearman rho = 0.5958   Pearson r = 0.5713
+    top-10 overlap: 5/10 banks
+
+====================================================================================================
