@@ -131,6 +131,27 @@ def run_pipeline() -> dict:
     got.update(stage("ROBUSTNESS — Section 3.7 windows, S_norm, threshold",
                      rq2_robustness.main))
 
+    # Inference add-ons. Neither re-specifies anything: the first tabulates the
+    # nested-tuning metrics behind Table 5 (parsed, not re-estimated), the second
+    # recomputes the p-value of every event-clustered coefficient by a wild
+    # cluster bootstrap. It runs AFTER rq2_robustness because it bootstraps that
+    # stage's variants too, and it reproduces every published CRV1 fit to 1e-8
+    # before it will bootstrap anything.
+    import rq1_tuned_table
+    import rq_wildboot
+    got.update(stage("INFERENCE 1/3 — Table 5 tuned metrics",
+                     rq1_tuned_table.main))
+    got.update(stage("INFERENCE 2/3 — wild cluster bootstrap p-values",
+                     lambda: rq_wildboot.main(with_variants=True)))
+
+    # The pre-crisis comparison period. Builds its own panels straight from the
+    # Call Report archives, so it needs data/raw/ but nothing from the RQ2/RQ3
+    # stages. It refuses to run unless its parameterised panel builder first
+    # reproduces panel_2022Q4_wide.csv and Table 3 column 2 exactly.
+    import rq1_placebo
+    got.update(stage("INFERENCE 3/3 — pre-crisis comparison period (2022Q2)",
+                     rq1_placebo.main))
+
     import rq2_figures
     stage("FIGURE 2 — Safeguard score by event", rq2_figures.main, optional=True)
 
@@ -263,13 +284,21 @@ def main() -> None:
 
     got = {} if VERIFY_ONLY else run_pipeline()
     if VERIFY_ONLY:
+        import rq1_tuned_table
         import rq2_avg_effect
         import rq2_reaction
         import rq3_interaction
         import rq3_link
         import rq3_measures
+        import rq_wildboot
+        # --variants is NOT passed here, for the same reason rq2_robustness is
+        # not in this list: --verify recomputes the baseline headline numbers,
+        # and the Section 3.7 variants need a CAR rebuild off data/raw/wrds. The
+        # variant bootstrap keys therefore report "NOT RECOMPUTED" under
+        # --verify, exactly as the variant CRV1 keys already do.
         for fn in (rq2_reaction.main, rq2_avg_effect.main, rq3_link.main,
-                   rq3_interaction.main, rq3_measures.main):
+                   rq3_interaction.main, rq3_measures.main,
+                   rq1_tuned_table.main, rq_wildboot.main):
             got.update(fn())
         got.update(read_rq1_headlines())
 

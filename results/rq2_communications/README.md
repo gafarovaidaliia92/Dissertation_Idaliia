@@ -50,7 +50,7 @@ to significant.
 ### Structural points, enforced not described
 
 - S varies ONLY across the 11 events, so **no event-FE spec is estimated for S**:
-  the event dummies absorb it exactly (max residual 7.061e-14).
+  the event dummies absorb it exactly (max residual 1.910e-14).
   Collinearity, not a zero.
 - SEs cluster on the **EVENT** (11 clusters, t(10)). Bank clustering would treat
   276 banks as independent information about an 11-valued regressor and shrinks

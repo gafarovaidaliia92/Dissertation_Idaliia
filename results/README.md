@@ -1,6 +1,6 @@
 # Results
 
-Assembled by `scripts/collect_results.py` — 2026-08-24.
+Assembled by `scripts/collect_results.py` — 2026-08-26.
 
 `data/processed/` is the pipeline's working directory; this folder is the
 shop window. Rebuild after any re-run:
@@ -16,7 +16,7 @@ python3 scripts/collect_results.py
 | `rq1_vulnerability/` | H1a/H1b — balance-sheet model of outflow | H1a partial, H1b **not robust** |
 | `rq2_communications/` | H2 — did the market react, on average? | **no reaction**, gamma1 null |
 | `rq3_bridge/` | H3 — do the two proxies meet? | **mechanism not supported** |
-| `shared_inputs/` | sample, crosswalk, reconciliation | 278 banks; 220/220 numbers reconcile |
+| `shared_inputs/` | sample, crosswalk, reconciliation | 278 banks; 300/300 numbers reconcile |
 | `_archive/` | superseded versions | incl. the interaction-as-H2 era |
 
 ## The through-line

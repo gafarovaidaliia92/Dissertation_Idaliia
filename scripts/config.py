@@ -105,6 +105,27 @@ RQ3_MEASURES = PROC / "rq3_measures.txt"
 RQ3_BRIDGE_CSV = PROC / "rq3_bridge.csv"
 RQ3_CUSTODY = PROC / "rq3_custody_check.txt"   # Appendix C source
 
+# ---- inference add-ons (supervisor's final review) --------------------------
+# These ADD to the reported inference; they re-specify nothing. rq_wildboot.py
+# recomputes the p-value of every event-clustered baseline coefficient by a wild
+# cluster bootstrap (11 clusters is too few for CRV1) and reports the MDE for the
+# uninsured x Safeguard interaction. rq1_tuned_table.py reports the nested-tuning
+# metrics behind Table 5, which the pipeline computed but never tabulated.
+RQ_WILDBOOT = PROC / "rq_wildboot.txt"
+RQ1_TUNED_CSV = PROC / "rq1_tuned_metrics.csv"     # Table 5, machine-readable
+RQ1_TUNED_TEX = PROC / "rq1_tuned_metrics.tex"     # Table 5, booktabs fragment
+
+# ---- pre-crisis comparison period (2022Q2) ----------------------------------
+# rq1_placebo.py re-estimates the RQ1 specification on a non-banking-stress
+# period to establish whether the uninsured-deposit relationship is specific to
+# the 2023 stress or a persistent structural correlate. Never "calm period".
+RQ1_PLACEBO = PROC / "rq1_placebo.txt"
+RQ1_PLACEBO_MD = PROC / "rq1_placebo.md"
+RQ1_PLACEBO_TEX = PROC / "rq1_placebo_table.tex"
+RQ1_PLACEBO_CSV = PROC / "rq1_placebo_table.csv"
+RQ1_PLACEBO_MQ_CSV = PROC / "rq1_placebo_by_quarter.csv"
+RQ1_DEPGROWTH_CSV = PROC / "rq1_deposit_growth_by_quarter.csv"
+
 # ---- reconciliation ---------------------------------------------------------
 HEADLINE_JSON = PROC / "headline_numbers.json"
 RECONCILIATION = PROC / "reconciliation.txt"
@@ -670,4 +691,221 @@ FROZEN: dict[str, tuple[float, float, str]] = {
         0.57029546, 1e-8, "3.7 robustness: win m5p5.gamma1.p"),
     "rq2.robust.win_m5p5.gamma1.se": (
         0.01589635, 1e-8, "3.7 robustness: win m5p5.gamma1.se"),
+
+    # ======================================================================= #
+    #  ADDED 2026-08-25 — the supervisor's final-review inference checks.
+    #
+    #  These keys ADD to the record; not one existing key above is touched. The
+    #  additions re-test and report what was already estimated — they do not
+    #  re-specify anything:
+    #
+    #    * rq_wildboot.py recomputes the p-value of every baseline coefficient
+    #      whose SEs are clustered on the EVENT. With 11 clusters CRV1 is
+    #      unreliable, so the p-values are redone by a wild cluster bootstrap
+    #      (Rademacher, null imposed, bootstrap type "11"). Every point estimate
+    #      and standard error is unchanged, and the script refuses to run unless
+    #      it first reproduces the published CRV1 fit to 1e-8.
+    #    * rq1_tuned_table.py tabulates the nested-tuning metrics behind Table 5,
+    #      parsed out of rq1_h1b_robustness.txt rather than re-estimated.
+    #
+    #  Table 8's LINK column (delta1) is clustered on the BANK, 276 clusters, and
+    #  is deliberately NOT bootstrapped.
+    # ======================================================================= #
+
+    # ---- Task 1 — WILD CLUSTER BOOTSTRAP p-VALUES (rq_wildboot.py). 11 event clusters,
+    #        so 2^11 = 2048 sign patterns are FULLY ENUMERATED: each p is an exact
+    #        k/2048, deterministic, and reconciles at tolerance 0.
+    "rq2.wildboot.gamma1.augmented.p": (
+        0.43359375000, 0, "Table 7 gamma1, augmented CAR: wild cluster bootstrap p"),
+    "rq2.wildboot.gamma1.controls.p": (
+        0.66894531250, 0, "Table 7 gamma1, with controls: wild cluster bootstrap p"),
+    "rq2.wildboot.gamma1.nocontrols.p": (
+        0.70410156250, 0, "Table 7 gamma1, no controls: wild cluster bootstrap p"),
+    "rq3.wildboot.b.score_ols.p": (
+        0.04687500000, 0, "Table 8 b on S x OLS score: bootstrap p (CRV1 was 0.00285943)"),
+    "rq3.wildboot.b.score_rf.p": (
+        0.06835937500, 0, "Table 8 b on S x RF score: bootstrap p (CRV1 was 0.01148834)"),
+    "rq3.wildboot.b.uninsured_share.p": (
+        0.98535156250, 0, "Table 8 b on S x uninsured_share: bootstrap p"),
+    "rq3.wildboot.excustody.b.score_ols.p": (
+        0.18750000000, 0, "Appendix C b on S x OLS score, ex-custody: bootstrap p"),
+    "rq3.wildboot.excustody.b.score_rf.p": (
+        0.26269531250, 0, "Appendix C b on S x RF score, ex-custody: bootstrap p"),
+    "rq3.wildboot.excustody.b.uninsured_share.p": (
+        0.85839843750, 0, "Appendix C b on S x uninsured_share, ex-custody: bootstrap p"),
+
+    # ---- Task 1 (cont.) — the same treatment for the Section 3.7 robustness variants.
+    #        The threshold variant has 7 events, so its p is k/128.
+    "rq2.robust.wildboot.snorm.beta.score_ols.p": (
+        0.04492187500, 0, "3.7 robustness, bootstrap p: snorm beta score_ols"),
+    "rq2.robust.wildboot.snorm.beta.score_rf.p": (
+        0.04980468750, 0, "3.7 robustness, bootstrap p: snorm beta score_rf"),
+    "rq2.robust.wildboot.snorm.beta.uninsured_share.p": (
+        0.97851562500, 0, "3.7 robustness, bootstrap p: snorm beta uninsured_share"),
+    "rq2.robust.wildboot.snorm.gamma1.p": (
+        0.66796875000, 0, "3.7 robustness, bootstrap p: snorm gamma1"),
+    "rq2.robust.wildboot.thresh9.beta.score_ols.p": (
+        0.03125000000, 0, "3.7 robustness, bootstrap p: thresh9 beta score_ols"),
+    "rq2.robust.wildboot.thresh9.beta.score_rf.p": (
+        0.07812500000, 0, "3.7 robustness, bootstrap p: thresh9 beta score_rf"),
+    "rq2.robust.wildboot.thresh9.beta.uninsured_share.p": (
+        0.57812500000, 0, "3.7 robustness, bootstrap p: thresh9 beta uninsured_share"),
+    "rq2.robust.wildboot.thresh9.gamma1.p": (
+        0.71875000000, 0, "3.7 robustness, bootstrap p: thresh9 gamma1"),
+    "rq2.robust.wildboot.win_base.beta.score_ols.p": (
+        0.04687500000, 0, "3.7 robustness, bootstrap p: win_base beta score_ols"),
+    "rq2.robust.wildboot.win_base.beta.score_rf.p": (
+        0.06835937500, 0, "3.7 robustness, bootstrap p: win_base beta score_rf"),
+    "rq2.robust.wildboot.win_base.beta.uninsured_share.p": (
+        0.98535156250, 0, "3.7 robustness, bootstrap p: win_base beta uninsured_share"),
+    "rq2.robust.wildboot.win_base.gamma1.p": (
+        0.66894531250, 0, "3.7 robustness, bootstrap p: win_base gamma1"),
+    "rq2.robust.wildboot.win_m1p3.beta.score_ols.p": (
+        0.05664062500, 0, "3.7 robustness, bootstrap p: win_m1p3 beta score_ols"),
+    "rq2.robust.wildboot.win_m1p3.beta.score_rf.p": (
+        0.08300781250, 0, "3.7 robustness, bootstrap p: win_m1p3 beta score_rf"),
+    "rq2.robust.wildboot.win_m1p3.beta.uninsured_share.p": (
+        0.32226562500, 0, "3.7 robustness, bootstrap p: win_m1p3 beta uninsured_share"),
+    "rq2.robust.wildboot.win_m1p3.gamma1.p": (
+        0.88867187500, 0, "3.7 robustness, bootstrap p: win_m1p3 gamma1"),
+    "rq2.robust.wildboot.win_m5p5.beta.score_ols.p": (
+        0.16894531250, 0, "3.7 robustness, bootstrap p: win_m5p5 beta score_ols"),
+    "rq2.robust.wildboot.win_m5p5.beta.score_rf.p": (
+        0.14746093750, 0, "3.7 robustness, bootstrap p: win_m5p5 beta score_rf"),
+    "rq2.robust.wildboot.win_m5p5.beta.uninsured_share.p": (
+        0.81933593750, 0, "3.7 robustness, bootstrap p: win_m5p5 beta uninsured_share"),
+    "rq2.robust.wildboot.win_m5p5.gamma1.p": (
+        0.58984375000, 0, "3.7 robustness, bootstrap p: win_m5p5 gamma1"),
+
+    # ---- Task 2 — TABLE 5, the nested-tuning metrics (rq1_tuned_table.py). Parsed from
+    #        rq1_h1b_robustness.txt section 3.4; nothing re-estimated.
+    "rq1.tuned.listed.full.OLS.r2": (
+        -0.02209562, 1e-8, "Table 5 nested tuning: listed, all 10 features, OLS OOS R2"),
+    "rq1.tuned.listed.full.OLS.rmse": (
+        0.13194880, 1e-8, "Table 5 nested tuning: listed, all 10 features, OLS OOS RMSE"),
+    "rq1.tuned.listed.full.RF.r2": (
+        -0.13476043, 1e-8, "Table 5 nested tuning: listed, all 10 features, RF OOS R2"),
+    "rq1.tuned.listed.full.RF.rmse": (
+        0.13903104, 1e-8, "Table 5 nested tuning: listed, all 10 features, RF OOS RMSE"),
+    "rq1.tuned.listed.sig.OLS.r2": (
+        0.02253105, 1e-8, "Table 5 nested tuning: listed, OLS-significant features, OLS OOS R2"),
+    "rq1.tuned.listed.sig.OLS.rmse": (
+        0.12903609, 1e-8, "Table 5 nested tuning: listed, OLS-significant features, OLS OOS RMSE"),
+    "rq1.tuned.listed.sig.RF.r2": (
+        -0.03104933, 1e-8, "Table 5 nested tuning: listed, OLS-significant features, RF OOS R2"),
+    "rq1.tuned.listed.sig.RF.rmse": (
+        0.13252549, 1e-8, "Table 5 nested tuning: listed, OLS-significant features, RF OOS RMSE"),
+    "rq1.tuned.wide.full.OLS.r2": (
+        0.02497642, 1e-8, "Table 5 nested tuning: wide, all 10 features, OLS OOS R2"),
+    "rq1.tuned.wide.full.OLS.rmse": (
+        0.09195066, 1e-8, "Table 5 nested tuning: wide, all 10 features, OLS OOS RMSE"),
+    "rq1.tuned.wide.full.RF.r2": (
+        0.00250510, 1e-8, "Table 5 nested tuning: wide, all 10 features, RF OOS R2"),
+    "rq1.tuned.wide.full.RF.rmse": (
+        0.09300421, 1e-8, "Table 5 nested tuning: wide, all 10 features, RF OOS RMSE"),
+    "rq1.tuned.wide.sig.OLS.r2": (
+        0.03395703, 1e-8, "Table 5 nested tuning: wide, OLS-significant features, OLS OOS R2"),
+    "rq1.tuned.wide.sig.OLS.rmse": (
+        0.09152622, 1e-8, "Table 5 nested tuning: wide, OLS-significant features, OLS OOS RMSE"),
+    "rq1.tuned.wide.sig.RF.r2": (
+        0.03052772, 1e-8, "Table 5 nested tuning: wide, OLS-significant features, RF OOS R2"),
+    "rq1.tuned.wide.sig.RF.rmse": (
+        0.09168852, 1e-8, "Table 5 nested tuning: wide, OLS-significant features, RF OOS RMSE"),
+
+    # ---- Task 4 — MDE for the uninsured x Safeguard interaction, on the project's
+    #        standard convention: 2.80 x the analytic event-clustered SE.
+    "rq3.mde.b.uninsured_share.pct_of_car_sd": (
+        25.86825066, 1e-8, "MDE for b on S x uninsured_share, % of a CAR SD"),
+    "rq3.mde.b.uninsured_share.per_sd_pp": (
+        1.24298773, 1e-8, "MDE for b on S x uninsured_share, pp of CAR per 1 SD"),
+    "rq3.mde.b.uninsured_share.raw": (
+        0.05975250, 1e-8, "MDE for b on S x uninsured_share, raw (analytic event-clustered SE)"),
+
+    # ======================================================================= #
+    #  ADDED 2026-08-26 — the pre-crisis comparison period (2022Q2).
+    #
+    #  rq1_placebo.py re-estimates the RQ1 specification on a
+    #  NON-BANKING-STRESS period to establish whether the uninsured-deposit
+    #  relationship in Table 3 is specific to the 2023 stress or a persistent
+    #  structural correlate. Nothing existing is re-specified: the comparison
+    #  period applies the SAME variables, screens and specification with the
+    #  dates shifted, and its panel builder is proven output-identical to the
+    #  frozen one (rebuilding 2022Q4 -> 2023Q1 reproduces panel_2022Q4_wide.csv
+    #  and Table 3 column 2 exactly) before any of these numbers are computed.
+    #
+    #  Terminology: "pre-crisis comparison period" / "non-banking-stress
+    #  comparison period". Never "calm period" — 2022Q2 is in fact the first
+    #  quarter of the system-wide deposit contraction (see
+    #  rq1_deposit_growth_by_quarter.csv).
+    # ======================================================================= #
+
+    # ---- STEP 0/L6 — period-specific regressions and samples ----
+    "rq1.placebo.banks.2022Q2_only": (
+        41, 0, "banks in the comparison period only"),
+    "rq1.placebo.banks.2023Q1_only": (
+        34, 0, "banks in the stress period only"),
+    "rq1.placebo.banks.both": (
+        919, 0, "banks appearing in BOTH periods"),
+    "rq1.placebo.banks.unique": (
+        994, 0, "unique banks in the pooled model"),
+    "rq1.placebo.n.2022Q2": (
+        960, 0, "N, pre-crisis comparison period (2022Q2), all screens at 2022Q1"),
+    "rq1.placebo.n.2023Q1": (
+        953, 0, "N, banking-stress period (2023Q1) = the frozen 953"),
+    "rq1.placebo.uninsured.2022Q2.coef": (
+        -0.00897881, 1e-8, "uninsured_share coef, comparison period OLS"),
+    "rq1.placebo.uninsured.2022Q2.p": (
+        0.50840653, 1e-8, "uninsured_share p, comparison period OLS"),
+    "rq1.placebo.uninsured.2022Q2.t": (
+        -0.66157141, 1e-8, "uninsured_share t, comparison period OLS"),
+    "rq1.placebo.uninsured.2023Q1.coef": (
+        -0.07713467, 1e-8, "uninsured_share coef, stress period (= Table 3 col 2)"),
+    "rq1.placebo.uninsured.2023Q1.p": (
+        0.00006744, 1e-8, "uninsured_share p, stress period (= Table 3 col 2)"),
+    "rq1.placebo.uninsured.2023Q1.t": (
+        -4.00307542, 1e-8, "uninsured_share t, stress period (= Table 3 col 2)"),
+
+    # ---- L5 HEADLINE — the pooled two-period interaction, clustered by bank ----
+    "rq1.placebo.pooled.interaction.coef": (
+        -0.06671359, 1e-8, "HEADLINE: uninsured_share x 1[2023Q1] coef"),
+    "rq1.placebo.pooled.interaction.p": (
+        0.09527093, 1e-8, "HEADLINE: interaction p (bank-clustered)"),
+    "rq1.placebo.pooled.interaction.se": (
+        0.03995266, 1e-8, "HEADLINE: interaction SE, clustered by bank"),
+    "rq1.placebo.pooled.interaction.t": (
+        -1.66981605, 1e-8, "HEADLINE: interaction t"),
+    "rq1.placebo.pooled.n_banks": (
+        994, 0, "pooled unique banks (= clusters)"),
+    "rq1.placebo.pooled.n_obs": (
+        1913, 0, "pooled bank-period observations"),
+    "rq1.placebo.pooled.stress.coef": (
+        -0.01077912, 1e-8, "pooled model: 1[2023Q1] dummy coef"),
+    "rq1.placebo.pooled.stress.p": (
+        0.55013391, 1e-8, "pooled model: 1[2023Q1] dummy p"),
+    "rq1.placebo.pooled.uninsured_main.coef": (
+        -0.00592065, 1e-8, "pooled model: uninsured_share (pre-crisis slope)"),
+    "rq1.placebo.pooled.uninsured_main.p": (
+        0.77798748, 1e-8, "pooled model: uninsured_share p"),
+
+    # ---- STEP 3 — the uninsured_share coefficient across ordinary quarters ----
+    "rq1.placebo.mq.2021Q2.coef": (
+        0.06489867, 1e-8, "ordinary-quarter series: uninsured_share coef, outcome 2021Q2"),
+    "rq1.placebo.mq.2021Q2.p": (
+        0.00000015, 1e-8, "ordinary-quarter series: uninsured_share p, outcome 2021Q2"),
+    "rq1.placebo.mq.2021Q3.coef": (
+        0.05592256, 1e-8, "ordinary-quarter series: uninsured_share coef, outcome 2021Q3"),
+    "rq1.placebo.mq.2021Q3.p": (
+        0.00000563, 1e-8, "ordinary-quarter series: uninsured_share p, outcome 2021Q3"),
+    "rq1.placebo.mq.2021Q4.coef": (
+        0.07643888, 1e-8, "ordinary-quarter series: uninsured_share coef, outcome 2021Q4"),
+    "rq1.placebo.mq.2021Q4.p": (
+        0.07685345, 1e-8, "ordinary-quarter series: uninsured_share p, outcome 2021Q4"),
+    "rq1.placebo.mq.2022Q1.coef": (
+        -0.04980422, 1e-8, "ordinary-quarter series: uninsured_share coef, outcome 2022Q1"),
+    "rq1.placebo.mq.2022Q1.p": (
+        0.03623411, 1e-8, "ordinary-quarter series: uninsured_share p, outcome 2022Q1"),
+    "rq1.placebo.mq.2022Q2.coef": (
+        -0.00897881, 1e-8, "ordinary-quarter series: uninsured_share coef, outcome 2022Q2"),
+    "rq1.placebo.mq.2022Q2.p": (
+        0.50840653, 1e-8, "ordinary-quarter series: uninsured_share p, outcome 2022Q2"),
 }

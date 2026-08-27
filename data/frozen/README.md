@@ -60,9 +60,3 @@ directory alone.
 
 These files are inputs, not outputs. Changing one changes published results
 without any stage of the pipeline recording that it happened.
-
-> **Not in the public repository.** `crosswalk_rssd_permno.csv` held the
-> RSSD-to-CRSP-`permno` mapping. CRSP identifiers are part of a licensed
-> product, so the file is omitted and the `permno` column has been removed
-> from every CSV here. Banks are still identified by `bank_IDRSSD`. See
-> [`DATA.md`](../../DATA.md) for how a WRDS subscriber rebuilds it.

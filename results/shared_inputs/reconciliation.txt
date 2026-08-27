@@ -92,7 +92,7 @@ RECONCILIATION — refactored pipeline against the pre-refactor values
   rq3.corr.rf_uninsured.spearman                                0.05754306       0.05754306     7.67e-11  match
   rq3.corr.rf_ols.spearman                                      0.68145928       0.68145928     3.00e-09  match
   rq3.placebo.corr_S_time                                       0.60333196       0.60333196     5.93e-10  match
-  rq3.custody_drop.b                                           -0.13939961      -0.13939961     7.43e-10  match
+  rq3.custody_drop.b                                           -0.13939961      -0.13939961     7.44e-10  match
   rq3.custody_drop.p                                            0.06331900       0.06331919     1.93e-07  match
   rq2.robust.snorm.beta_per_sd.score_ols                       -0.13031909      -0.13031909     3.30e-09  match
   rq2.robust.snorm.beta_per_sd.score_rf                        -0.18087696      -0.18087696     3.89e-09  match
@@ -139,7 +139,7 @@ RECONCILIATION — refactored pipeline against the pre-refactor values
   rq2.robust.snorm.delta1.uninsured_share.p                     0.00032066       0.00032066     1.94e-09  match
   rq2.robust.snorm.gamma1.coef                                  0.08813715       0.08813715     2.26e-09  match
   rq2.robust.snorm.gamma1.p                                     0.71072530       0.71072530     3.31e-09  match
-  rq2.robust.snorm.gamma1.se                                    0.23095404       0.23095404     6.12e-12  match
+  rq2.robust.snorm.gamma1.se                                    0.23095404       0.23095404     6.11e-12  match
   rq2.robust.thresh9.beta.score_ols.coef                       -0.47104505      -0.47104505     6.88e-10  match
   rq2.robust.thresh9.beta.score_ols.p                           0.03853969       0.03853969     1.98e-10  match
   rq2.robust.thresh9.beta.score_rf.coef                        -0.71275593      -0.71275593     4.69e-09  match
@@ -228,8 +228,88 @@ RECONCILIATION — refactored pipeline against the pre-refactor values
   rq2.robust.win_m5p5.gamma1.coef                               0.00932925       0.00932925     8.82e-10  match
   rq2.robust.win_m5p5.gamma1.p                                  0.57029546       0.57029546     2.35e-09  match
   rq2.robust.win_m5p5.gamma1.se                                 0.01589635       0.01589635     5.81e-10  match
+  rq2.wildboot.gamma1.augmented.p                               0.43359375       0.43359375     0.00e+00  match
+  rq2.wildboot.gamma1.controls.p                                0.66894531       0.66894531     0.00e+00  match
+  rq2.wildboot.gamma1.nocontrols.p                              0.70410156       0.70410156     0.00e+00  match
+  rq3.wildboot.b.score_ols.p                                    0.04687500       0.04687500     0.00e+00  match
+  rq3.wildboot.b.score_rf.p                                     0.06835938       0.06835938     0.00e+00  match
+  rq3.wildboot.b.uninsured_share.p                              0.98535156       0.98535156     0.00e+00  match
+  rq3.wildboot.excustody.b.score_ols.p                          0.18750000       0.18750000     0.00e+00  match
+  rq3.wildboot.excustody.b.score_rf.p                           0.26269531       0.26269531     0.00e+00  match
+  rq3.wildboot.excustody.b.uninsured_share.p                    0.85839844       0.85839844     0.00e+00  match
+  rq2.robust.wildboot.snorm.beta.score_ols.p                    0.04492188       0.04492188     0.00e+00  match
+  rq2.robust.wildboot.snorm.beta.score_rf.p                     0.04980469       0.04980469     0.00e+00  match
+  rq2.robust.wildboot.snorm.beta.uninsured_share.p              0.97851562       0.97851562     0.00e+00  match
+  rq2.robust.wildboot.snorm.gamma1.p                            0.66796875       0.66796875     0.00e+00  match
+  rq2.robust.wildboot.thresh9.beta.score_ols.p                  0.03125000       0.03125000     0.00e+00  match
+  rq2.robust.wildboot.thresh9.beta.score_rf.p                   0.07812500       0.07812500     0.00e+00  match
+  rq2.robust.wildboot.thresh9.beta.uninsured_share.p            0.57812500       0.57812500     0.00e+00  match
+  rq2.robust.wildboot.thresh9.gamma1.p                          0.71875000       0.71875000     0.00e+00  match
+  rq2.robust.wildboot.win_base.beta.score_ols.p                 0.04687500       0.04687500     0.00e+00  match
+  rq2.robust.wildboot.win_base.beta.score_rf.p                  0.06835938       0.06835938     0.00e+00  match
+  rq2.robust.wildboot.win_base.beta.uninsured_share.p           0.98535156       0.98535156     0.00e+00  match
+  rq2.robust.wildboot.win_base.gamma1.p                         0.66894531       0.66894531     0.00e+00  match
+  rq2.robust.wildboot.win_m1p3.beta.score_ols.p                 0.05664062       0.05664062     0.00e+00  match
+  rq2.robust.wildboot.win_m1p3.beta.score_rf.p                  0.08300781       0.08300781     0.00e+00  match
+  rq2.robust.wildboot.win_m1p3.beta.uninsured_share.p           0.32226562       0.32226562     0.00e+00  match
+  rq2.robust.wildboot.win_m1p3.gamma1.p                         0.88867188       0.88867188     0.00e+00  match
+  rq2.robust.wildboot.win_m5p5.beta.score_ols.p                 0.16894531       0.16894531     0.00e+00  match
+  rq2.robust.wildboot.win_m5p5.beta.score_rf.p                  0.14746094       0.14746094     0.00e+00  match
+  rq2.robust.wildboot.win_m5p5.beta.uninsured_share.p           0.81933594       0.81933594     0.00e+00  match
+  rq2.robust.wildboot.win_m5p5.gamma1.p                         0.58984375       0.58984375     0.00e+00  match
+  rq1.tuned.listed.full.OLS.r2                                 -0.02209562      -0.02209562     0.00e+00  match
+  rq1.tuned.listed.full.OLS.rmse                                0.13194880       0.13194880     0.00e+00  match
+  rq1.tuned.listed.full.RF.r2                                  -0.13476043      -0.13476043     0.00e+00  match
+  rq1.tuned.listed.full.RF.rmse                                 0.13903104       0.13903104     0.00e+00  match
+  rq1.tuned.listed.sig.OLS.r2                                   0.02253105       0.02253105     0.00e+00  match
+  rq1.tuned.listed.sig.OLS.rmse                                 0.12903609       0.12903609     0.00e+00  match
+  rq1.tuned.listed.sig.RF.r2                                   -0.03104933      -0.03104933     0.00e+00  match
+  rq1.tuned.listed.sig.RF.rmse                                  0.13252549       0.13252549     0.00e+00  match
+  rq1.tuned.wide.full.OLS.r2                                    0.02497642       0.02497642     0.00e+00  match
+  rq1.tuned.wide.full.OLS.rmse                                  0.09195066       0.09195066     0.00e+00  match
+  rq1.tuned.wide.full.RF.r2                                     0.00250510       0.00250510     0.00e+00  match
+  rq1.tuned.wide.full.RF.rmse                                   0.09300421       0.09300421     0.00e+00  match
+  rq1.tuned.wide.sig.OLS.r2                                     0.03395703       0.03395703     0.00e+00  match
+  rq1.tuned.wide.sig.OLS.rmse                                   0.09152622       0.09152622     0.00e+00  match
+  rq1.tuned.wide.sig.RF.r2                                      0.03052772       0.03052772     0.00e+00  match
+  rq1.tuned.wide.sig.RF.rmse                                    0.09168852       0.09168852     0.00e+00  match
+  rq3.mde.b.uninsured_share.pct_of_car_sd                      25.86825066      25.86825066     2.01e-09  match
+  rq3.mde.b.uninsured_share.per_sd_pp                           1.24298773       1.24298773     3.84e-09  match
+  rq3.mde.b.uninsured_share.raw                                 0.05975250       0.05975250     6.37e-10  match
+  rq1.placebo.banks.2022Q2_only                                41.00000000      41.00000000     0.00e+00  match
+  rq1.placebo.banks.2023Q1_only                                34.00000000      34.00000000     0.00e+00  match
+  rq1.placebo.banks.both                                      919.00000000     919.00000000     0.00e+00  match
+  rq1.placebo.banks.unique                                    994.00000000     994.00000000     0.00e+00  match
+  rq1.placebo.n.2022Q2                                        960.00000000     960.00000000     0.00e+00  match
+  rq1.placebo.n.2023Q1                                        953.00000000     953.00000000     0.00e+00  match
+  rq1.placebo.uninsured.2022Q2.coef                            -0.00897881      -0.00897881     4.56e-09  match
+  rq1.placebo.uninsured.2022Q2.p                                0.50840653       0.50840653     3.77e-09  match
+  rq1.placebo.uninsured.2022Q2.t                               -0.66157141      -0.66157141     4.20e-09  match
+  rq1.placebo.uninsured.2023Q1.coef                            -0.07713467      -0.07713467     4.91e-09  match
+  rq1.placebo.uninsured.2023Q1.p                                0.00006744       0.00006744     2.46e-09  match
+  rq1.placebo.uninsured.2023Q1.t                               -4.00307542      -4.00307542     1.45e-09  match
+  rq1.placebo.pooled.interaction.coef                          -0.06671359      -0.06671359     1.50e-10  match
+  rq1.placebo.pooled.interaction.p                              0.09527093       0.09527093     2.14e-09  match
+  rq1.placebo.pooled.interaction.se                             0.03995266       0.03995266     1.88e-09  match
+  rq1.placebo.pooled.interaction.t                             -1.66981605      -1.66981605     1.84e-09  match
+  rq1.placebo.pooled.n_banks                                  994.00000000     994.00000000     0.00e+00  match
+  rq1.placebo.pooled.n_obs                                   1913.00000000    1913.00000000     0.00e+00  match
+  rq1.placebo.pooled.stress.coef                               -0.01077912      -0.01077912     2.27e-09  match
+  rq1.placebo.pooled.stress.p                                   0.55013391       0.55013391     4.49e-09  match
+  rq1.placebo.pooled.uninsured_main.coef                       -0.00592065      -0.00592065     2.44e-09  match
+  rq1.placebo.pooled.uninsured_main.p                           0.77798748       0.77798748     2.53e-09  match
+  rq1.placebo.mq.2021Q2.coef                                    0.06489867       0.06489867     4.70e-10  match
+  rq1.placebo.mq.2021Q2.p                                       0.00000015       0.00000015     4.84e-09  match
+  rq1.placebo.mq.2021Q3.coef                                    0.05592256       0.05592256     2.39e-09  match
+  rq1.placebo.mq.2021Q3.p                                       0.00000563       0.00000563     3.30e-09  match
+  rq1.placebo.mq.2021Q4.coef                                    0.07643888       0.07643888     3.55e-09  match
+  rq1.placebo.mq.2021Q4.p                                       0.07685345       0.07685345     2.76e-09  match
+  rq1.placebo.mq.2022Q1.coef                                   -0.04980422      -0.04980422     3.09e-10  match
+  rq1.placebo.mq.2022Q1.p                                       0.03623411       0.03623411     1.95e-09  match
+  rq1.placebo.mq.2022Q2.coef                                   -0.00897881      -0.00897881     4.56e-09  match
+  rq1.placebo.mq.2022Q2.p                                       0.50840653       0.50840653     3.77e-09  match
 
-  checked 220 of 220 keys; 0 mismatch(es); 0 not present in this run
+  checked 300 of 300 keys; 0 mismatch(es); 0 not present in this run
 
   INTENDED CHANGE, not a mismatch: the headline standard error for
   the RQ3 interaction is now the EVENT-clustered one, because the

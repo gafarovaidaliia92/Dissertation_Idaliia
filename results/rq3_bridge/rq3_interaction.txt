@@ -45,7 +45,7 @@ RQ3 (2/3) — TWO-WAY FE INTERACTION
 
     regressor on fixed effects                                R^2   max |resid|     resid SD
     ----------------------------------------------------------------------------------------
-    S on event dummies                             1.000000000000     7.061e-14    3.572e-14  ABSORBED
+    S on event dummies                             1.000000000000     1.910e-14    7.153e-15  ABSORBED
     uninsured_share on bank dummies                0.913207865577     3.683e-01    4.306e-02  survives
     uninsured_share on bank + event dummies        0.945083931093     3.542e-01    3.425e-02  survives
     S x vulnerability on bank + event dummies      0.879932121843     4.249e-01    7.207e-02  survives
@@ -173,9 +173,9 @@ RQ3 (2/3) — TWO-WAY FE INTERACTION
 
     regressor on fixed effects                                R^2   max |resid|     resid SD
     ----------------------------------------------------------------------------------------
-    S on event dummies                             1.000000000000     6.994e-14    2.735e-14  ABSORBED
-    score_rf on bank dummies                       1.000000000000     1.776e-15    2.849e-16  ABSORBED
-    score_rf on bank + event dummies               1.000000000000     1.922e-15    2.799e-16  ABSORBED
+    S on event dummies                             1.000000000000     8.216e-15    3.652e-15  ABSORBED
+    score_rf on bank dummies                       1.000000000000     5.998e-16    1.411e-16  ABSORBED
+    score_rf on bank + event dummies               1.000000000000     8.357e-16    1.799e-16  ABSORBED
     S x vulnerability on bank + event dummies      0.455516798919     6.143e-02    6.898e-03  survives
 
     Reading:

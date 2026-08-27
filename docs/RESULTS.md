@@ -3,7 +3,7 @@
 The authoritative results document. Reads top to bottom in the order the argument
 runs. Every figure is unrounded and traceable to a file under `results/`.
 
-All numbers reconcile against the pre-refactor values: **220 of 220 keys, zero
+All numbers reconcile against the pre-refactor values: **300 of 300 keys, zero
 mismatches** (`results/shared_inputs/reconciliation.txt`).
 
 - [RQ1 — who is vulnerable](#rq1--who-is-vulnerable)

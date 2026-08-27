@@ -15,6 +15,16 @@ scikit-learn==1.8.0 # rq1_model — RandomForest / GradientBoosting / KFold; PIN
 shap>=0.45          # rq1_model — TreeExplainer importances
 matplotlib>=3.8     # rq1_model — SHAP summary plots
 
+# --- few-cluster inference (rq_wildboot.py) ---
+# The Safeguard signal varies across 11 events only, so the event-clustered CRV1
+# p-values are recomputed by a wild cluster bootstrap. pyfixest supplies both the
+# CRV1 refit used to prove no specification drifted and the bootstrap itself;
+# wildboottest is the engine it delegates to and is not installed by default.
+# With 11 clusters the bootstrap fully enumerates all 2^11 sign patterns, so the
+# p-values are deterministic and do not depend on these versions for randomness.
+pyfixest==0.60.0    # PINNED — small-sample k/G adjustments must match the tables
+wildboottest>=0.3.2 # pyfixest's wild-cluster-bootstrap backend
+
 # --- fetching / parsing ---
 requests>=2.30
 beautifulsoup4>=4.12

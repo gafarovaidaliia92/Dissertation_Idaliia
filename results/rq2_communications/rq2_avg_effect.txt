@@ -79,7 +79,7 @@ RQ2 — DOES THE TYPE OF CBDC COMMUNICATION MOVE BANK EQUITY ON AVERAGE?
 -- 2.1 why there is no event-FE specification for S --
 
     S regressed on the event dummies: R^2 = 1.000000000000,
-    max |residual| = 7.061e-14, residual SD = 3.572e-14
+    max |residual| = 1.910e-14, residual SD = 7.153e-15
     -> ABSORBED. The S column is a linear combination of
     the event dummies, so gamma1 is NOT IDENTIFIED under event FE. This is a
     design fact, not a null result, and nothing is printed for it.

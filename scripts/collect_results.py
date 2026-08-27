@@ -38,6 +38,14 @@ MAPPING: dict[str, list[str]] = {
         "rq1_shap_summary_narrow.png", "rq1_shap_summary_wide.png",
         "vulnerability_scores_narrow.csv",
         "vulnerability_scores_wide.csv", "vulnerability_scores_ols.csv",
+        # Table 5: the nested-tuning metrics behind the H1b verdict
+        "rq1_tuned_metrics.csv", "rq1_tuned_metrics.tex",
+        "rq1_tuned_metrics.txt",
+        # Pre-crisis comparison period (2022Q2): the placebo test for the
+        # uninsured-deposit result, plus its selection justification
+        "rq1_placebo.txt", "rq1_placebo.md",
+        "rq1_placebo_table.tex", "rq1_placebo_table.csv",
+        "rq1_placebo_by_quarter.csv", "rq1_deposit_growth_by_quarter.csv",
     ],
     "rq2_communications": [
         "rq2_sentences.csv", "rq2_sentence_labels.csv", "rq2_safeguard_scores.csv",
@@ -57,6 +65,9 @@ MAPPING: dict[str, list[str]] = {
     "shared_inputs": [
         "sample_banks.csv", "crosswalk_rssd_permno.csv",
         "headline_numbers.json", "reconciliation.txt",
+        # Cross-cutting: the bootstrap covers Table 7 (RQ2), Table 8 and
+        # Appendix C (RQ3), so it belongs to neither section alone.
+        "rq_wildboot.txt",
     ],
 }
 

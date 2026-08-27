@@ -37,7 +37,11 @@ Everything in one table: hypothesis, variable, coefficient, script, output, resu
 | RQ3 | level vs reaction | — | — | `rq3_measures.py` | `rq3_bridge/rq3_measures.txt` | level real, reaction null → **H3 mechanism NOT supported** |
 | RQ3 | artefact check | calendar placebo | — | `rq3_measures.py` | same | corr(S, calendar rank) = **+0.60333196**; jointly neither survives |
 | RQ3 | artefact check | custody banks | — | `rq3_measures.py` | same | dropping 9 removes **63.8%** of the RF coefficient |
-| — | verification | all of the above | — | `run_all.py` | `shared_inputs/reconciliation.txt` | **220/220 numbers reconcile, 0 mismatches** |
+| RQ1 | H1b | tuned OOS RMSE / R² | — | `rq1_tuned_table.py` | `rq1_vulnerability/rq1_tuned_metrics.txt` | Table 5: OLS beats the tuned RF in **4 of 4** configurations |
+| RQ2/3 | inference | event-clustered p | wild cluster bootstrap | `rq_wildboot.py` | `shared_inputs/rq_wildboot.txt` | 11 clusters → CRV1 unreliable; **S × RF score p 0.0115 → 0.0684**, no longer significant |
+| RQ3 | H3 bound | `S × uninsured_share` | MDE(b) | `rq_wildboot.py` | same | 1.242988 pp = **25.87% of a CAR SD** — a wide bound |
+| RQ1 | placebo | `uninsured_share × 1[2023Q1]` | pooled interaction | `rq1_placebo.py` | `rq1_vulnerability/rq1_placebo.md` | pre-crisis (2022Q2) coef **−0.0090** (p 0.508) vs stress **−0.0771**; interaction −0.0667, **p 0.0952** — suggestive, not significant at 5% |
+| — | verification | all of the above | — | `run_all.py` | `shared_inputs/reconciliation.txt` | **300/300 numbers reconcile, 0 mismatches** |
 
 ---
 
@@ -52,8 +56,8 @@ python3 scripts/collect_results.py    # rebuild the results/ showcase
 
 **`--check-results` is the command to run in a fresh clone.** It recomputes
 nothing: it reads the published numbers from `results/shared_inputs/` and
-reconciles all 220 headline values against `config.FROZEN`, so it works with no
-`data/` directory at all and prints `checked 220 of 220 keys; 0 mismatch(es)`.
+reconciles all 300 headline values against `config.FROZEN`, so it works with no
+`data/` directory at all and prints `checked 300 of 300 keys; 0 mismatch(es)`.
 
 `--verify` and `--force` both need `data/raw/` and `data/processed/`, which are
 not in the repository: the Call Report archives, the CRSP extract and the NIC
@@ -130,6 +134,14 @@ scripts/
   rq3_measures.py        measures comparison, level-vs-reaction, artefact checks
   rq3_custody_check.py   Appendix C: custody exclusions + S vs calendar time
   rq2_figures.py         Figure 2: the Safeguard score by event
+
+  rq_wildboot.py         wild cluster bootstrap p-values for every
+                         event-clustered estimate (11 clusters) + the MDE for
+                         the uninsured x Safeguard interaction
+  rq1_tuned_table.py     Table 5: the nested-tuning metrics behind H1b
+  rq1_placebo.py         pre-crisis comparison period (2022Q2): is the
+                         uninsured-deposit result stress-specific or a
+                         persistent structural correlate?
 
   collect_results.py     rebuild results/ from data/processed/
   _*.py                  internal implementation modules, unchanged by the refactor

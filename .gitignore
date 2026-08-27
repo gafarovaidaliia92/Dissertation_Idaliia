@@ -84,13 +84,3 @@ data/raw/fed/~$*
 
 # Working notes that are not part of the dissertation
 docs/superseded_results_ru.md
-
-# ---------------------------------------------------------------------------
-# PUBLIC REPOSITORY — CRSP is licensed and is not redistributed here.
-# The crosswalk was nothing but the RSSD -> permno mapping, so it is excluded
-# outright and re-listed after the !data/frozen/*.csv exception above so that
-# exception cannot pull it back in. See DATA.md.
-# ---------------------------------------------------------------------------
-data/frozen/crosswalk_rssd_permno.csv
-results/shared_inputs/crosswalk_rssd_permno.csv
-data/raw/wrds/
