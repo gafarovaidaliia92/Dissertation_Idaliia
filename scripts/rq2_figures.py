@@ -1,22 +1,18 @@
-"""
-rq2_figures.py — Figure 2 of the dissertation: the Safeguard score by event.
+"""rq2_figures.py: Figure 2, the Safeguard score by event.
 
-Reads   : data/processed/rq2_safeguard_scores.csv   (11 events, the S variable)
-Writes  : data/processed/rq2_safeguard_by_event.png
+Draws the eleven document scores in calendar order with the least-squares trend
+over event order, the same time measure as the first row of Appendix C, Table
+C2. Nothing is estimated here: S is read as published and the only computation
+is that trend line.
 
-The figure was previously the only exhibit in the dissertation that no script
-produced. It is drawn to its caption in Section 4.3:
+Also writes the Appendix B corpus table, in which every column is computed from
+the pipeline: the number of sentences per document, the number the classifier
+marks as describing a concrete design feature, their split into protective and
+expansive, and the resulting score.
 
-    "Safeguard score S for each of the eleven Federal Reserve communications,
-     2019-2023. Positive values (teal) lean protective, negative values (amber)
-     expansive. The dashed line is the linear trend."
-
-ESTIMATES NOTHING. S is read as published; the only computation is the
-least-squares trend line the caption describes, fitted on event order (1..11) —
-the same time measure as the first row of Appendix C, Table C2, where the
-correlation is Pearson +0.60.
-
-    python3 scripts/rq2_figures.py
+Reads     data/processed/rq2_safeguard_scores.csv
+Writes    data/processed/rq2_safeguard_by_event.png
+          data/processed/rq2_corpus_table.txt
 """
 
 from __future__ import annotations

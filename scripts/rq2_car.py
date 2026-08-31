@@ -1,31 +1,30 @@
-"""
-rq2_car.py — RQ2 [B]: market-model event study around the 11 Fed CBDC speeches.
+"""rq2_car.py: the market-model event study around the eleven communications.
 
-Reads CRSP daily files + the safeguard scores + sample_banks, estimates a market
-model per bank x event, and writes the bank-event CAR panel with time-varying
-Call Report characteristics attached.
+Estimates a market model per bank and event and writes the bank-event panel of
+cumulative abnormal returns, with the time-varying Call Report characteristics
+attached.
 
-Reads:  data/raw/wrds/{dsf,dsi,dsedelist}.parquet
-        data/frozen/sample_banks.csv
-        data/processed/rq2_safeguard_scores.csv
-        data/raw/call_*.zip  (via scripts/build_panel.py extraction functions)
-Writes: data/processed/rq2_car.csv
+Design:
+    t0             the first CRSP trading day on or after the communication date
+    estimation     trading days [t0-230, t0-31], 200 days ending 30 days out,
+                   requiring at least 100 valid daily returns or the bank-event
+                   is dropped
+    market model   OLS of the return on the CRSP value-weighted index
+    abnormal ret   the actual return less the model's prediction
+    event window   [t0-1, t0+5]; CAR is the sum of abnormal returns over it
+    delisting      the CRSP delisting return is spliced into the return on the
+                   delisting date and the series truncated after it
 
-Design (Section 3.4):
-  t0            = first CRSP trading day on or after the speech date
-  estimation    = trading days [t0-230, t0-31]  (200 days, ending 30 days out)
-                  requires >= 100 valid daily returns, else the bank-event drops
-  market model  = OLS of ret on vwretd over the estimation window
-  AR_it         = ret_it - (alpha + beta * vwretd_t)
-  event window  = [t0-1, t0+5];  CAR = sum of AR over that window
-  delisting     = dlret spliced into the return on dlstdt, series truncated after
+Characteristics are taken from the most recent Call Report quarter ending
+strictly before t0, so no post-event information enters. Coverage starts at
+2019Q3, which precedes the earliest event on 16 October 2019, so every
+bank-event draws on a genuinely prior quarter.
 
-Characteristics are taken from the most recent Call Report quarter whose
-quarter-end falls STRICTLY BEFORE t0 (no look-ahead into the event). Coverage
-starts at 2019Q3, which precedes the earliest event (2019-10-16), so every
-bank-event now draws on a genuinely prior quarter and char_lookahead is False
-throughout. The fallback below is kept as a guard in case an earlier event is
-ever added without the matching zip.
+Reads     data/raw/wrds/{dsf,dsi,dsedelist}.parquet
+          data/frozen/sample_banks.csv
+          data/processed/rq2_safeguard_scores.csv
+          data/raw/call_*.zip
+Writes    data/processed/rq2_car.csv, rq2_car_droplog.csv
 """
 
 from __future__ import annotations

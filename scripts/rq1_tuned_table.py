@@ -1,43 +1,17 @@
-"""
-rq1_tuned_table.py — Table 5: the nested-tuning metrics behind the H1b verdict.
+"""rq1_tuned_table.py: Table 5, the nested-tuning metrics behind the H1b verdict.
 
-THE GAP THIS FILLS. The text says the tuned random forest loses to OLS "in all
-four configurations", but only the four RMSE GAPS were ever reported (-1.146%,
--0.177%, -5.367%, -2.704%). The tuned RMSE and R^2 the gaps are computed from
-appear nowhere in the write-up. This script tabulates them.
+The write-up states that the tuned random forest loses to OLS in all four
+configurations, but reports only the four RMSE gaps (-1.146%, -0.177%, -5.367%,
+-2.704%). The tuned RMSE and R-squared those gaps are computed from appear
+nowhere. This script tabulates them.
 
-WHERE THE NUMBERS COME FROM. They are already computed and already persisted:
+The numbers are already computed and already persisted:
 _rq1_wide_core.nested_cv_tuned() produces them and run3_report() writes them into
-section 3.4 of rq1_h1b_robustness.txt, once per population. This script PARSES
-that file rather than re-estimating, for the reason the whole project is built
-around: the results are final, and re-running a 20-minute estimator is a chance
-to lose them, not to improve them. Pass --force to re-run nested_cv_tuned() as
-well and assert that the recomputed numbers match the parsed ones to 1e-8.
+section 3.4 of rq1_h1b_robustness.txt, once per population. This script parses
+that file rather than re-estimating, because the results are final and re-running
+a twenty-minute estimator risks losing them.
 
-THE CV DESIGN, CONFIRMED FROM THE CODE, NOT FROM MEMORY. Nested tuning is a
-SINGLE outer 5-fold split, not the 30-shuffle repeated CV:
-
-    outer  KFold(n_splits=5, shuffle=True, random_state=42)   <- config.SEED
-    inner  KFold(n_splits=3, shuffle=True, random_state=42)   <- config.INNER_SPLITS
-    scoring neg_root_mean_squared_error, grids searched on the inner folds only
-    ties   broken by _rq1_wide_core.deterministic_winner (GRID_TIE_TOL = 1e-9)
-
-The 30 independent shuffles belong to the SEPARATE repeated-CV pass in section
-3.3 (config.N_REPEATS). Conflating the two would misdescribe the table, so the
-caption emitted below states the design explicitly.
-
-THE FOUR CONFIGURATIONS are population x feature set:
-    WIDE   (N=953, all 2022Q4 filers above the size floor)  x  full / significant
-    LISTED (N=277, the CRSP-matched banks, "narrow")        x  full / significant
-"significant" is the OLS-significant subset read off the fitted table at 5%
-(_rq1_wide_core.significant_features) — 3 features in wide, 2 in listed.
-
-Input    data/processed/rq1_h1b_robustness.txt
-Outputs  data/processed/rq1_tuned_metrics.csv   (all three estimators)
-         data/processed/rq1_tuned_metrics.tex   (booktabs fragment, OLS vs RF)
-
-    python3 scripts/rq1_tuned_table.py
-    python3 scripts/rq1_tuned_table.py --force   # + re-run the tuning to verify
+Writes    data/processed/rq1_tuned_metrics.txt, .csv, .tex
 """
 
 from __future__ import annotations
@@ -54,7 +28,7 @@ import config as C
 
 VERIFY_TOL = 1e-8
 
-# population tag in the report  ->  (label for the table, key used in FROZEN)
+# population tag in the report  ->  (label for the table, key used in frozen)
 POPULATIONS = {"WIDE": ("wide", "wide"), "NARROW": ("listed", "listed")}
 MODELS = ("OLS", "RandomForest", "GradientBoosting")
 
@@ -173,7 +147,7 @@ def verify(df: pd.DataFrame) -> list[str]:
                     if d > VERIFY_TOL:
                         raise SystemExit(
                             f"[rq1_tuned_table] {tag}/{feat}/{model}/{col} moved: "
-                            f"{row[col]:.8f} -> {got:.8f}. STOP.")
+                            f"{row[col]:.8f} -> {got:.8f}. Stop.")
     L.append("")
     return L
 
@@ -222,7 +196,7 @@ def caption() -> list[str]:
     return [
         "  CAPTION (the CV design, so the table cannot be misread):",
         "",
-        "    Out-of-sample RMSE and R^2 under NESTED cross-validation, in which the",
+        "    Out-of-sample RMSE and R^2 under nested cross-validation, in which the",
         f"    hyper-parameters are chosen by a grid search on the inner folds of each",
         f"    outer training fold, so no configuration is ever selected on the data",
         f"    that scores it. Outer CV: KFold({C.N_SPLITS}, shuffle=True, "
@@ -232,7 +206,7 @@ def caption() -> list[str]:
         "    neg_root_mean_squared_error. Grid ties within 1e-9 are broken",
         "    lexicographically (deterministic_winner) so the table is reproducible.",
         "",
-        "    This is a SINGLE outer 5-fold split. It is NOT the 30-shuffle repeated",
+        "    This is a SINGLE outer 5-fold split. It is not the 30-shuffle repeated",
         f"    cross-validation reported separately in section 3.3 "
         f"(config.N_REPEATS = {C.N_REPEATS});",
         "    do not describe this table as averaging over 30 shuffles.",

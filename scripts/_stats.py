@@ -1,20 +1,18 @@
-"""
-_stats.py — shared estimation helpers for the CAR regressions in RQ2 and RQ3.
+"""_stats.py: shared estimation helpers for the CAR regressions in RQ2 and RQ3.
 
-This module is deliberately NOT one of the numbered research-question scripts.
-It exists so that the RQ2 average-effect regression and the RQ3 bridge
-regressions cannot drift apart: both clusters, both absorption checks and the
-identification guard live here once.
+Kept separate from the numbered scripts so that the average-effect regression
+and the bridge regressions cannot drift apart: the clustering, the absorption
+checks and the identification guard are defined once.
 
-Contents
     stars              significance markers
-    fit_cluster        OLS with one-way or two-way cluster-robust SEs
+    fit_cluster        OLS with one-way or two-way cluster-robust errors
     absorption         how much of a regressor the fixed effects absorb
-    check_identified   raises NotIdentified rather than returning a
-                       pseudo-inverse artefact
-    n_bad_se           count of NaN SEs (two-way clustering is not PSD in small
-                       samples, and we report that rather than hide it)
-    mde                minimum detectable effect at 80% power
+    check_identified   raises NotIdentified rather than returning whatever a
+                       pseudo-inverse produces
+    n_bad_se           count of NaN standard errors, since two-way clustering is
+                       not positive semi-definite in small samples and that is
+                       reported rather than hidden
+    mde                minimum detectable effect at 80 per cent power
 """
 
 from __future__ import annotations
@@ -48,7 +46,7 @@ def fit_cluster(df: pd.DataFrame, formula: str, groups: list[str],
     use_t=True reads inference off t with G-1 degrees of freedom. With 11 event
     clusters the normal reference is far too generous, so this is the default.
 
-    The two-way estimator subtracts an intersection term and is NOT guaranteed
+    The two-way estimator subtracts an intersection term and is not guaranteed
     positive semi-definite: in this sample some fixed-effect dummies come out
     with a negative variance and therefore a NaN SE. Callers should report
     n_bad_se() alongside, and should treat the EVENT-clustered SE as the headline

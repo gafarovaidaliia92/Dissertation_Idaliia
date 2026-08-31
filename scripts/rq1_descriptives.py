@@ -1,30 +1,19 @@
-"""
-rq1_descriptives.py — Tables 1 and 2 of the dissertation: summary statistics and
-the correlation matrix for the listed sample.
+"""rq1_descriptives.py: Tables 1 and 2, the summary statistics and correlation
+matrix for the listed sample.
 
-Reads  : data/processed/panel_2022Q4_narrow.csv
-Writes : data/processed/rq1_descriptives.txt
-Returns: the headline values, keyed for config.FROZEN
+Sample. Identical to the one RQ1 estimates on, built with the same two filters
+as _rq1_core.load_panel(): the merger-exit bank in config.EXCLUDE_IDRSSD is
+dropped and rows with a null outcome are dropped. On this panel both remove the
+same single bank, so N = 277 of the 278 matched to CRSP. The three censored
+failures are retained, as everywhere else in RQ1.
 
-WHY THIS EXISTS. Both tables were previously computed outside the pipeline. The
-audit could not reproduce them from the 2022Q4 panel their caption names: every
-minimum, maximum and standard deviation instead matched the 2021Q4
-characteristics carried in the CAR panel, i.e. the quarter read for the January
-and February 2022 events, not the quarter the study measures its predictors at.
-This script computes them where the caption says they come from.
+Variables. The six characteristics that appear in the two tables: the RQ2 and
+RQ3 control set plus uninsured_share and deposit_reliance. unrealised_losses,
+liquidity, capital and int_inc_ratio are RQ1 predictors but do not appear here.
 
-SAMPLE. Identical to RQ1's, via the same two filters as _rq1_core.load_panel():
-the merger-exit bank (config.EXCLUDE_IDRSSD) is dropped and rows with a null
-outcome are dropped. On this panel both remove the same single bank, so N = 277
-out of the 278 matched to CRSP. No other screen is applied, and the three
-censored failures stay in, as everywhere else in RQ1.
-
-VARIABLES. The six characteristics that appear in Tables 1 and 2. They are a
-subset of config.FEATURES: the RQ2/RQ3 control set plus uninsured_share and
-deposit_reliance. unrealised_losses, liquidity, capital and int_inc_ratio are
-RQ1 predictors but are not in these two tables.
-
-    python3 scripts/rq1_descriptives.py
+Reads     data/processed/panel_2022Q4_narrow.csv
+Writes    data/processed/rq1_descriptives.txt
+Returns   the headline values, keyed for config.FROZEN
 """
 
 from __future__ import annotations

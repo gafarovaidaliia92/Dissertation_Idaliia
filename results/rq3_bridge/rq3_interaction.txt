@@ -108,7 +108,7 @@ RQ3 (2/3) — TWO-WAY FE INTERACTION
     main effect of the measure (identified here — see the checks above):
       event-clustered         -0.02340368    0.01279228   -1.830   0.097253  *
 
-  [event FE + bank FE  <-- supervisor]
+  [event FE + bank FE]
     formula : CAR ~ VULN + SxV + C(doc_id) + C(permno)
     k parameters 288     model df_resid 2668     inference df 10
     identification of SxV given the rest: R^2 0.880963955173, residual SD 7.17590261e-02
@@ -127,7 +127,7 @@ RQ3 (2/3) — TWO-WAY FE INTERACTION
     main effect of the measure (identified here — see the checks above):
       event-clustered         -0.01001151    0.02355418   -0.425   0.679807  (n.s.)
 
--- supplementary: the supervisor's spec with bank controls added --
+-- supplementary: the two-way FE specification with bank controls added --
 
     Controls are read at the same characteristic quarter as the
     measure, so they vary within bank and are not absorbed.
@@ -227,7 +227,7 @@ RQ3 (2/3) — TWO-WAY FE INTERACTION
       variance is positive, so the two-way SE printed for b is usable — but this
       is why the event-clustered SE is the headline.
 
-  [event FE + bank FE  <-- supervisor]
+  [event FE + bank FE]
     formula : CAR ~ SxV + C(doc_id) + C(permno)
     k parameters 286     model df_resid 2660     inference df 10
     identification of SxV given the rest: R^2 0.455516798919, residual SD 6.89757255e-03
@@ -244,7 +244,7 @@ RQ3 (2/3) — TWO-WAY FE INTERACTION
       variance is positive, so the two-way SE printed for b is usable — but this
       is why the event-clustered SE is the headline.
 
--- supplementary: the supervisor's spec with bank controls added --
+-- supplementary: the two-way FE specification with bank controls added --
 
     Controls are read at the same characteristic quarter as the
     measure, so they vary within bank and are not absorbed.

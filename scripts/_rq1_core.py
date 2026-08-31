@@ -48,7 +48,7 @@ OUT_SHAP_PNG = PROC / "rq1_shap_summary.png"
 OUT_RESULTS = PROC / "rq1_results.txt"
 
 OUTCOME = "dep_growth"
-# All bank characteristics enter as features (Section 3.3). NB: `capital` is the
+# All bank characteristics enter as features (Section 3.3). Note: `capital` is the
 # tier-1 leverage ratio in PERCENT units (8.30 = 8.30%); the rest are fractions.
 # Scale differences are irrelevant to trees and to OLS fit/R2; standardised betas
 # below make the linear magnitudes comparable.

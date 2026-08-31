@@ -1,13 +1,9 @@
-"""
-rq3_custody_check.py — READ-ONLY robustness check on the RQ3 interaction.
+"""rq3_custody_check.py: the custody-bank robustness check behind Appendix C.
 
-Supervisor request: do not call the significant Safeguard x vulnerability
-interactions "artefacts" without evidence. Show (a) what the interaction looks
-like with the custody/trust banks excluded, and (b) how the Safeguard signal
-correlates with calendar time.
-
-WHAT IS ESTIMATED. Exactly the specification already in rq3_interaction.py, with
-nothing changed except which rows are in the sample:
+Re-estimates the interaction with custody and trust banks excluded, and reports
+how the Safeguard signal correlates with calendar time. The specification is
+exactly the one in rq3_interaction.py, with nothing changed but the rows in the
+sample:
 
     static measure (score_rf, score_ols)
         CAR ~ S:vulnerability + C(doc_id) + C(permno)
@@ -16,27 +12,23 @@ nothing changed except which rows are in the sample:
 
 The vulnerability main effect is included only where it is identified: the two
 model scores are static per bank and absorbed by the bank dummies, whereas
-uninsured_share is re-read from 8 characteristic quarters and survives them.
-Standard errors are clustered on the EVENT (11 clusters, t with 10 df), which is
-the headline inference in rq3_interaction.py; the two-way (bank and event)
-clustered p is printed beside it for continuity.
+uninsured_share is re-read from eight characteristic quarters and survives them.
+Standard errors cluster on the event, eleven clusters with t(10), which is the
+headline inference in rq3_interaction.py; the two-way clustered p-value is
+printed beside it.
 
-THREE EXCLUSION DEFINITIONS, because they do not coincide:
-    A  the three named custodians — BNY Mellon, State Street, Northern Trust
-    B  trust / fiduciary only — A plus the other fiduciary-flagged banks,
-       excluding credit-card banks
-    C  the existing is_trust_or_specialized flag as it stands (9 banks, and 4 of
-       them are credit-card banks, not custodians)
+Three exclusion definitions are reported, because they do not coincide:
+    A  the three named custodians: BNY Mellon, State Street, Northern Trust
+    B  trust and fiduciary only, which is A plus the other fiduciary-flagged
+       banks, excluding credit-card banks
+    C  the is_trust_or_specialized flag as it stands, nine banks, four of them
+       credit-card rather than custody
 
-Definition C is what the diagnostic in rq3_measures.py has been using, so C
-reproduces the previously reported figure; A is the one the supervisor asked for.
+Definition C is the one the diagnostic in rq3_measures.py uses, so it reproduces
+that figure; definition A is the one Appendix C reports.
 
-READ-ONLY on every input: no frozen artefact is touched and nothing is
-re-estimated beyond the exclusions below. The report is printed AND saved to
-data/processed/rq3_custody_check.txt, because it is the source of Appendix C
-and used to exist only in a terminal buffer.
-
-    python3 scripts/rq3_custody_check.py
+Reads     data/processed/rq3_bridge.csv
+Writes    data/processed/rq3_custody_check.txt
 """
 
 from __future__ import annotations
@@ -94,7 +86,7 @@ def identify(d: pd.DataFrame) -> dict[str, dict]:
 
 
 def fit_beta(d: pd.DataFrame, key: str) -> dict:
-    """The rq3_interaction.py supervisor spec, unchanged."""
+    """The rq3_interaction.py two-way FE specification, unchanged."""
     s = prepare(d, key)
     static = next(m["static"] for m in C.MEASURES if m["key"] == key)
     main = "" if static else "VULN + "

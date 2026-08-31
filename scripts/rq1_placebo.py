@@ -1,90 +1,33 @@
-"""
-rq1_placebo.py — the pre-crisis comparison period (2022Q2) for the
-uninsured-deposit result.
+"""rq1_placebo.py: the pre-crisis comparison period for the uninsured-deposit
+result.
 
-THE QUESTION. Table 3 column 2 reports that a bank's uninsured-deposit share
-predicts its 2023Q1 deposit outflow (coef -0.07713467, t -4.00, N 953). That
-finding is only evidence about BANKING STRESS if the relationship is specific to
-the stress episode. If uninsured share predicts deposit growth just as well in an
+Table 3, column 2 reports that a bank's uninsured-deposit share predicts its
+2023Q1 deposit outflow (coefficient -0.07713467, t = -4.00, N = 953). That is
+evidence about banking stress only if the relationship is specific to the stress
+episode. If the uninsured share predicts deposit growth equally well in an
 ordinary quarter, it is a persistent structural correlate of deposit behaviour
-and the stress reading has to be weakened. This script settles which.
+and the stress reading has to be weakened.
 
-TERMINOLOGY. 2022Q2 is the "pre-crisis comparison period", equivalently the
-"non-banking-stress comparison period". It is NEVER called a calm period: the
-Fed had already begun tightening and deposits were already flattening. "Placebo"
-names the TEST, not the period.
+2022Q2 is referred to throughout as the pre-crisis comparison period, not as a
+calm period: 2022 contained the fastest tightening cycle in four decades, and
+the claim being tested is only that it was not a period of banking stress.
 
-THE DESIGN (fixed in advance; no result-dependent choices anywhere)
+Three estimates:
+    1. period-specific OLS on the comparison period, the specification of
+       Table 3 with the dates shifted back so that no post-period information
+       enters
+    2. period-specific OLS on the stress period, which reproduces Table 3
+    3. a pooled two-period model with an interaction between the uninsured
+       share and an indicator for the stress period, standard errors clustered
+       on the bank because 919 banks appear in both periods
 
-  Outcome     deposit growth 2022Q1 -> 2022Q2, the main analysis's formula with
-              the dates shifted:  (dep_t - dep_{t-1}) / dep_{t-1}.
-  Predictors  ALL ten characteristics measured at 2022Q1. No 2022Q4 quantity is
-              used anywhere in the comparison period — that would be look-ahead.
-              Every variable keeps its exact main-analysis definition (uninsured
-              share from RC-O Memorandum item 1, unrealised losses, liquidity,
-              ...); only the quarter changes.
-  Sample      the main analysis's screens applied AT 2022Q1: assets > $1bn,
-              deposit_reliance >= 0.50, complete finite features, outcome
-              observed, and the same FDIC charter screen (credit-card banks
-              hard-dropped, trust/custody flagged but kept).
-  Failures    the FDIC failed-bank list records ZERO failures in 2021 and 2022,
-              so nothing is censored in the comparison period. This is asserted
-              at run time, not assumed. Banks that disappear by acquisition file
-              no 2022Q2 report, so their outcome is null and they drop out — the
-              same rule the main analysis applies. On the 2023Q1 side of the
-              pooled model the baseline treatment is kept exactly as in Table 3:
-              SVB, Signature and First Republic censored at -1.0.
+The quarter-by-quarter series behind Figure 3 is produced alongside these, using
+the same specification with predictors lagged one quarter.
 
-  HEADLINE    a POOLED regression, not a comparison of two verdicts. "Significant
-              in one period and insignificant in the other" is not a test: two
-              estimates can sit on opposite sides of 0.05 without differing
-              significantly from each other. So the two periods' bank-period
-              observations are stacked, each period passing its own screens, and
-
-                  dep_growth = b0 + b1..b10 * characteristics
-                             + b_s * 1[2023Q1]
-                             + b_int * (uninsured_share x 1[2023Q1]) + e
-
-              b_int and its p-value are the headline. Banks appear in both
-              periods, so the standard errors are CLUSTERED ON THE BANK (IDRSSD).
-
-  Also        each period's own ten-feature OLS, on Table 3's inference
-              convention (classical SEs), so the columns are comparable.
-
-WHY 2022Q2, DECIDED BEFORE SEEING ANY COEFFICIENT. It is the last completed
-quarter before the sustained system-wide deposit contraction that ran through
-late 2022 into the 2023 stress — close enough to share the macro environment
-(tightening had begun) but before the outflow dynamics took hold. main() writes
-the quarterly deposit-growth series that this rationale rests on, so the claim
-can be checked rather than taken on trust. If the series contradicts it, the
-script SAYS SO and the design still stands: the period was not re-chosen.
-
-HOW THE PANEL IS BUILT. This module does NOT re-implement any variable. It calls
-the same construction utilities the frozen pipeline calls — assemble_raw_fields,
-build_variables, total_deposits, classify — and reproduces _panel_wide.main()'s
-funnel with the quarter as a parameter. That equivalence is PROVEN, not asserted:
-build_wide_panel("2022Q4", "2023Q1") is run first and compared column by column
-against the frozen panel_2022Q4_wide.csv, and the resulting OLS coefficient is
-checked against config.FROZEN. A mismatch stops the script.
-
-_panel_wide.py and _panel_narrow.py are deliberately NOT edited. The project's
-provenance claim is that the underscore modules were renamed but never rewritten,
-and parameterising compute_dep_growth() in place would break that for the sake of
-one extra period.
-
-Inputs   data/raw/call_*.zip (2019Q4-2023Q2, already in the pipeline's coverage)
-         data/raw/fdic/{institutions_class,fdic_failures}.csv
-         data/processed/panel_2022Q4_wide.csv   (the frozen 953, for the 2023Q1 arm)
-Outputs  data/processed/rq1_placebo.txt              full report
-         data/processed/rq1_placebo.md              markdown summary
-         data/processed/rq1_placebo_table.tex       appendix booktabs table
-         data/processed/rq1_placebo_table.csv       the same numbers, machine-readable
-         data/processed/rq1_deposit_growth_by_quarter.csv   selection justification
-
-Run from the repository root (the shared modules resolve data/ relative to cwd):
-
-    python3 scripts/rq1_placebo.py
-    python3 scripts/rq1_placebo.py --no-multi-quarter  # skip the extra periods
+Writes    data/processed/rq1_placebo.txt, rq1_placebo.md
+          data/processed/rq1_placebo_table.tex, rq1_placebo_table.csv
+          data/processed/rq1_placebo_by_quarter.csv
+          data/processed/rq1_deposit_growth_by_quarter.csv
 """
 
 from __future__ import annotations
@@ -393,7 +336,7 @@ def deposit_growth_by_quarter(first: str = "2020Q1", last: str = "2023Q2"
               "    coefficient.", ""]
     else:
         L += ["    *** FLAG: the series does NOT cleanly match the stated",
-              "    rationale. The design is NOT being changed in response — the",
+              "    rationale. The design is not being changed in response — the",
               "    period was fixed in advance and stays fixed. This is recorded",
               "    so the write-up describes the series accurately rather than",
               "    repeating a characterisation the data do not support.", ""]
@@ -517,8 +460,8 @@ def multi_quarter(main_res: dict) -> tuple[pd.DataFrame, list[str]]:
 def verdict_lines(placebo: dict, stress: dict, pooled: dict) -> list[str]:
     """State what the pooled test does and does not establish.
 
-    Deliberately NOT a binary "significant / not significant" branch. The two
-    readings the supervisor set out — stress-specific versus persistent
+    Deliberately not a binary "significant / not significant" branch. The two
+    two readings set out above — stress-specific versus persistent
     structural correlate — are not complements: failing to reject equality of
     slopes is not evidence that the slopes are equal, especially when the
     comparison-period estimate is near zero and the interaction absorbs most of
@@ -560,7 +503,7 @@ def verdict_lines(placebo: dict, stress: dict, pooled: dict) -> list[str]:
               f"    zero before, {stress['coef']:+.4f} during — and the difference is",
               f"    significant at 10% but not at 5%. State it as suggestive.",
               "",
-              "    Do NOT report this as evidence that the relationship is a",
+              "    Do not report this as evidence that the relationship is a",
               "    persistent structural correlate. Failing to reject equality is",
               "    not evidence of equality, and the comparison-period estimate is",
               "    indistinguishable from zero, not from the stress-period value.", ""]
@@ -625,7 +568,7 @@ def to_latex(placebo: dict, stress: dict, pooled: dict) -> str:
          r" & & & ({:.5f}) \\".format(pooled["se"]),
          r" & & & [\textbf{" + "{:.4f}".format(pooled["p"]) + r"}] \\",
          r"\addlinespace",
-         # NB: LaTeX braces must be doubled inside a .format() template.
+         # Note: LaTeX braces must be doubled inside a .format() template.
          r"$\mathbb{{1}}$[2023Q1] & & & {:.5f} \\".format(pooled["stress_coef"]),
          r"\midrule",
          r"Other characteristics & Yes (9) & Yes (9) & Yes (9) \\",
@@ -824,7 +767,7 @@ def main() -> dict:
          "      UNINSURED-DEPOSIT RESULT",
          "=" * 78, "",
          "  Table 3 column 2 reports that the uninsured-deposit share predicts the",
-         "  2023Q1 deposit outflow. That is evidence about BANKING STRESS only if",
+         "  2023Q1 deposit outflow. That is evidence about banking stress only if",
          "  the relationship is specific to the stress episode. This asks whether",
          "  it is also there in an ordinary quarter.",
          "",
@@ -889,7 +832,7 @@ def main() -> dict:
 
     L += ["=" * 78, "1. PERIOD-SPECIFIC REGRESSIONS (Table 3's inference convention)",
           "=" * 78, "",
-          "    Full ten-feature OLS in each period. NOT the headline test — see 2.",
+          "    Full ten-feature OLS in each period. not the headline test — see 2.",
           "",
           "    {:<40s} {:>7s} {:>14s} {:>9s} {:>13s} {:>9s}".format(
               "period", "N", "coef", "t", "p", "R^2"),
@@ -913,7 +856,7 @@ def main() -> dict:
     pooled = pooled_interaction(placebo_panel, stress_panel)
     L += ["=" * 78, "2. THE HEADLINE TEST — POOLED, WITH ONE INTERACTION", "=" * 78,
           "",
-          "    'Significant in one period, insignificant in the other' is NOT a",
+          "    'Significant in one period, insignificant in the other' is not a",
           "    test: two estimates can straddle 0.05 without differing",
           "    significantly from each other. The two periods are pooled instead",
           "    and the difference in slope is estimated directly.",

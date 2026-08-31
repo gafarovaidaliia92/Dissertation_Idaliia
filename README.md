@@ -150,7 +150,6 @@ results/
   rq1_vulnerability/  rq2_communications/  rq3_bridge/  shared_inputs/  _archive/
 
 docs/
-  RESULTS.md                 the authoritative results write-up, RQ1 -> RQ2 -> RQ3
   rq2_codebook.md            the coding scheme behind the Safeguard signal
   rq1_pipeline_variants.md   narrow vs wide population, charter filter
 ```
@@ -186,8 +185,10 @@ These hold throughout and are asserted or verified numerically, not assumed:
 
 ## Reading the results
 
-Start with **[`docs/RESULTS.md`](docs/RESULTS.md)** — it reads top to bottom as
-RQ1 → RQ2 → RQ3.
+Start with [`results/README.md`](results/README.md), which summarises the three
+research questions and their verdicts, then read the section folders in order:
+`rq1_vulnerability/`, `rq2_communications/`, `rq3_bridge/`. Each carries its own
+README and the unrounded reports behind it.
 
 ## Data
 

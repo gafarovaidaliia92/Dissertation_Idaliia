@@ -1,17 +1,17 @@
-"""
-collect_results.py — rebuild the results/ showcase from data/processed/.
+"""collect_results.py: assembles the results/ folder from data/processed/.
 
 data/processed/ is the pipeline's working directory: every script writes there
-and knows nothing about results/. This script is the shop window. It copies the
-finished artefacts into one directory per research question, writes a README into
-each, and moves every superseded version into results/_archive/ with a _prev
-suffix.
+and knows nothing about results/. This script copies the finished artefacts into
+one folder per research question, writes a short README into each and moves
+superseded versions into results/_archive/.
 
-Idempotent: run it after any pipeline re-run and the directory rebuilds.
+Run it after any pipeline run; it rebuilds the folder rather than adding to it.
+A file present in data/processed/ but listed in neither MAPPING nor ARCHIVE is
+reported rather than silently dropped, so a new artefact cannot go missing.
 
-A file that exists in data/processed/ but is not listed in MAPPING or ARCHIVE is
-reported as UNMAPPED rather than silently dropped, so new artefacts cannot go
-missing.
+The coefficients quoted in the section READMEs are read from
+headline_numbers.json and from the reports themselves rather than written into
+the text, so a README cannot state a number that the file beside it contradicts.
 
     python3 scripts/collect_results.py
 """
@@ -130,7 +130,7 @@ Code: `rq1_build_panel.py` -> `rq1_model.py` -> `rq1_scores.py` -> `rq1_robustne
 `uninsured_share` is the only predictor significant in both populations.
 `unrealised_losses` is a narrow-only effect. `liquidity` in wide carries the
 WRONG sign (more liquidity -> more outflow), probably custodians and wholesale
-banks — explain it in the text, do not bury it.
+banks, and should be explained in the text rather than passed over.
 
 Sign note: `unrealised_losses = (FV - cost)/equity`, so a loss is NEGATIVE and a
 POSITIVE coefficient is H1a-consistent.
@@ -218,7 +218,7 @@ differently — which is H3. It now lives in `../rq3_bridge/`.
 | `rq1_results_{wide,narrow}_before_robustness.txt` | per-population reports, same vintage |
 | `rq1_scores_wide_before_robustness.csv` | the RQ3 input score, same vintage |
 
-Two superseded SCRIPTS that also lived here were lost to an over-eager cleanup
+Two superseded scripts that also lived here were not retained
 and were never under version control. Their outputs are the `.txt` files above,
 and their logic survives in the current `rq2_avg_effect.py`,
 `rq3_interaction.py` and `rq3_measures.py`.
@@ -231,7 +231,7 @@ Every current number is reconciled against these in
 
 
 def _live() -> dict:
-    """Every headline coefficient the pipeline last produced, keyed as in FROZEN.
+    """Every headline coefficient the pipeline last produced, keyed as in frozen.
 
     The section READMEs used to carry these as literals, and they went stale the
     moment the 2019Q3 look-ahead fix moved twelve of them: results/README.md and
@@ -259,7 +259,7 @@ def _full_row(measure: str) -> dict[str, str]:
     """b, SE and both p-values for one measure, from rq3_custody_check.txt.
 
     headline_numbers.json carries the two-way SE (`se_twoway`) and the
-    event-clustered p, but the interaction table also needs the EVENT-clustered
+    event-clustered p, but the interaction table also needs the event-clustered
     SE and the two-way p, which only this report prints. Parse its "full" row:
 
         RF score   full   -0.38507629   0.12471181   0.01148834   0.02208081  [CI]
@@ -568,7 +568,7 @@ def main() -> None:
            f"Assembled by `scripts/collect_results.py` — {date.today().isoformat()}.",
            "",
            "`data/processed/` is the pipeline's working directory; this folder is the",
-           "shop window. Rebuild after any re-run:", "",
+           "folder handed over with the study. Rebuild after any re-run:", "",
            "```bash", "python3 scripts/collect_results.py", "```", "",
            "## Sections", "",
            "| Folder | Question | Verdict |",

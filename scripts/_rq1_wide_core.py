@@ -71,7 +71,7 @@ from _rq1_core import (
 PROC = Path("data/processed")
 
 # --------------------------------------------------------------------------- #
-#  RUN 3 / RUN 4 configuration (supervisor's robustness requests)
+#  RUN 3 / RUN 4 configuration (additional robustness runs)
 # --------------------------------------------------------------------------- #
 OUT_H1B_ROBUST = PROC / "rq1_h1b_robustness.txt"
 OUT_FAILED_ROBUST = PROC / "rq1_failed_bank_robustness.txt"
@@ -563,7 +563,7 @@ def append_robustness_pointer() -> None:
         return tuple(vals)                                        # type: ignore[return-value]
 
     L = ["-" * 100, MARKER, "-" * 100,
-         "  Both were requested by the supervisor and are reported in full in:",
+         "  Both are reported in full in:",
          f"    {OUT_H1B_ROBUST.name}        — RUN 3: pruned features, repeated CV, "
          "in-CV tuning",
          f"    {OUT_FAILED_ROBUST.name}  — RUN 4: alternative failed-bank treatments",

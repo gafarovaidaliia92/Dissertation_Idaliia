@@ -90,7 +90,7 @@ RETRIES = 1  # one retry on parse/transport failure, then flag
 # Default 5-minute TTL: calls are sequential and a few seconds apart, so the
 # entry never expires mid-run. A 1h TTL would double the write cost for nothing.
 CACHE_TTL = "ephemeral"
-# Minimum cacheable prefix for the pinned model. Model-specific and NOT
+# Minimum cacheable prefix for the pinned model. Model-specific and not
 # monotonic across generations (claude-sonnet-4-5 / claude-sonnet-5: 1024;
 # claude-opus-4-8: 1024; claude-opus-4-7: 2048; claude-opus-4-6: 4096).
 # Below this the API caches nothing and says nothing.
@@ -185,7 +185,7 @@ def build_system(codebook: str) -> list[dict]:
     }]
 
 
-# Cache accounting, printed to stdout at the end. NOT written to the metadata
+# Cache accounting, printed to stdout at the end. not written to the metadata
 # file — the provenance record must stay identical to pre-caching runs.
 CACHE_STATS = {"write": 0, "read": 0, "uncached": 0}
 
@@ -241,7 +241,7 @@ def main() -> None:
     sents = sents.sort_values(["doc_id", "sent_index"]).reset_index(drop=True)
     by_doc = {d: g.reset_index(drop=True) for d, g in sents.groupby("doc_id")}
 
-    # Pre-flight: a system prompt under the model's floor is silently NOT
+    # Pre-flight: a system prompt under the model's floor is silently not
     # cached. Most likely to bite after the codebook is trimmed post-kappa.
     try:
         n_sys = client.messages.count_tokens(
@@ -250,7 +250,7 @@ def main() -> None:
         if n_sys < MIN_CACHEABLE_TOKENS:
             print(f"WARNING: system prompt ~{n_sys} tokens < "
                   f"{MIN_CACHEABLE_TOKENS} minimum for {MODEL} — prompt "
-                  f"caching will silently NOT apply. Labels are unaffected; "
+                  f"caching will silently not apply. Labels are unaffected; "
                   f"only cost is.")
         else:
             print(f"[cache] system prompt ~{n_sys} tokens (>= "

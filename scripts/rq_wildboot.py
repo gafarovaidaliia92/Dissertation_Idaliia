@@ -1,53 +1,19 @@
-"""
-rq_wildboot.py — wild cluster bootstrap p-values for every baseline estimate
-whose standard errors are clustered on the EVENT.
+"""rq_wildboot.py: wild cluster bootstrap p-values for the event-clustered
+estimates.
 
-WHY. The Safeguard signal S varies across only 11 events, and the event is the
-level at which the RQ2/RQ3 standard errors are clustered. Conventional CRV1
-cluster-robust inference is asymptotic in the NUMBER OF CLUSTERS, and 11 is not
-a large number: CRV1 is known to over-reject badly in this range. Cameron,
-Gelbach and Miller (2008) recommend the wild cluster bootstrap-t with the null
-imposed (WCR) as the fix, and it is the standard remedy in the few-cluster
-literature. This script recomputes the p-value for every event-clustered
-baseline coefficient by that method.
+The Safeguard signal varies across only eleven events, and the event is the
+level at which the RQ2 and RQ3 standard errors are clustered. Conventional CRV1
+cluster-robust inference is asymptotic in the number of clusters, and eleven is
+not a large number: CRV1 is known to over-reject in this range. Cameron, Gelbach
+and Miller (2008) recommend the wild cluster bootstrap-t with the null imposed,
+and it is the standard remedy in the few-cluster literature. This script
+recomputes the p-value for every event-clustered baseline coefficient by that
+method.
 
-WHAT IS AND IS NOT RE-ESTIMATED. NOTHING is re-specified. Every point estimate,
-every sample and every standard error below is the one already reported; the
-only new object is the p-value. The script proves that claim rather than
-asserting it: for each specification it fits the model TWICE — once through
-`_stats.fit_cluster` (the exact statsmodels code path the published tables were
-produced by) and once through pyfixest — and refuses to run the bootstrap unless
-the coefficient, the standard error and the CRV1 p-value agree to REPRO_TOL. It
-additionally reconciles against config.FROZEN wherever a frozen key exists for
-the quantity. A mismatch means specification drift and stops the script.
+The point estimates are unchanged. Only the p-values are recomputed, so the
+tables keep the same coefficients and gain a second inference column.
 
-THE FIXED EFFECTS ARE ENTERED AS DUMMIES, not absorbed. `pf.feols(... | doc_id +
-permno)` drops singleton fixed effects and therefore uses a different
-small-sample k adjustment, which moves the CRV1 p-value in the 4th decimal. The
-explicit `C(doc_id) + C(permno)` form reproduces statsmodels to machine
-precision, so that is the form used and the reproduction check enforces it.
-
-FULL ENUMERATION. With G = 11 event clusters there are only 2^11 = 2048 distinct
-Rademacher sign vectors, which is fewer than the 4999 draws requested. The
-bootstrap therefore enumerates the whole space rather than sampling it, and the
-p-value is DETERMINISTIC — a fact this script verifies rather than assumes, by
-re-running each bootstrap under a different seed and by checking that every
-p-value is an exact integer multiple of 1/2048.
-
-WHAT IS NOT COVERED. Table 8's LINK column (delta1) is clustered on the BANK,
-276 clusters, and conventional inference is appropriate there. It is untouched.
-
-Bootstrap settings are the package defaults and the ones the few-cluster
-literature recommends: Rademacher weights, impose_null=True (WCR, not WCU),
-bootstrap_type "11".
-
-Inputs   data/processed/rq2_car.csv, rq2_car_augmented.csv,
-         vulnerability_scores_{wide,ols}.csv
-Output   data/processed/rq_wildboot.txt
-
-    python3 scripts/rq_wildboot.py
-    python3 scripts/rq_wildboot.py --variants   # + the Section 3.7 robustness
-                                                #   variants (needs data/raw/wrds)
+Writes    data/processed/rq_wildboot.txt
 """
 
 from __future__ import annotations
@@ -185,7 +151,7 @@ def run_spec(spec: dict) -> dict:
                 f"(|diff| {abs(a - b):.3e} > {REPRO_TOL:.0e}). "
                 "The specification has drifted — not bootstrapped.")
 
-    # --- reconcile against FROZEN where a key exists ------------------------
+    # --- reconcile against frozen where a key exists ------------------------
     frozen_checks = []
     if spec["frozen"]:
         for fkey, val in zip(spec["frozen"], (sm_coef, sm_se, sm_p)):
@@ -265,7 +231,7 @@ def uninsured_mde(res: dict) -> tuple[list[str], dict]:
          "  WHICH SE THIS USES. The ANALYTIC event-clustered CRV1 standard error,",
          "  the same one the published table reports, so the MDE is on the same",
          "  footing as the other MDEs in the project. The wild cluster bootstrap",
-         "  does NOT provide a substitute: it inverts a test statistic under an",
+         "  does not provide a substitute: it inverts a test statistic under an",
          "  imposed null and returns a p-value, not a standard error, so there is",
          "  no bootstrap SE to divide by. The caveat to carry into the text is",
          "  that the bootstrap p-values below show CRV1 is too generous with 11",
@@ -377,10 +343,10 @@ def main(with_variants: bool | None = None) -> dict:
                    else with_variants)
 
     L = ["=" * 78,
-         "WILD CLUSTER BOOTSTRAP p-VALUES FOR THE EVENT-CLUSTERED ESTIMATES",
+         "WILD CLUSTER BOOTSTRAP p-VALUES FOR THE event-CLUSTERED ESTIMATES",
          "=" * 78, "",
          "  Every baseline coefficient in this project whose standard errors are",
-         "  clustered on the EVENT is re-tested here by a wild cluster bootstrap.",
+         "  clustered on the event is re-tested here by a wild cluster bootstrap.",
          "  With G = 11 event clusters, conventional CRV1 inference is unreliable:",
          "  it is asymptotic in the number of clusters and over-rejects in this",
          "  range. Cameron-Gelbach-Miller's wild cluster bootstrap-t with the null",
@@ -526,7 +492,7 @@ def main(with_variants: bool | None = None) -> dict:
         out.update(vk)
     else:
         L += ["=" * 78, "5. THE SECTION 3.7 ROBUSTNESS VARIANTS", "=" * 78, "",
-              "  NOT RUN. Pass --variants to bootstrap the alternative-window,",
+              "  not RUN. Pass --variants to bootstrap the alternative-window,",
               "  S_norm and threshold p-values as well; that path rebuilds CAR and",
               "  needs data/raw/wrds/. Until it is run, every p-value quoted from",
               "  rq2_robustness.txt is a CONVENTIONAL CRV1 p-value on 11 clusters",

@@ -114,7 +114,7 @@ C. ARTEFACT DIAGNOSTICS — uninsured_share
     interaction not significant (p 0.667521). With 11 events the two cannot be
     separated — read this as a warning flag, not a clean decomposition.
 
--- C2. leave-one-event-out (supervisor's spec, event SE) --
+-- C2. leave-one-event-out (two-way FE, event SE) --
 
     dropped           t0         S              b            SE          p  sig
     ----------------------------------------------------------------------------------
@@ -167,7 +167,7 @@ C. ARTEFACT DIAGNOSTICS — RF score (leakage-free)
     interaction not significant (p 0.441438). With 11 events the two cannot be
     separated — read this as a warning flag, not a clean decomposition.
 
--- C2. leave-one-event-out (supervisor's spec, event SE) --
+-- C2. leave-one-event-out (two-way FE, event SE) --
 
     dropped           t0         S              b            SE          p  sig
     ----------------------------------------------------------------------------------

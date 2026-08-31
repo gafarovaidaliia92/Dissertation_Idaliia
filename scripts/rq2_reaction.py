@@ -1,31 +1,30 @@
-"""
-rq2_reaction.py — RQ2, the unconditional test: did the market react at all?
+"""rq2_reaction.py: the unconditional test of whether the communications moved bank
+equity at all.
 
-This is the PRIMARY RQ2 evidence and should be read before rq2_avg_effect.py.
-If no event moved bank equity, there is no average reaction for the type of
-communication to modulate, and the gamma1 null in rq2_avg_effect.py follows.
+This is the primary RQ2 evidence and should be read before rq2_avg_effect.py. If
+no event moved prices, there is no average reaction for the type of
+communication to modulate, and the null on gamma1 follows.
 
-WHAT IT REPORTS
-  1. Brown-Warner cross-correlation-robust mean-CAR test, per event. The naive
-     per-event cross-sectional t-stats treat banks as independent within a date;
-     they are not, and those t-stats are inflated by roughly an order of
-     magnitude. The robust test forms the equal-weighted portfolio of bank
-     abnormal returns and judges the event-window portfolio CAR against that same
-     portfolio's estimation-window time-series SD.
-  2. Abnormal VOLATILITY (Beaver variance ratio) and abnormal TURNOVER, so a
-     "zero mean but violent trading" reaction could not be missed.
-  3. The minimum detectable effect for gamma1, so the RQ2 null is a bounded
-     claim rather than an absence of evidence.
+Reports:
+    1. the Brown-Warner cross-correlation-robust mean-CAR test, per event. Naive
+       per-event cross-sectional t-statistics treat banks as independent within
+       a date; they are not, and those statistics are inflated by roughly an
+       order of magnitude. The robust test forms the equal-weighted portfolio of
+       bank abnormal returns and judges the event-window portfolio CAR against
+       that same portfolio's estimation-window time-series standard deviation.
+    2. abnormal volatility, as a Beaver variance ratio, and abnormal turnover,
+       so that a reaction with a zero mean but heavy trading could not be missed.
+    3. the minimum detectable effect for gamma1, which turns the null into a
+       bounded claim rather than an absence of evidence.
 
-The heavy lifting — the augmented market+sector+rate return model, the daily AR
-panel, the portfolio test — is executed by _rq2_enrich_core.py, unchanged, so the
-figures here are the same objects that were produced before the refactor. This
-script drives that computation and then writes the RQ2-facing report.
+The augmented market, sector and rate model, the daily abnormal-return panel and
+the portfolio test are computed in _rq2_enrich_core.py; this script drives that
+computation and writes the RQ2 report.
 
-Inputs   data/processed/rq2_car.csv, WRDS daily files, cached factor data
-Outputs  data/processed/rq2_reaction.txt          (authoritative RQ2 file)
-         data/processed/rq2_car_augmented.csv     (used by rq2_avg_effect.py)
-         data/processed/rq2_enrichment_results.txt (full internal detail)
+Reads     data/processed/rq2_car.csv, the CRSP daily files, cached factor data
+Writes    data/processed/rq2_reaction.txt
+          data/processed/rq2_car_augmented.csv
+          data/processed/rq2_enrichment_results.txt
 """
 
 from __future__ import annotations

@@ -1,29 +1,26 @@
-"""
-rq1_robustness.py — RQ1, step 4: do the RQ1 findings depend on three banks?
+"""rq1_robustness.py: re-estimates RQ1 under four treatments of the three banks
+that failed in 2023.
 
-SVB, Signature and First Republic enter the panel with dep_growth = -1.0. That
-is a censoring convention, not a measurement, and it sits far outside the rest of
-the distribution: in the wide population the worst SURVIVING bank is -0.7629 and
-the 1st percentile is -0.1808. Three observations coded at an extreme value can
-carry a coefficient on their own, so H1a and H1b are re-estimated under four
-treatments:
+Silicon Valley Bank, Signature and First Republic enter the panel with
+dep_growth = -1.0. That is a censoring convention rather than a measurement, and
+it sits well outside the rest of the distribution: in the wide population the
+worst surviving bank is -0.7629 and the first percentile is -0.1808. Three
+observations at an extreme value can carry a coefficient on their own, so H1a is
+re-estimated four ways:
 
-    (a) baseline            censored at -1.0 (as published)
-    (b) excluded            the three banks dropped entirely
-    (c) survivor-min        recoded to the worst outflow actually observed among
-                            surviving banks — keeps them in, keeps them ranked
-                            worst, stops -1.0 acting as a 4x outlier
-    (d) winsorised          the whole outflow tail clipped at the 1st percentile
+    (a) baseline       censored at -1.0, as published
+    (b) excluded       the three banks dropped
+    (c) survivor-min   recoded to the worst outflow observed among surviving
+                       banks, which keeps them ranked worst without letting
+                       -1.0 act as an outlier four times the size
+    (d) winsorised     the outflow tail clipped at the first percentile
 
-WHAT IT FINDS, and it changes a conclusion:
-  * WIDE — uninsured_share keeps its negative sign and stays significant under
-    all four. The wide H1a result does NOT depend on the three failures.
-  * NARROW — significance does not survive exclusion (-0.0594, p = 0.105, against
-    a baseline of -0.2329, p < 0.001). The narrow H1a headline is carried in
-    large part by SVB, Signature and First Republic. Lean on the wide result.
+In the wide population uninsured_share keeps its sign and its significance under
+all four. In the narrow population significance does not survive exclusion
+(-0.0594, p = 0.105, against a baseline of -0.2329, p < 0.001), which is why the
+wide result carries the headline.
 
-Outputs   data/processed/rq1_failed_bank_robustness.txt
-Estimation code unchanged, in _rq1_wide_core.py.
+Output    data/processed/rq1_failed_bank_robustness.txt
 """
 
 from __future__ import annotations

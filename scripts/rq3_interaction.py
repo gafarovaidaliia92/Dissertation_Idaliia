@@ -1,42 +1,43 @@
-"""
-rq3_interaction.py — RQ3, part 2 of 3: the supervisor's two-way fixed-effects
-interaction.
+"""rq3_interaction.py: the two-way fixed-effects interaction.
 
-    CAR = EventFE + BankFE + b * (Safeguard x vulnerability) + e
+    CAR = event FE + bank FE + b * (S x vulnerability) + e
 
-WHY THIS LIVES IN RQ3, NOT RQ2. The interaction asks whether VULNERABLE banks
-react differently from less vulnerable ones. That is a question about the bridge
-between the RQ1 vulnerability profile and the market reaction, i.e. H3. It is not
-a question about whether the type of communication moves the average reaction,
-which is H2 and is answered by CAR ~ S in rq2_avg_effect.py. In an earlier
-version of this project the interaction was presented as the H2 test; it was not
-one, and the misfiled version is archived under results/_archive/.
+The interaction asks whether vulnerable banks react differently from less
+vulnerable ones. That is a question about the bridge between the RQ1
+vulnerability profile and the market reaction, so it belongs to H3, not to H2,
+which asks whether the type of communication moves the average reaction and is
+answered by CAR ~ S in rq2_avg_effect.py.
 
-COEFFICIENT  b on (S x vulnerability). Higher vulnerability = more run-prone, and
-             higher S = more protective communication, so the H3-flavoured
-             prediction is b > 0: a protective communication should hurt
-             vulnerable banks less.
+    coefficient  b on S x vulnerability. Higher vulnerability means more
+                 run-prone and higher S means more protective, so the
+                 H3-flavoured prediction is b > 0: a protective communication
+                 should hurt vulnerable banks less.
 
-Run twice, once per measure that the supervisor asked for:
-    uninsured_share   bank-EVENT level  -> its MAIN EFFECT survives bank FE
-    score_rf          STATIC per bank   -> its main effect is absorbed; only b
+Estimated for two measures:
+    uninsured_share   bank-event level, so its main effect survives bank FE
+    score_rf          static per bank, so its main effect is absorbed and only
+                      b is identified
 
-Three specifications per measure, so the reader can see where the pooled result
-goes once the confounds are differenced out:
-    pooled (no FE)                 CAR ~ S + V + S:V
-    event FE only                  CAR ~ V + S:V + C(doc_id)
-    event FE + bank FE  <- theirs  CAR ~ [V] + S:V + C(doc_id) + C(permno)
+Three specifications per measure, so that the pooled result can be followed as
+the confounds are differenced out:
+    pooled, no fixed effects   CAR ~ S + V + S:V
+    event FE only              CAR ~ V + S:V + C(doc_id)
+    event and bank FE          CAR ~ [V] + S:V + C(doc_id) + C(permno)
 
-INFERENCE. The two-way (bank AND event) clustered covariance is reported because
-it was requested, but it is NOT the headline: the Cameron-Gelbach-Miller
-estimator is not positive semi-definite in a sample this small and hands back
-negative variances (NaN SEs) for a large share of the fixed-effect dummies. The
-EVENT-clustered SE is the headline inference — the event is the level at which S
-varies, and there are only 11 of them. Both are printed side by side, and the
-count of NaN SEs is printed rather than hidden.
+Inference. The two-way clustered covariance is reported, but it is not the
+headline: the Cameron-Gelbach-Miller estimator is not positive semi-definite at
+this sample size and returns negative variances, hence NaN standard errors, for
+a large share of the fixed-effect dummies. The event-clustered standard error is
+the headline, because the event is the level at which S varies and there are
+only eleven of them. Both are printed side by side and the count of NaN standard
+errors is printed rather than suppressed.
 
-Inputs   data/processed/rq2_car.csv, vulnerability_scores_{wide,ols}.csv
-Output   data/processed/rq3_interaction.txt
+The artefact diagnostics for any significant coefficient below, the calendar
+placebo, the custody-bank exclusion and leave-one-event-out, are in
+rq3_measures.py, and no coefficient from this file should be quoted without them.
+
+Reads     data/processed/rq2_car.csv, vulnerability_scores_{wide,ols}.csv
+Writes    data/processed/rq3_interaction.txt
 """
 
 from __future__ import annotations
@@ -58,10 +59,10 @@ from _stats import (
 )
 from rq3_link import load_bridge_panel
 
-# the two measures the supervisor's model is run on
+# the two measures the two-way FE model is run on
 INTERACTION_MEASURES = ["uninsured_share", "score_rf"]
 
-SUP = "event FE + bank FE  <-- supervisor"
+SUP = "event FE + bank FE"
 
 
 def _specs(static: bool) -> list[tuple[str, str, str]]:
@@ -222,17 +223,17 @@ def one_measure(d: pd.DataFrame, meas: dict) -> tuple[str, dict]:
                       stars(mE.pvalues["VULN"]))]
         L.append("")
 
-    # supplementary: controls added to the supervisor's spec
+    # supplementary: controls added to the two-way FE specification
     if res.get(SUP):
         f_ctrl = _specs(static)[2][1] + " + " + " + ".join(C.CONTROLS)
         mc = fit_cluster(s, f_ctrl, ["doc_id"])
-        L += ["-- supplementary: the supervisor's spec with bank controls added --", "",
+        L += ["-- supplementary: the two-way FE specification with bank controls added --", "",
               "    Controls are read at the same characteristic quarter as the",
               "    measure, so they vary within bank and are not absorbed.", "",
               "    {:<22s} {:>14.8f} {:>13.8f} {:>8.3f} {:>10.6f}  {}".format(
                   "event-clustered", mc.params["SxV"], mc.bse["SxV"],
                   mc.tvalues["SxV"], mc.pvalues["SxV"], stars(mc.pvalues["SxV"])), ""]
-        res["supervisor + controls"] = {"event": mc}
+        res["two-way FE + controls"] = {"event": mc}
 
     # verdict
     sup, ev = res.get(SUP), res.get("event FE")

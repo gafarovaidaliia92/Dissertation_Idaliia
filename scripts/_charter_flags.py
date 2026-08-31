@@ -30,7 +30,7 @@ Signals (all reported, none hidden):
 is_trust_or_specialized = A or B or C.
 is_creditcard           = C only  (the sole clean FDIC hard-drop for training).
 
-CRITICAL: the three censored failures must never be flagged (they are real
+Note: the three censored failures must never be flagged (they are real
 commercial lenders — SVB loans/assets 0.67, uninsured 0.84; Signature 0.68;
 First Republic 1.57). Verified in verify_flags().
 """

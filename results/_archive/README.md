@@ -22,7 +22,7 @@ differently — which is H3. It now lives in `../rq3_bridge/`.
 | `rq1_results_{wide,narrow}_before_robustness.txt` | per-population reports, same vintage |
 | `rq1_scores_wide_before_robustness.csv` | the RQ3 input score, same vintage |
 
-Two superseded SCRIPTS that also lived here were lost to an over-eager cleanup
+Two superseded scripts that also lived here were not retained
 and were never under version control. Their outputs are the `.txt` files above,
 and their logic survives in the current `rq2_avg_effect.py`,
 `rq3_interaction.py` and `rq3_measures.py`.

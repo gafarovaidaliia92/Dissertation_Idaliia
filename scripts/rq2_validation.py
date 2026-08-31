@@ -1,22 +1,24 @@
-"""
-rq2_validation.py — RQ2 inter-coder reliability, two stages.
+"""rq2_validation.py: inter-coder reliability for the sentence labels, in two
+stages with hand coding in between.
 
-STAGE 1 (build template):  python scripts/rq2_validation.py template
-    Writes data/frozen/rq2_validation_template.csv — a stratified ~150-sentence
-    sample across all documents, over-sampling likely-design sentences. Columns:
-    doc_id, sent_id, sentence, and BLANK human_mentions_design,
-    human_design_stance for the analyst to fill. Claude's labels are NOT in this
-    file (blind coding).
+    python scripts/rq2_validation.py template
+        writes data/frozen/rq2_validation_template.csv, a stratified sample of
+        about 150 sentences across all documents, over-sampling those likely to
+        concern design. The columns human_mentions_design and
+        human_design_stance are left blank for the coder, and the model's own
+        labels are not in the file, so the coding is blind.
 
-STAGE 2 (score kappa):     python scripts/rq2_validation.py score
-    Run AFTER the analyst fills the template. Merges the human codes with Claude's
-    (from rq2_sentence_labels.csv) and writes rq2_validation_results.txt:
-    % agreement, Cohen's kappa (mentions_design), weighted kappa + Krippendorff's
-    alpha (design_stance), confusion matrices, and the free doc-level check
-    against the preliminary hand codes in the spreadsheet.
+    python scripts/rq2_validation.py score
+        run after the template is filled. Merges the hand codes with the model
+        labels from rq2_sentence_labels.csv and writes percentage agreement,
+        Cohen's kappa on mentions_design, weighted kappa and Krippendorff's
+        alpha on design_stance, the confusion matrices, and a document-level
+        check against the preliminary hand codes in the corpus spreadsheet.
 
-Design-likelihood for stratification uses a transparent KEYWORD heuristic (below),
-NOT Claude's labels — so the sample is drawn independently of what is being judged.
+Stratification uses a keyword heuristic rather than the model's labels, so the
+sample is drawn independently of what is being judged.
+
+Writes    data/processed/rq2_validation_results.txt
 """
 
 from __future__ import annotations
@@ -38,7 +40,7 @@ SAMPLE_N = 150
 SEED = 42
 
 # Transparent design-likelihood heuristic for stratified over-sampling.
-# NOT used for labelling — only to decide which sentences to over-sample so the
+# not used for labelling — only to decide which sentences to over-sample so the
 # ~150 has enough design sentences to estimate stance kappa.
 DESIGN_KEYWORDS = [
     "non-interest", "interest-bearing", "interest bearing", "remunerat",

@@ -64,7 +64,7 @@ CODES: dict[str, dict] = {
     "afs_amortized":     {"sched": "RCB",  "rcon": "RCON1772", "cons": "RCFD1772"},
     "afs_fairvalue":     {"sched": "RCB",  "rcon": "RCON1773", "cons": "RCFD1773"},
     "pledged_secs":      {"sched": "RCB",  "rcon": "RCON0416", "cons": "RCFD0416"},
-    # ---- Schedule RC-O Memorandum item 1 (domestic-office only, ALWAYS RCON) ----
+    # ---- Schedule RC-O Memorandum item 1 (domestic-office only, always RCON) ----
     "unins_amt_gt":      {"sched": "RCO",  "rcon": "RCONF051", "cons": "RCONF051"},  # amount > $250k, ordinary
     "unins_num_gt":      {"sched": "RCO",  "rcon": "RCONF052", "cons": "RCONF052"},  # number > $250k, ordinary
     "unins_ret_amt_gt":  {"sched": "RCO",  "rcon": "RCONF047", "cons": "RCONF047"},  # amount > $250k, retirement

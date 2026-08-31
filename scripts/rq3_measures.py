@@ -1,31 +1,30 @@
-"""
-rq3_measures.py — RQ3, part 3 of 3: which vulnerability measure carries signal,
-and is any of it real?
+"""rq3_measures.py: which vulnerability measure carries signal, and whether any of
+it is real.
 
-Three jobs, in this order:
+Three sections, in this order.
 
-  A. MEASURES COMPARISON. RF score vs OLS-predicted score vs uninsured_share:
-     how much do they agree, and which of them carries anything in the level link
-     (delta1, rq3_link.py) and in the interaction (b, rq3_interaction.py)? The
-     question is whether the machine-learning step buys anything over the single
-     strongest balance-sheet ratio.
+A. Measures comparison. Random forest score against OLS-predicted score against
+   uninsured_share: how far they agree, and which of them carries anything in
+   the level link of rq3_link.py and in the interaction of rq3_interaction.py.
+   The question is whether the machine-learning step buys anything over the
+   single strongest balance-sheet ratio.
 
-  B. LEVEL-VS-REACTION DIAGNOSTIC. uninsured_share is significant in the plain
-     delta1 link with the H3-predicted sign, but its interaction with the
-     safeguard signal is null. Those two facts together mean the level result is
-     a property of these windows, not a reaction to CBDC content. This is the
-     section that decides whether the H3 MECHANISM is supported.
+B. Level against reaction. uninsured_share is significant in the plain level
+   link with the sign H3 predicts, but its interaction with the signal is null.
+   Taken together those two facts mean the level result is a property of these
+   windows rather than a reaction to the content of the communications. This is
+   the section that decides whether the H3 mechanism is supported.
 
-  C. ARTEFACT DIAGNOSTICS for the one coefficient that is significant in the
-     interaction, the RF score. Run symmetrically on both measures so the
-     reporting is not conditioned on the outcome:
-       C1 calendar placebo — S trends upward over 2019-2023, so S x vulnerability
-          is nearly the same regressor as time x vulnerability
-       C2 leave-one-event-out
-       C3 drop the trust/custody banks
+C. Artefact diagnostics for the one coefficient significant in the interaction,
+   the random forest score. Run on both measures regardless of outcome, so that
+   the reporting is not conditioned on the result:
+     C1 calendar placebo. S trends upward over 2019 to 2023, so S x
+        vulnerability is nearly the same regressor as time x vulnerability.
+     C2 leave-one-event-out.
+     C3 dropping the trust and custody banks.
 
-Inputs   data/processed/rq2_car.csv, vulnerability_scores_{wide,ols}.csv
-Output   data/processed/rq3_measures.txt
+Reads     data/processed/rq2_car.csv, vulnerability_scores_{wide,ols}.csv
+Writes    data/processed/rq3_measures.txt
 """
 
 from __future__ import annotations
@@ -238,7 +237,7 @@ def diagnostics_block(d: pd.DataFrame, key: str) -> tuple[list[str], dict]:
           ""]
 
     # C2 leave-one-event-out
-    L += ["-- C2. leave-one-event-out (supervisor's spec, event SE) --", "",
+    L += ["-- C2. leave-one-event-out (two-way FE, event SE) --", "",
           "    {:>7s} {:>12s} {:>9s} {:>14s} {:>13s} {:>10s}  {}".format(
               "dropped", "t0", "S", "b", "SE", "p", "sig"),
           "    " + "-" * 82]

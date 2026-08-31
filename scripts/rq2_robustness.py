@@ -1,29 +1,27 @@
-"""
-rq2_robustness.py — the three robustness checks Section 3.7 claims but the
-pipeline never implemented.
+"""rq2_robustness.py: the three robustness checks described in Section 3.7.
 
-    (a) alternative event windows: [-5, +5] and [-1, +3] beside the baseline [-1, +5]
-    (b) the normalised signal S_norm, which _rq2_score.py computes but nothing used
-    (c) the threshold signal: only communications with n_design >= 9
+    (a) alternative event windows, [-5, +5] and [-1, +3], beside the baseline
+        [-1, +5]
+    (b) the normalised signal S_norm, which divides by the total sentence count
+        rather than the design-sentence count
+    (c) the threshold signal, keeping only communications with at least nine
+        design sentences
 
-Each variant is put through the same four headline quantities as the baseline:
+Each variant is put through the same four quantities as the baseline: the
+Brown-Warner event count, the gamma1 of Table 7, and the delta1 and interaction
+b of Table 8 for each of the three vulnerability measures. The baseline window
+is re-estimated alongside the variants as a control, so that the variant
+machinery is shown to reproduce the published numbers before any variant is
+believed.
 
-    Brown-Warner    how many of the 11 events show a mean abnormal return
-    gamma1          Table 7's headline row: CAR ~ S + controls, clustered on event
-    delta1          Table 8's link column, per measure: CAR ~ m + controls + event FE
-    beta            Table 8's interaction column, per measure:
-                    CAR = eventFE + bankFE + b(S x m), clustered on event
+The estimation window, t0-230 to t0-31, does not move with the event window, so
+alpha and beta are the market-model parameters already in rq2_car.csv and are
+reused rather than refitted: the alternative windows change which days are
+summed, nothing else. Characteristics are likewise unchanged, since the quarter
+is chosen strictly before t0 and no window touches that.
 
-Reads  : data/processed/rq2_car.csv, the vulnerability scores, CRSP returns
-Writes : data/processed/rq2_robustness.txt
-
-WHAT IS AND IS NOT RE-ESTIMATED. The estimation window (t0-230 .. t0-31) does not
-move with the event window, so alpha and beta are the market-model parameters
-already in rq2_car.csv and are reused rather than refitted — the alternative
-windows change which days are summed, nothing else. Characteristics are likewise
-unchanged: the quarter is chosen strictly before t0, which no window touches.
-
-    python3 scripts/rq2_robustness.py
+Reads     data/processed/rq2_car.csv, the vulnerability scores, CRSP returns
+Writes    data/processed/rq2_robustness.txt
 """
 
 from __future__ import annotations
@@ -295,7 +293,7 @@ def main() -> dict:
     print(text)
     print(f"wrote {C.RQ2_ROBUSTNESS}")
     def slug(k: str) -> str:
-        """FROZEN keys must be stable identifiers, not display labels."""
+        """frozen keys must be stable identifiers, not display labels."""
         k = (k.replace("window baseline [-1,+5]", "win_base")
               .replace("window [-5,+5]", "win_m5p5")
               .replace("window [-1,+3]", "win_m1p3")

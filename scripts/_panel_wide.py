@@ -177,7 +177,7 @@ def main() -> None:
     # failed months later. Censoring them at -1.0 would be wrong for a
     # 2022Q4->2023Q1 outcome. Today the $1bn floor removes them before it matters.
     # If ASSET_FLOOR is ever lowered below their size, restrict censoring to the
-    # three March-May failures explicitly — do NOT censor Heartland / Citizens.
+    # three March-May failures explicitly — do not censor Heartland / Citizens.
     panel["censored"] = panel["failed"]
     panel.loc[panel["censored"], "dep_growth"] = -1.0
 
@@ -230,7 +230,7 @@ def main() -> None:
     #  separated by any single FDIC field, so it is FLAGGED (is_trust_or_
     #  specialized) and KEPT — never a silent drop. See charter_flags.py.
     #
-    #  The three censored failures are verified NOT flagged before any drop.
+    #  The three censored failures are verified not flagged before any drop.
     # ----------------------------------------------------------------------- #
     print("[6b/7] charter classification (FDIC BKCLASS/SPECGRP + balance sheet) ...")
     panel = classify(panel, ZIP_2022Q4)

@@ -12,7 +12,7 @@ RQ2 [C] — H2: does the TYPE of CBDC communication move bank equity?
   HOW TO READ THIS REPORT.
   Sections 0-2 are CONTEXT: did the market react on average, and does the
   average reaction line up with the communication type (gamma1 on S)?
-  Sections 3-4 are the HEADLINE H2 TEST requested by the supervisor: the
+  Sections 3-4 are the headline H2 test: the
   two-way fixed-effects interaction
       CAR = EventFE + BankFE + b * (S x vulnerability) + e
   run once per vulnerability measure (uninsured_share; leakage-free ML
@@ -263,7 +263,7 @@ SECTION 3 — H2 AS A TWO-WAY FIXED-EFFECTS INTERACTION
               vulnerability = uninsured_share
 ==============================================================================
 
-  Model requested by the supervisor:
+  Model:
       CAR = EventFE + BankFE + b * (S x vulnerability) + e
   It isolates the WITHIN-EVENT comparison of vulnerable against
   less-vulnerable banks, so the between-event confound (different macro
@@ -306,7 +306,7 @@ SECTION 3 — H2 AS A TWO-WAY FIXED-EFFECTS INTERACTION
       Call Report quarter before each event, and the 11 events draw on 8
       distinct characteristic quarters. Its main effect therefore REMAINS
       IDENTIFIED under bank FE and is estimated and reported. The
-      supervisor's premise that the vulnerability main effect drops out
+      the premise that the vulnerability main effect drops out
       holds only for a static measure; it does not hold here, and we
       report the main effect rather than suppress it.
     * The interaction survives both sets of dummies (residual SD 7.224e-02),
@@ -357,7 +357,7 @@ SECTION 3 — H2 AS A TWO-WAY FIXED-EFFECTS INTERACTION
     main effect of vulnerability (identified here, see above):
       two-way                    -0.02290523    0.01247703   -1.836   0.0963  [-0.05070579, +0.00489534]  *
 
-  [event FE + bank FE  <-- supervisor]
+  [event FE + bank FE]
     formula : CAR ~ VULN + SxV + C(doc_id) + C(permno)
     k estimated parameters : 288     model df_resid : 2668
     identification of SxV given the rest: R^2 0.880731630256, residual SD 7.195422e-02
@@ -377,7 +377,7 @@ SECTION 3 — H2 AS A TWO-WAY FIXED-EFFECTS INTERACTION
     main effect of vulnerability (identified here, see above):
       two-way                    -0.00379515    0.02498706   -0.152   0.8823  [-0.05946979, +0.05187948]  (n.s.)
 
--- supplementary: the supervisor's spec with bank controls added --
+-- supplementary: the two-way FE specification with bank controls added --
 
     The controls (size, ROA, NPL_ratio, equity_ratio) are read at the same
     characteristic quarter as the vulnerability measure, so they vary
@@ -414,7 +414,7 @@ SECTION 3 — H2 AS A TWO-WAY FIXED-EFFECTS INTERACTION
     events, so the joint model has little power to separate them; read it
     as a warning flag, not as a clean decomposition.
 
--- D2. LEAVE-ONE-EVENT-OUT (supervisor's spec, two-way SE) --
+-- D2. LEAVE-ONE-EVENT-OUT (two-way FE, two-way SE) --
 
     dropped           t0         S              b            SE         p  sig
     --------------------------------------------------------------------------------
@@ -442,7 +442,7 @@ SECTION 3 — H2 AS A TWO-WAY FIXED-EFFECTS INTERACTION
 
     spec                                            b            SE        t         p  sig
     ----------------------------------------------------------------------------------------
-    supervisor spec, trust dropped         0.00272115    0.02177838    0.125  0.903041  (n.s.)
+    two-way FE spec, trust dropped         0.00272115    0.02177838    0.125  0.903041  (n.s.)
 
 -- verdict for this measure --
 
@@ -455,7 +455,7 @@ SECTION 4 — H2 AS A TWO-WAY FIXED-EFFECTS INTERACTION
               vulnerability = vulnerability_score (RF, leakage-free)
 ==============================================================================
 
-  Model requested by the supervisor:
+  Model:
       CAR = EventFE + BankFE + b * (S x vulnerability) + e
   It isolates the WITHIN-EVENT comparison of vulnerable against
   less-vulnerable banks, so the between-event confound (different macro
@@ -541,7 +541,7 @@ SECTION 4 — H2 AS A TWO-WAY FIXED-EFFECTS INTERACTION
           have a negative variance and hence NaN SE (all of them fixed-effect dummies).
           The SE for b itself is finite and is the one reported.
 
-  [event FE + bank FE  <-- supervisor]
+  [event FE + bank FE]
     formula : CAR ~ SxV + C(doc_id) + C(permno)
     k estimated parameters : 286     model df_resid : 2660
     identification of SxV given the rest: R^2 0.455516798919, residual SD 6.897573e-03
@@ -559,7 +559,7 @@ SECTION 4 — H2 AS A TWO-WAY FIXED-EFFECTS INTERACTION
           have a negative variance and hence NaN SE (all of them fixed-effect dummies).
           The SE for b itself is finite and is the one reported.
 
--- supplementary: the supervisor's spec with bank controls added --
+-- supplementary: the two-way FE specification with bank controls added --
 
     The controls (size, ROA, NPL_ratio, equity_ratio) are read at the same
     characteristic quarter as the vulnerability measure, so they vary
@@ -596,7 +596,7 @@ SECTION 4 — H2 AS A TWO-WAY FIXED-EFFECTS INTERACTION
     events, so the joint model has little power to separate them; read it
     as a warning flag, not as a clean decomposition.
 
--- D2. LEAVE-ONE-EVENT-OUT (supervisor's spec, two-way SE) --
+-- D2. LEAVE-ONE-EVENT-OUT (two-way FE, two-way SE) --
 
     dropped           t0         S              b            SE         p  sig
     --------------------------------------------------------------------------------
@@ -624,7 +624,7 @@ SECTION 4 — H2 AS A TWO-WAY FIXED-EFFECTS INTERACTION
 
     spec                                            b            SE        t         p  sig
     ----------------------------------------------------------------------------------------
-    supervisor spec, trust dropped        -0.13939961    0.06675558   -2.088  0.063319  *
+    two-way FE spec, trust dropped        -0.13939961    0.06675558   -2.088  0.063319  *
 
 -- verdict for this measure --
 
@@ -657,7 +657,7 @@ SECTION 4 — H2 AS A TWO-WAY FIXED-EFFECTS INTERACTION
 SUMMARY — H2
 ==============================================================================
 
--- HEADLINE: b on (S x vulnerability), supervisor's two-way FE model --
+-- HEADLINE: b on (S x vulnerability), two-way FE model --
 
     vulnerability measure / spec                          b      SE(2way)         p  p(event)
     ------------------------------------------------------------------------------------------

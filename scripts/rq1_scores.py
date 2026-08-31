@@ -1,33 +1,30 @@
-"""
-rq1_scores.py — RQ1, step 3: leakage-free vulnerability scores for the listed
-banks. These are the RQ1 output that RQ3 consumes.
+"""rq1_scores.py: builds the leakage-free vulnerability scores that RQ3 consumes.
 
-LEAKAGE-FREE PROTOCOL. A listed bank's score must not come from a model that
-trained on that bank. The model is therefore fitted on the wide population with
-every listed bank REMOVED (688 banks) and then applied to the 277 listed banks.
-Training and scoring sets share no observations at all, which is a cleaner
-hold-out than cross_val_predict within one population.
+A listed bank's score must not come from a model that trained on that bank, so
+the model is fitted on the wide population with every listed bank removed (688
+banks) and then applied to the 277 listed ones. Training and scoring sets share
+no observations.
 
-ORIENTATION — the invariant that matters downstream:
+Orientation, which every downstream consumer assumes:
 
     score = -1 x predicted 2023Q1 deposit growth
 
-so a predicted OUTFLOW maps to a POSITIVE score and HIGHER = MORE VULNERABLE.
-Every consumer of these files assumes that orientation; see config.MEASURES.
+so a predicted outflow gives a positive score and higher means more vulnerable.
+An assertion at the end of the script checks it.
 
-Two estimators, identical protocol, so the effect of the algorithm can be
-isolated from the effect of using a fitted composite at all:
+Two estimators run under the identical protocol, which separates the effect of
+the algorithm from the effect of using a fitted composite at all:
 
-    RF   RandomForest  -> vulnerability_scores_wide.csv  (column vulnerability_score)
-    OLS  LinearRegression -> vulnerability_scores_ols.csv (column score_ols)
+    random forest      -> vulnerability_scores_wide.csv (vulnerability_score)
+    linear regression  -> vulnerability_scores_ols.csv  (score_ols)
 
-The RF file also carries is_trust_or_specialized, used by the custody-bank
-diagnostic in rq3_measures.py.
+The random forest file also carries is_trust_or_specialized, used by the
+custody-bank diagnostic in rq3_measures.py.
 
-CAVEAT to carry downstream: the transferred RF model explains R2 = 0.0302 of the
-listed banks' outflow and its scores are compressed to SD 0.014, about 3.7x
-narrower than the in-population cross-validated version. A measure that weak
-cannot be expected to dominate a raw balance-sheet ratio, and in RQ3 it does not.
+The transferred forest explains R-squared = 0.0302 of the listed banks' outflow
+and its scores have a standard deviation of 0.014, about 3.7 times narrower than
+the in-population version. That is a weak measure, and the RQ3 results should be
+read with it in mind.
 
 Outputs   data/processed/vulnerability_scores_wide.csv
           data/processed/vulnerability_scores_ols.csv

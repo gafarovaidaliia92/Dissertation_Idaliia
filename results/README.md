@@ -3,7 +3,7 @@
 Assembled by `scripts/collect_results.py` — 2026-08-26.
 
 `data/processed/` is the pipeline's working directory; this folder is the
-shop window. Rebuild after any re-run:
+folder handed over with the study. Rebuild after any re-run:
 
 ```bash
 python3 scripts/collect_results.py

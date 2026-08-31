@@ -252,7 +252,7 @@ WORD_RE = re.compile(r"[A-Za-z][A-Za-z’'-]*")
 
 
 def build_vocab(paras: list[list[str]]) -> set[str]:
-    """Words attested in the document, from lines NOT ending in a hyphen."""
+    """Words attested in the document, from lines not ending in a hyphen."""
     vocab: set[str] = set()
     for lines in paras:
         for line in lines:

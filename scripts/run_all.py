@@ -1,39 +1,27 @@
-"""
-run_all.py — master entry point. Regenerates the whole project in dependency
-order and then proves the numbers did not move.
+"""run_all.py: master entry point. Runs the pipeline in dependency order and then
+reconciles the headline numbers against the frozen values in config.py.
 
-    python3 scripts/run_all.py --check-results  # NO data needed: check results/
-    python3 scripts/run_all.py              # idempotent: reuses frozen artefacts
-    python3 scripts/run_all.py --force      # re-estimate everything (~25 min)
-    python3 scripts/run_all.py --verify     # skip the pipeline, reconcile only
+    python3 scripts/run_all.py --check-results   check results/, no data needed
+    python3 scripts/run_all.py                   run, reusing existing outputs
+    python3 scripts/run_all.py --force           re-estimate everything
+    python3 scripts/run_all.py --verify          reconcile only
 
---check-results is the entry point for a fresh clone. It recomputes nothing and
-touches no data/ path; it reads the published headline numbers from
-results/shared_inputs/ and reconciles them against config.FROZEN. --verify and
---force both need data/processed/ and data/raw/, which are not in the repository.
+--check-results is the entry point for a fresh copy of the repository. It reads
+the published numbers from results/shared_inputs/ and compares them with
+config.FROZEN, so it needs no data/ directory. --verify and --force both read
+data/raw/ and data/processed/.
 
-ORDER (each stage consumes the previous one's outputs):
+Order:
+    RQ1   rq1_build_panel, rq1_model, rq1_scores, rq1_robustness,
+          rq1_descriptives, rq1_tuned_table, rq1_placebo
+    RQ2   rq2_reaction, rq2_avg_effect, rq2_robustness
+    RQ3   rq3_link, rq3_interaction, rq3_measures, rq3_custody_check
+          rq_wildboot, collect_results
 
-    RQ1   rq1_build_panel -> rq1_model -> rq1_scores -> rq1_robustness
-          -> rq1_descriptives
-    RQ2   rq2_signal -> rq2_validation -> rq2_car -> rq2_reaction -> rq2_avg_effect
-    RQ3   rq3_link -> rq3_interaction -> rq3_measures -> rq3_custody_check
-          collect_results
-
-IDEMPOTENCE. Every stage skips itself when its outputs already exist, because
-the empirical results are FINAL and re-running an estimator is a chance to lose
-them, not to improve them. --force overrides that, stage by stage.
-
-TWO STAGES ARE NEVER RUN AUTOMATICALLY, even with --force:
-  * rq2_signal's classification step calls an LLM. The sentence labels are
-    frozen and every RQ2/RQ3 number depends on them.
-  * rq2_car.py is the CAR construction and is treated as read-only.
-Both must be invoked deliberately, on their own.
-
-RECONCILIATION. After the pipeline, every headline coefficient is recomputed and
-compared against config.FROZEN, which records the values produced before the
-refactor. The table is printed and written to data/processed/reconciliation.txt.
-A mismatch means the refactor broke something; it is not a new finding.
+Each stage skips itself when its outputs already exist; --force overrides that.
+Two stages are never run automatically, because both are frozen inputs to
+everything downstream: the sentence classification in rq2_signal.py, which calls
+a language model, and the event study in rq2_car.py.
 """
 
 from __future__ import annotations
@@ -54,7 +42,7 @@ def check_published() -> int:
 
     This is the one entry point that works in a fresh clone: it reads
     results/shared_inputs/headline_numbers.json, which the pipeline wrote when
-    those results were produced, and compares it key by key against FROZEN.
+    those results were produced, and compares it key by key against frozen.
     data/ need not exist at all. Nothing is written.
     """
     src = C.RES_SHARED / "headline_numbers.json"
@@ -122,7 +110,7 @@ def run_pipeline() -> dict:
                      rq3_measures.main))
 
     # Appendix C. Read-only re-estimation under the custody exclusions; it
-    # contributes no FROZEN key, it just has to exist as a file rather than as
+    # contributes no frozen key, it just has to exist as a file rather than as
     # terminal output someone has to remember to capture.
     import rq3_custody_check
     stage("RQ3 4/4 — custody robustness (Appendix C)", rq3_custody_check.main)
@@ -224,7 +212,7 @@ def reconcile(got: dict) -> tuple[str, int]:
     rows.append("=" * 110)
     src_label = ("PUBLISHED results/ snapshot" if CHECK_RESULTS
                  else "refactored pipeline")
-    rows.append(f"RECONCILIATION — {src_label} against the pre-refactor values")
+    rows.append(f"RECONCILIATION — {src_label} against the recorded values")
     rows.append("=" * 110)
     rows.append("")
     if CHECK_RESULTS:
@@ -266,7 +254,7 @@ def reconcile(got: dict) -> tuple[str, int]:
                     f"(event-clustered).")
         rows.append("")
     if n_bad:
-        rows.append("  STOP. At least one number moved. Do not use these outputs until")
+        rows.append("  At least one number moved. Do not use these outputs until")
         rows.append("  the cause is found.")
     else:
         if CHECK_RESULTS:
@@ -291,10 +279,10 @@ def main() -> None:
         import rq3_link
         import rq3_measures
         import rq_wildboot
-        # --variants is NOT passed here, for the same reason rq2_robustness is
+        # --variants is not passed here, for the same reason rq2_robustness is
         # not in this list: --verify recomputes the baseline headline numbers,
         # and the Section 3.7 variants need a CAR rebuild off data/raw/wrds. The
-        # variant bootstrap keys therefore report "NOT RECOMPUTED" under
+        # variant bootstrap keys therefore report "not RECOMPUTED" under
         # --verify, exactly as the variant CRV1 keys already do.
         for fn in (rq2_reaction.main, rq2_avg_effect.main, rq3_link.main,
                    rq3_interaction.main, rq3_measures.main,

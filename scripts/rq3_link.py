@@ -1,32 +1,30 @@
-"""
-rq3_link.py — RQ3, part 1 of 3: the LEVEL link between vulnerability and CAR.
+"""rq3_link.py: the level link between vulnerability and abnormal return.
 
-HYPOTHESIS   H3 — banks the RQ1 model calls more vulnerable should show more
-             negative abnormal returns around CBDC communications.
-COEFFICIENT  delta1 in   CAR = delta0 + delta1 * vulnerability + controls
-             H3 predicts delta1 < 0.
+    H3           banks the RQ1 model calls more vulnerable should show more
+                 negative abnormal returns around the communications.
+    coefficient  delta1 in CAR = delta0 + delta1 * vulnerability + controls.
+                 H3 predicts delta1 < 0.
 
-Run for all THREE vulnerability measures, every one oriented HIGHER = MORE
-VULNERABLE (see config.MEASURES for the exact construction of each):
-    uninsured_share   raw balance-sheet ratio, bank-EVENT level
-    score_rf          leakage-free RandomForest score, STATIC per bank
-    score_ols         leakage-free OLS score, same split, STATIC per bank
+Estimated for all three measures, each oriented so that higher means more
+vulnerable; config.MEASURES gives the exact construction of each:
 
-This file answers only the LEVEL question: do vulnerable banks have lower CARs in
-these windows? Whether that is a REACTION to the communication is a different
-question, and it is answered by the interaction in rq3_interaction.py. The two
-are put side by side in rq3_measures.py, which is where the level-vs-reaction
-diagnostic lives.
+    uninsured_share   raw balance-sheet ratio, at the bank-event level
+    score_rf          leakage-free random forest score, static per bank
+    score_ols         leakage-free OLS score, same split, static per bank
 
-Inputs   data/processed/rq2_car.csv                    (rq2_car.py, unchanged)
-         data/processed/vulnerability_scores_wide.csv  (rq1_scores.py)
-         data/processed/vulnerability_scores_ols.csv   (rq1_scores.py)
-Output   data/processed/rq3_link.txt
-         data/processed/rq3_bridge.csv   (the merged bank-event panel RQ3 uses)
+This file answers the level question only: do vulnerable banks earn lower
+abnormal returns in these windows? Whether that constitutes a reaction to the
+communication is a separate question, answered by the interaction in
+rq3_interaction.py, and the two are compared in rq3_measures.py.
 
-Standard errors are clustered on the BANK here, the level at which the
-vulnerability measures vary. The interaction script clusters differently and
-says why.
+Standard errors cluster on the bank here, the level at which the vulnerability
+measures vary. The interaction script clusters on the event instead, and states
+why.
+
+Reads     data/processed/rq2_car.csv, vulnerability_scores_wide.csv,
+          vulnerability_scores_ols.csv
+Writes    data/processed/rq3_link.txt
+          data/processed/rq3_bridge.csv, the merged panel RQ3 uses
 """
 
 from __future__ import annotations

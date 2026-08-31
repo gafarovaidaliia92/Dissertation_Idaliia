@@ -1,42 +1,33 @@
-"""
-rq2_avg_effect.py — RQ2, the average-effect test.
+"""rq2_avg_effect.py: tests H2, the average effect of the type of communication.
 
-HYPOTHESIS   H2 — communications that emphasise PROTECTIVE design (higher
-             safeguard score S) produce LESS NEGATIVE abnormal returns than
-             expansive ones. This is a statement about the AVERAGE effect of the
-             communication.
-COEFFICIENT  gamma1 in   CAR = gamma0 + gamma1 * S [+ controls].
-             H2 predicts gamma1 > 0.
+    H2           communications emphasising protective design, meaning a higher
+                 Safeguard score S, produce less negative abnormal returns.
+    coefficient  gamma1 in CAR = gamma0 + gamma1 * S + controls. H2 predicts
+                 gamma1 > 0.
 
-WHAT IS NOT HERE. The S x vulnerability interaction has been moved to
-rq3_interaction.py. It asks whether VULNERABLE banks react differently, which is
-H3, not H2. An earlier version of this project reported it as the H2 test; that
-version is archived under results/_archive/.
+The interaction of S with bank vulnerability is not tested here. It asks whether
+vulnerable banks react differently, which is H3, and it is estimated in
+rq3_interaction.py.
 
-THE STRUCTURAL POINT, enforced rather than described. S varies ONLY across the 11
-events (10 distinct values — two events both score 1.00) and is constant within
-an event. Therefore:
-  (a) no event-fixed-effects specification is estimated for S. The event dummies
-      absorb S exactly, so gamma1 would not be identified. That is collinearity,
-      not an effect of zero, and the script verifies it numerically instead of
-      printing whatever a pseudo-inverse returns;
-  (b) standard errors are clustered on the EVENT, the level at which S varies,
-      with t(G-1) inference. Bank-clustered SEs would treat 276 banks as
-      independent information about a regressor with 11 values, and are shown
-      only to make that inflation visible;
-  (c) gamma1 is identified off 11 events and is imprecise by construction. The
-      event-level regression reports n = 11 in plain sight.
+Two features of the design are enforced in the code rather than described:
+
+  (a) no event-fixed-effects specification is estimated for S. S is constant
+      within an event, so the event dummies absorb it exactly and gamma1 is not
+      identified. The script verifies this numerically instead of printing
+      whatever a pseudo-inverse returns.
+  (b) standard errors cluster on the event, the level at which S varies, with
+      t(G-1) inference. Bank-clustered errors would treat 276 banks as
+      independent information about a regressor with eleven values; they are
+      reported only to show the size of that inflation.
 
 Three views of the same comparison:
-    1  event level   the 11 event-mean CARs on the 11 S values, plus Pearson and
-                     Spearman correlations. The honest form of the test.
-    2  pooled        all bank-events, so bank controls can be included.
-    3  augmented     the same on the market+sector+rate CAR, if available.
+    1  event level   the eleven event-mean CARs on the eleven values of S, with
+                     Pearson and Spearman correlations
+    2  pooled        all bank-events, so that bank controls can be included
+    3  augmented     the same test on the market, sector and rate CAR
 
-Inputs   data/processed/rq2_car.csv           (rq2_car.py, unchanged)
-         data/processed/rq2_car_augmented.csv (optional, from rq2_reaction.py)
-Output   data/processed/rq2_avg_effect.txt
-         data/processed/rq2_car_sanity.txt
+Reads     data/processed/rq2_car.csv, rq2_car_augmented.csv
+Writes    data/processed/rq2_avg_effect.txt, rq2_car_sanity.txt
 """
 
 from __future__ import annotations

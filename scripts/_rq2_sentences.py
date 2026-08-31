@@ -12,7 +12,7 @@ Writes  : data/processed/rq2_sentences.csv
 
 Stable sent_id = f"{doc_id}-{sent_index}" (sent_index is 0-based within a document).
 
-NB: this is the TEXT half of RQ2 only (sentence prep). No API calls here.
+Note: this is the TEXT half of RQ2 only (sentence prep). No API calls here.
 """
 
 from __future__ import annotations
@@ -36,7 +36,7 @@ SHEET = "communications"
 DOC1_TXT = Path("data/raw/fed") / "fulltext_01_money_and_payments.txt"
 OUT = Path("data") / "processed" / "rq2_sentences.csv"
 
-# Abbreviations that must NOT end a sentence (punkt learns some, but the corpus is
+# Abbreviations that must not end a sentence (punkt learns some, but the corpus is
 # small — seed the obvious government/finance ones so a lone doc doesn't over-split).
 EXTRA_ABBREV = {
     "u.s", "e.g", "i.e", "etc", "vs", "cf", "mr", "mrs", "ms", "dr", "prof",

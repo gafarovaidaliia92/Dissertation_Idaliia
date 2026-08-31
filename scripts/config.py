@@ -18,8 +18,8 @@ The project answers three research questions, and the module layout follows them
          rq3_link.py -> rq3_interaction.py -> rq3_measures.py
 
 FROZEN NUMBERS. The empirical results are final. FROZEN below records the headline
-figures produced before the refactor; run_all.py recomputes them and prints a
-reconciliation table. A mismatch is a bug in the refactor, not a new finding.
+figures produced when the results were finalised; run_all.py recomputes them and prints a
+reconciliation table. A mismatch is a bug, not a new finding.
 """
 
 from __future__ import annotations
@@ -105,7 +105,7 @@ RQ3_MEASURES = PROC / "rq3_measures.txt"
 RQ3_BRIDGE_CSV = PROC / "rq3_bridge.csv"
 RQ3_CUSTODY = PROC / "rq3_custody_check.txt"   # Appendix C source
 
-# ---- inference add-ons (supervisor's final review) --------------------------
+# ---- inference add-ons (final round of inference checks) --------------------------
 # These ADD to the reported inference; they re-specify nothing. rq_wildboot.py
 # recomputes the p-value of every event-clustered baseline coefficient by a wild
 # cluster bootstrap (11 clusters is too few for CRV1) and reports the MDE for the
@@ -145,7 +145,7 @@ POWER_MULT = 2.80
 CAR_SD_REF = 0.048
 
 # A regressor whose R^2 on the fixed effects reaches this is treated as perfectly
-# collinear with them and is NOT estimated. Printing a pseudo-inverse split of a
+# collinear with them and is not estimated. Printing a pseudo-inverse split of a
 # collinear pair is an artefact, not an estimate.
 ABSORBED_R2 = 1.0 - 1e-9
 
@@ -230,11 +230,11 @@ GB_GRID = {
 }
 
 # --------------------------------------------------------------------------- #
-#  FROZEN headline numbers — the pre-refactor values, for reconciliation.
+#  frozen headline numbers — the recorded values, for reconciliation.
 #  key -> (value, tolerance, human description)
 #  Tolerances are the precision at which the source file reported the number.
 #
-#  RE-FROZEN 2026-08-17, 12 of the 46 keys. Call Report coverage now starts at
+#  RE-frozen 2026-08-17, 12 of the 46 keys. Call Report coverage now starts at
 #  2019Q3 instead of 2019Q4, so doc_id 8 (Brainard, 2019-10-16) draws its bank
 #  characteristics from a quarter that actually precedes the event instead of
 #  the one two months after it. That removed the last char_lookahead=True rows
@@ -244,7 +244,7 @@ GB_GRID = {
 #  measure). CAR, alpha and beta are unchanged to 1e-15, so the 34 remaining
 #  keys — every RQ1 number, the uncontrolled gamma1 specifications, b for both
 #  model scores, and the custody-drop check — still reconcile against their
-#  original values. Keys re-frozen here are tagged "(re-frozen 2019Q3)".
+#  original values.
 # --------------------------------------------------------------------------- #
 FROZEN: dict[str, tuple[float, float, str]] = {
     # ---- RQ1 ----
@@ -370,35 +370,35 @@ FROZEN: dict[str, tuple[float, float, str]] = {
     "rq2.gamma1.event_level.se": (0.018874, 1e-6, "gamma1 SE, event level"),
     "rq2.gamma1.event_level.p": (0.7723, 1e-4, "gamma1 p, event level"),
     "rq2.gamma1.pooled_ctrl.coef": (
-        0.006454, 1e-6, "gamma1, pooled with controls, event-clustered (re-frozen 2019Q3)"),
+        0.006454, 1e-6, "gamma1, pooled with controls, event-clustered"),
     "rq2.gamma1.pooled_ctrl.se": (
-        0.017129, 1e-6, "gamma1 SE, pooled with controls (re-frozen 2019Q3)"),
+        0.017129, 1e-6, "gamma1 SE, pooled with controls"),
     "rq2.gamma1.pooled_ctrl.p": (
-        0.7142, 1e-4, "gamma1 p, pooled with controls (re-frozen 2019Q3)"),
+        0.7142, 1e-4, "gamma1 p, pooled with controls"),
     "rq2.corr.pearson": (0.0989, 1e-4, "Pearson corr(event-mean CAR, S)"),
     "rq2.corr.spearman": (0.0137, 1e-4, "Spearman corr(event-mean CAR, S)"),
 
     # ---- RQ3 ----
     "rq3.delta1.uninsured.coef": (
         -0.01877493, 1e-8,
-        "delta1 on uninsured_share, event FE (SIGNIFICANT) (re-frozen 2019Q3)"),
+        "delta1 on uninsured_share, event FE (SIGNIFICANT)"),
     "rq3.delta1.uninsured.p": (
-        0.000321, 1e-6, "delta1 p on uninsured_share (re-frozen 2019Q3)"),
+        0.000321, 1e-6, "delta1 p on uninsured_share"),
     "rq3.delta1.score_rf.coef": (
-        0.06011100, 1e-8, "delta1 on the RF score (re-frozen 2019Q3)"),
+        0.06011100, 1e-8, "delta1 on the RF score"),
     "rq3.delta1.score_rf.p": (
-        0.332233, 1e-6, "delta1 p on the RF score (re-frozen 2019Q3)"),
+        0.332233, 1e-6, "delta1 p on the RF score"),
     "rq3.delta1.score_ols.coef": (
-        0.01232232, 1e-8, "delta1 on the OLS score (re-frozen 2019Q3)"),
+        0.01232232, 1e-8, "delta1 on the OLS score"),
     "rq3.delta1.score_ols.p": (
-        0.782140, 1e-6, "delta1 p on the OLS score (re-frozen 2019Q3)"),
+        0.782140, 1e-6, "delta1 p on the OLS score"),
     "rq3.b.uninsured_share.coef": (
         -0.00049680, 1e-8,
-        "b on S x uninsured_share, event+bank FE (re-frozen 2019Q3)"),
+        "b on S x uninsured_share, event+bank FE"),
     "rq3.b.uninsured_share.se_twoway": (
-        0.02093823, 1e-8, "b SE, two-way clustered (re-frozen 2019Q3)"),
+        0.02093823, 1e-8, "b SE, two-way clustered"),
     "rq3.b.uninsured_share.p_event": (
-        0.9819, 1e-4, "b p, event-clustered (headline) (re-frozen 2019Q3)"),
+        0.9819, 1e-4, "b p, event-clustered (headline)"),
     "rq3.b.score_rf.coef": (-0.38507629, 1e-8, "b on S x RF score, event+bank FE"),
     "rq3.b.score_rf.se_twoway": (0.14229917, 1e-8, "b SE, two-way clustered"),
     "rq3.b.score_rf.p_event": (0.0115, 1e-4, "b p, event-clustered (headline)"),
@@ -693,14 +693,14 @@ FROZEN: dict[str, tuple[float, float, str]] = {
         0.01589635, 1e-8, "3.7 robustness: win m5p5.gamma1.se"),
 
     # ======================================================================= #
-    #  ADDED 2026-08-25 — the supervisor's final-review inference checks.
+    #  Inference checks added in the final round of review.
     #
     #  These keys ADD to the record; not one existing key above is touched. The
     #  additions re-test and report what was already estimated — they do not
     #  re-specify anything:
     #
     #    * rq_wildboot.py recomputes the p-value of every baseline coefficient
-    #      whose SEs are clustered on the EVENT. With 11 clusters CRV1 is
+    #      whose SEs are clustered on the event. With 11 clusters CRV1 is
     #      unreliable, so the p-values are redone by a wild cluster bootstrap
     #      (Rademacher, null imposed, bootstrap type "11"). Every point estimate
     #      and standard error is unchanged, and the script refuses to run unless
@@ -709,7 +709,7 @@ FROZEN: dict[str, tuple[float, float, str]] = {
     #      parsed out of rq1_h1b_robustness.txt rather than re-estimated.
     #
     #  Table 8's LINK column (delta1) is clustered on the BANK, 276 clusters, and
-    #  is deliberately NOT bootstrapped.
+    #  is deliberately not bootstrapped.
     # ======================================================================= #
 
     # ---- Task 1 — WILD CLUSTER BOOTSTRAP p-VALUES (rq_wildboot.py). 11 event clusters,
