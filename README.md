@@ -1,6 +1,12 @@
 # CBDC design signals, bank vulnerability, and equity market reaction
 
-MSc dissertation codebase. Three research questions, cleanly separated:
+Replication package for the MSc dissertation *Predicting Commercial Bank
+Vulnerability to Central Bank Digital Currency Introduction: A Machine
+Learning Approach Using Financial Characteristics and Natural Language
+Processing of Central Bank Communications* (Idaliia Gafarova, MSc Banking
+and Digital Finance, University College London, 2026).
+
+Three research questions, cleanly separated:
 
 | RQ | Question | Verdict |
 |---|---|---|
@@ -225,3 +231,11 @@ because no script can rebuild it.
 
 With those in place, `run_all.py --force` rebuilds everything except the two
 manual stages below. Without them, use `--check-results`.
+
+## Licence and data
+
+The code is under the MIT licence (`LICENSE`). The data is not uniformly
+licensable: CRSP is a subscription product and is not redistributed here,
+so the raw returns are absent and the CRSP identifiers have been removed
+from every published file. [`DATA.md`](DATA.md) states, source by source,
+what is included and on what terms.
