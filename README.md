@@ -1,7 +1,5 @@
 # CBDC design signals, bank vulnerability, and equity market reaction
 
-Code: MIT (`LICENSE`). Data sources and what is and is not redistributed here: **[`DATA.md`](DATA.md)**.
-
 MSc dissertation codebase. Three research questions, cleanly separated:
 
 | RQ | Question | Verdict |
